@@ -7,7 +7,7 @@ const LandingPage = () => {
     <>
       <div className="d-flex flex-column min-vh-100">
         <Header />
-        <div className="flex-grow-">
+        <div className="flex-grow-1">
           <Outlet />
         </div>
         <Footer />

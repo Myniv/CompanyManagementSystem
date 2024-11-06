@@ -1,15 +1,10 @@
-import EmployeesForm from "./Component/Layout/Employees/EmployeesForm";
-import EmployeesTable from "./Component/Layout/Employees/EmployeesTable";
-import { Footer } from "./Component/Modules/Footer";
-import { Header } from "./Component/Modules/Header";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./Routers";
 
 function App() {
   return (
     <>
-      <Header />
-      <EmployeesTable />
-      <EmployeesForm />
-      <Footer />
+      <RouterProvider router={router} />
     </>
   );
 }

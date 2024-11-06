@@ -12,7 +12,7 @@ const EmployeesTable = () => {
 
   const onDeleteEmployees = (empNo) => {
     const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    const deleteEmployees = storedEmployees.filter((b) => b.id !== empNo);
+    const deleteEmployees = storedEmployees.filter((b) => b.empNo !== empNo);
 
     localStorage.setItem("employees", JSON.stringify(deleteEmployees));
     setEmployees(deleteEmployees);

@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import ShowLoading from "../../Elements/ShowLoading";
 
 const EmployeesForm = () => {
   const { employees, setEmployees } = useOutletContext();
@@ -27,12 +29,9 @@ const EmployeesForm = () => {
       const findEmployees = employees.find(
         (employees) => employees.empNo === Number(params.id)
       );
-      // const selectedEmployees = employees.filter(
-      //   (employees) => employees.empNo === Number(params.id)
-      // );
       setFormData(findEmployees);
     }
-  }, [employees]);
+  }, [employees, params.id]);
 
   const onAddEmployees = () => {
     const newEmployeesId = {
@@ -45,7 +44,10 @@ const EmployeesForm = () => {
 
     localStorage.setItem("employees", JSON.stringify(newEmployee));
     setEmployees(newEmployee);
-    navigate("/employees");
+    ShowLoading({
+      loadingMessage: "The new employees is being added...",
+      nextPage: () => navigate("/employees"),
+    });
   };
 
   const onUpdateEmployees = () => {
@@ -62,7 +64,11 @@ const EmployeesForm = () => {
 
     setEmployees(editingEmployees);
     localStorage.setItem("employees", JSON.stringify(editingEmployees));
-    navigate("/employees");
+
+    ShowLoading({
+      loadingMessage: `The employees with id ${params.id} is updating...`,
+      nextPage: () => navigate("/employees"),
+    });
   };
 
   const onCancel = () => {
@@ -114,6 +120,11 @@ const EmployeesForm = () => {
   return (
     <>
       <div className="mb-5">
+      <h2 className="ms-5">
+          {params.id
+            ? "Form Edit Employees with id" + params.id
+            : "Form Add Employees"}
+        </h2>
         <div className="container border">
           <form onSubmit={handleSubmit} className="mb-4">
             <div className="row">
@@ -127,7 +138,7 @@ const EmployeesForm = () => {
                     className="form-control"
                     id="empNo"
                     name="empNo"
-                    value={params.id ? params.id: employeeId}
+                    value={params.id ? params.id : employeeId}
                     // value={employeeId}
                     disabled
                   />
@@ -274,8 +285,7 @@ const EmployeesForm = () => {
               type="submit"
               className="btn btn-primary m-1 right text-right"
             >
-              {/* {isEditing ? "Edit Member" : "Add Member"} */}
-              Add Member
+              {params.id ? "Edit Employees" : "Add Employees"}
             </button>
 
             <button
@@ -283,8 +293,7 @@ const EmployeesForm = () => {
               onClick={onCancel}
               className="btn btn-danger right text-right"
             >
-              {/* {isEditing ? "Cancel Edit" : "Cancel Add"} */}
-              Cancel Add
+              {params.id ? "Cancel Edit" : "Cancel Add"}
             </button>
           </form>
         </div>

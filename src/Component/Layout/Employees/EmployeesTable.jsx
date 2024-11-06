@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import DeleteConfirmation from "../../Elements/DeleteConfirmation";
 
 const EmployeesTable = () => {
   const { employees, setEmployees } = useOutletContext();
@@ -11,11 +13,15 @@ const EmployeesTable = () => {
   }, []);
 
   const onDeleteEmployees = (empNo) => {
-    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    const deleteEmployees = storedEmployees.filter((b) => b.empNo !== empNo);
+    const deletedEmployees = () => {
+      const storedEmployees =
+        JSON.parse(localStorage.getItem("employees")) || [];
+      const deleteEmployees = storedEmployees.filter((b) => b.empNo !== empNo);
 
-    localStorage.setItem("employees", JSON.stringify(deleteEmployees));
-    setEmployees(deleteEmployees);
+      localStorage.setItem("employees", JSON.stringify(deleteEmployees));
+      setEmployees(deleteEmployees);
+    };
+    DeleteConfirmation({ deleteData: () => deletedEmployees });
   };
 
   const onEditingEmployees = (empNo) => {

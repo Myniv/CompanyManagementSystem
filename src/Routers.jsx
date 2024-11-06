@@ -9,7 +9,6 @@ export const router = createBrowserRouter([
     path: "/",
     element: <LandingPage />,
     children: [
-      { path: "", element: <EmployeesTable /> },
       {
         path: "/employees",
         element: <EmployeesPage />,

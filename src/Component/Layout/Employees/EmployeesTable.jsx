@@ -1,32 +1,32 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const EmployeesTable = () => {
-
-  const [employees, setEmployees] = useState([]);
+  const { employees, setEmployees } = useOutletContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
     setEmployees(storedEmployees);
   }, []);
 
-  const onDeleteEmployees = (id) => {
+  const onDeleteEmployees = (empNo) => {
     const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    const deleteEmployees = storedEmployees.filter((b) => b.id !== id);
+    const deleteEmployees = storedEmployees.filter((b) => b.id !== empNo);
 
     localStorage.setItem("employees", JSON.stringify(deleteEmployees));
     setEmployees(deleteEmployees);
   };
 
-  const onEditingEmployees = (id) => {
+  const onEditingEmployees = (empNo) => {
     // const selectEmployees = employees.find((employees) => employees.id === id);
-    console.log("EditEmployees" + id);
-    // navigate(`/employees/${id}`)
-  }
+    console.log("EditEmployees" + empNo);
+    navigate(`/employees/${empNo}`);
+  };
 
   const onAddEmployees = () => {
-    console.log("Add Employees");
-    // navigate("/employees/new");
-  }
+    navigate("/employees/new");
+  };
 
   return (
     <>
@@ -64,7 +64,7 @@ const EmployeesTable = () => {
                     <button
                       type="button"
                       className="btn btn-primary btn-sm"
-                      onClick={() => onEditingEmployees(employees.id)}
+                      onClick={() => onEditingEmployees(employees.empNo)}
                       value={"edit"}
                     >
                       Edit
@@ -72,7 +72,7 @@ const EmployeesTable = () => {
                     <button
                       type="button"
                       className="btn btn-danger btn-sm"
-                      onClick={() => onDeleteEmployees(employees.id)}
+                      onClick={() => onDeleteEmployees(employees.empNo)}
                       value={"delete"}
                     >
                       Delete
@@ -103,4 +103,4 @@ const EmployeesTable = () => {
   );
 };
 
-export default EmployeesTable
+export default EmployeesTable;

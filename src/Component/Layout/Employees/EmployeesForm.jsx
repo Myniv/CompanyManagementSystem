@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 const EmployeesForm = () => {
-  const [employees, setEmployees] = useState([]);
+  const { employees, setEmployees } = useOutletContext();
+  const navigate = useNavigate();
+  const params = useParams();
 
   const [formData, setFormData] = useState({
     empNo: "",
@@ -20,6 +23,15 @@ const EmployeesForm = () => {
         JSON.parse(localStorage.getItem("employees")) || [];
       setEmployees(storedEmployees);
     }
+    if (params.id) {
+      const findEmployees = employees.find(
+        (employees) => employees.empNo === Number(params.id)
+      );
+      // const selectedEmployees = employees.filter(
+      //   (employees) => employees.empNo === Number(params.id)
+      // );
+      setFormData(findEmployees);
+    }
   }, [employees]);
 
   const onAddEmployees = () => {
@@ -33,6 +45,7 @@ const EmployeesForm = () => {
 
     localStorage.setItem("employees", JSON.stringify(newEmployee));
     setEmployees(newEmployee);
+    navigate("/employees");
   };
 
   const onUpdateEmployees = () => {
@@ -49,6 +62,7 @@ const EmployeesForm = () => {
 
     setEmployees(editingEmployees);
     localStorage.setItem("employees", JSON.stringify(editingEmployees));
+    navigate("/employees");
   };
 
   const onCancel = () => {
@@ -62,6 +76,7 @@ const EmployeesForm = () => {
       position: "",
       deptNo: "",
     });
+    navigate("/employees");
   };
 
   const handleChange = (e) => {
@@ -75,7 +90,11 @@ const EmployeesForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    onAddEmployees();
+    if (params.id) {
+      onUpdateEmployees();
+    } else {
+      onAddEmployees();
+    }
 
     setFormData({
       empNo: "",
@@ -108,8 +127,8 @@ const EmployeesForm = () => {
                     className="form-control"
                     id="empNo"
                     name="empNo"
-                    // value={isEditing ? formData.id : memberId}
-                    value={employeeId}
+                    value={params.id ? params.id: employeeId}
+                    // value={employeeId}
                     disabled
                   />
                 </div>

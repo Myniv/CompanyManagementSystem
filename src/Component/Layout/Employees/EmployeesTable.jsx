@@ -7,7 +7,7 @@ const EmployeesTable = () => {
   useEffect(() => {
     const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
     setEmployees(storedEmployees);
-  }, [setEmployees]);
+  }, []);
 
   const onDeleteEmployees = (id) => {
     const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
@@ -19,7 +19,7 @@ const EmployeesTable = () => {
 
   const onEditingEmployees = (id) => {
     // const selectEmployees = employees.find((employees) => employees.id === id);
-    console.log("EditEmployees");
+    console.log("EditEmployees" + id);
     // navigate(`/employees/${id}`)
   }
 
@@ -44,14 +44,14 @@ const EmployeesTable = () => {
               <th scope="col">Date of Birth</th>
               <th scope="col">Gender</th>
               <th scope="col">Position</th>
-              <th scope="col">Departmen</th>
+              <th scope="col">Department</th>
               <th scope="col">ACTION</th>
             </tr>
           </thead>
           <tbody>
             {employees.map((employees) => (
-              <tr scope="row" key={employees.id}>
-                <td>{employees.id}</td>
+              <tr scope="row" key={employees.empNo}>
+                <td>{employees.empNo}</td>
                 <td>{employees.fName}</td>
                 <td>{employees.lName}</td>
                 <td>{employees.address}</td>

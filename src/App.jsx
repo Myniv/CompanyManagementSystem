@@ -1,14 +1,17 @@
-import EmployeesForm from './Component/Layout/Employees/EmployeesForm'
-import EmployeesTable from './Component/Layout/Employees/EmployeesTable'
+import EmployeesForm from "./Component/Layout/Employees/EmployeesForm";
+import EmployeesTable from "./Component/Layout/Employees/EmployeesTable";
+import { Footer } from "./Component/Modules/Footer";
+import { Header } from "./Component/Modules/Header";
 
 function App() {
-
   return (
     <>
-      <EmployeesTable/>
-      <EmployeesForm/>
+      <Header />
+      <EmployeesTable />
+      <EmployeesForm />
+      <Footer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

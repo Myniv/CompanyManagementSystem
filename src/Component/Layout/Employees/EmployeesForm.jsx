@@ -36,7 +36,6 @@ const EmployeesForm = () => {
     const storedDepartment =
       JSON.parse(localStorage.getItem("departments")) || [];
     setDepartment(storedDepartment);
-
   }, [employees, params.id]);
 
   const onAddEmployees = () => {
@@ -116,11 +115,14 @@ const EmployeesForm = () => {
       formData.address.length < 2
     ) {
       newErrors.address =
-        "Address must be between 2 and no exceed 200 characters.";
+        "Address must be between 2 and 200 characters.";
     }
 
-    if (!formData.dob) {
-      newErrors.dob = "Date of birt is required.";
+    const minimumYears = 2006;
+    const dob = new Date(formData.dob).getFullYear();
+
+    if (!formData.dob || dob > minimumYears) {
+      newErrors.dob = "Date of birth cant exceed of " + minimumYears + ".";
     }
 
     if (!formData.sex) {
@@ -370,7 +372,10 @@ const EmployeesForm = () => {
                         Select Department
                       </option>
                       {department.map((department) => (
-                        <option key={department.deptNo} value={department.deptNo}>
+                        <option
+                          key={department.deptNo}
+                          value={department.deptNo}
+                        >
                           {department.deptName}
                         </option>
                       ))}

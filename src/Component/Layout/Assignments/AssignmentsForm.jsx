@@ -93,15 +93,19 @@ const AssignmentsForm = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.empNo) {
-      newErrors.empNo = "Employee ID is required.";
+      newErrors.empNo = "Employee is required.";
     }
     if (!formData.projNo) {
-      newErrors.projNo = "Project ID is required.";
+      newErrors.projNo = "Project is required.";
     }
-    if (!formData.dateWorked) {
-      newErrors.dateWorked = "Date Worked is required.";
+
+    const today = new Date();
+    const dateWorked = new Date(formData.dateWorked);
+    if (!formData.dateWorked || dateWorked > today) {
+      newErrors.dateWorked = "Date of work cant be exceed todays date.";
     }
-    if (!formData.hoursWorked || formData.hoursWorked <= 0) {
+
+    if (!formData.hoursWorked || formData.hoursWorked < 0) {
       newErrors.hoursWorked = "Hours Worked must be a positive number.";
     }
     return newErrors;

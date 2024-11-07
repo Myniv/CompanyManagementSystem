@@ -8,6 +8,8 @@ const ProjectsForm = () => {
   const navigate = useNavigate();
   const params = useParams();
 
+  const [departments, setDepartments] = useState([]);
+
   const [formData, setFormData] = useState({
     projNo: "",
     projName: "",
@@ -26,12 +28,16 @@ const ProjectsForm = () => {
       );
       setFormData(findProject);
     }
+    const storedDepartment =
+      JSON.parse(localStorage.getItem("departments")) || [];
+    setDepartments(storedDepartment);
   }, [projects, params.id]);
 
   const onAddProject = () => {
     const newProject = {
       ...formData,
-      projNo: projects.length > 0 ? projects[projects.length - 1].projNo + 1 : 1,
+      projNo:
+        projects.length > 0 ? projects[projects.length - 1].projNo + 1 : 1,
     };
 
     const newProjects = [...projects, newProject];
@@ -74,7 +80,11 @@ const ProjectsForm = () => {
   const [errors, setErrors] = useState({});
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.projName || formData.projName.length < 2 || formData.projName.length > 100) {
+    if (
+      !formData.projName ||
+      formData.projName.length < 2 ||
+      formData.projName.length > 100
+    ) {
       newErrors.projName = "Project name must be between 2 and 100 characters.";
     }
     if (!formData.deptNo) {
@@ -111,13 +121,12 @@ const ProjectsForm = () => {
     }
   };
 
-  const projectId = projects.length > 0 ? projects[projects.length - 1].projNo + 1 : 1;
+  const projectId =
+    projects.length > 0 ? projects[projects.length - 1].projNo + 1 : 1;
 
   return (
     <div className="mb-5">
-      <h2 className="ms-5">
-        {params.id ? "Edit Project" : "Add Project"}
-      </h2>
+      <h2 className="ms-5">{params.id ? "Edit Project" : "Add Project"}</h2>
       <div className="container border">
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
@@ -153,18 +162,27 @@ const ProjectsForm = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="deptNo" className="form-label">
-              Department ID
+              Department
             </label>
-            <input
-              type="number"
+            <select
               id="deptNo"
               name="deptNo"
-              className={`form-control ${errors.deptNo ? "is-invalid" : ""}`}
+              className={`form-control ${
+                errors.department ? "is-invalid" : ""
+              }`}
               value={formData.deptNo}
               onChange={handleChange}
               required
-              placeholder="Department ID"
-            />
+            >
+              <option value="" disabled>
+                Select Department
+              </option>
+              {departments.map((departments) => (
+                <option key={departments.deptNo} value={departments.deptNo}>
+                  {departments.deptName}
+                </option>
+              ))}
+            </select>
             {errors.deptNo && (
               <div className="invalid-feedback">{errors.deptNo}</div>
             )}

@@ -13,12 +13,14 @@ import AssignmentPage from "./Page/AssignmentsPage";
 import AssignmentsTable from "./Component/Layout/Assignments/AssignmentsTable";
 import AssignmentsForm from "./Component/Layout/Assignments/AssignmentsForm";
 import AssignmentsDetail from "./Component/Layout/Assignments/AssignmentsDetail";
+import MainPage from "./Page/MainPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
     children: [
+      { path: "", element: <MainPage /> },
       {
         path: "/employees",
         element: <EmployeesPage />,

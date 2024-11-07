@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import ShowLoading from "../../Elements/ShowLoading";
 
 const DepartmentsForm = () => {
-  const [departments, setDepartments] = useState([]);
+  const { departments, setDepartments } = useOutletContext();
   const navigate = useNavigate();
   const params = useParams();
 
@@ -14,12 +14,14 @@ const DepartmentsForm = () => {
     mgrEmpNo: "",
   });
 
+  //
   useEffect(() => {
     if (!departments) {
       const storedDepartments =
         JSON.parse(localStorage.getItem("departments")) || [];
       setDepartments(storedDepartments);
     }
+
     if (params.id) {
       const findDepartment = departments.find(
         (department) => department.deptNo === Number(params.id)
@@ -151,8 +153,8 @@ const DepartmentsForm = () => {
               id="deptName"
               name="deptName"
               className={`form-control ${errors.deptName ? "is-invalid" : ""}`}
-              value={formData.deptName}
               onChange={handleChange}
+              value={formData.deptName}
               required
               placeholder="Department Name"
             />

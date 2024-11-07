@@ -1,10 +1,8 @@
 import { useEffect } from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const DepartmentsTable = () => {
-  const [departments, setDepartments] = useState([]);
-
+const {departments, setDepartments} = useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,8 +17,6 @@ const DepartmentsTable = () => {
     const deleteDepartments = storedDepartments.filter(
       (b) => b.deptNo !== deptNo
     );
-
-    localStorage.setItem("departments", JSON.stringify(deleteDepartments));
 
     localStorage.setItem("departments", JSON.stringify(deleteDepartments));
     setDepartments(deleteDepartments);
@@ -46,6 +42,7 @@ const DepartmentsTable = () => {
               <th scope="col">ID Department</th>
               <th scope="col">Department Name</th>
               <th scope="col">Department Manager</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -59,7 +56,7 @@ const DepartmentsTable = () => {
                     <button
                       type="button"
                       className="btn btn-primary btn-sm"
-                      onClick={() => onEditDepartments(departments.empNo)}
+                      onClick={() => onEditDepartments(departments.deptNo)}
                       value={"edit"}
                     >
                       Edit
@@ -67,7 +64,7 @@ const DepartmentsTable = () => {
                     <button
                       type="button"
                       className="btn btn-danger btn-sm"
-                      onClick={() => onDeleteDepartments(departments.empNo)}
+                      onClick={() => onDeleteDepartments(departments.deptNo)}
                       value={"delete"}
                     >
                       Delete

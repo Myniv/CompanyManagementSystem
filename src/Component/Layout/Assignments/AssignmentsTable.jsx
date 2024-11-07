@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import DeleteConfirmation from "../../Elements/DeleteConfirmation";
 
@@ -8,10 +8,19 @@ const AssignmentsTable = () => {
     useOutletContext();
   const navigate = useNavigate();
 
+  const [projects, setProjects] = useState([]);
+  const [employees, setEmployees] = useState([]);
+
   useEffect(() => {
     const storedAssignments =
       JSON.parse(localStorage.getItem("assignments")) || [];
     setAssignments(storedAssignments);
+
+    const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
+    setProjects(storedProjects);
+
+    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
+    setEmployees(storedEmployees);
   }, []);
 
   const onDeleteAssignment = (assNo) => {
@@ -40,6 +49,30 @@ const AssignmentsTable = () => {
     setSelectedAssignments(assNo);
   };
 
+  const getProjectsName = (projNo) => {
+    const foundProjects = projects.find(
+      (projects) => Number(projects.projNo) === Number(projNo)
+    );
+
+    if (foundProjects) {
+      return foundProjects.projName;
+    } else {
+      return "";
+    }
+  };
+
+  const getEmployeesName = (empNo) => {
+    const foundEmployees = employees.find(
+      (employees) => Number(employees.empNo) === Number(empNo)
+    );
+
+    if (foundEmployees) {
+      return <>{`${foundEmployees.fName} ${foundEmployees.lName}`}</>;
+    } else {
+      return "";
+    }
+  };
+
   return (
     <div className="m-4">
       <div className="d-flex justify-content-between align-items-center">
@@ -49,10 +82,10 @@ const AssignmentsTable = () => {
         <thead>
           <tr className="table-dark">
             <th scope="col" className="text-center">
-              Employee ID
+              Employee
             </th>
             <th scope="col" className="text-center">
-              Project ID
+              Project
             </th>
             <th scope="col" className="text-center">
               Date Worked
@@ -68,8 +101,12 @@ const AssignmentsTable = () => {
         <tbody>
           {assignments.map((assignment) => (
             <tr scope="row" key={assignment.assNo}>
-              <td className="table-light text-center">{assignment.empNo}</td>
-              <td className="table-light text-center">{assignment.projNo}</td>
+              <td className="table-light text-center">
+                {getEmployeesName(assignment.empNo)}
+              </td>
+              <td className="table-light text-center">
+                {getProjectsName(assignment.projNo)}
+              </td>
               <td className="table-light text-center">
                 {assignment.dateWorked}
               </td>

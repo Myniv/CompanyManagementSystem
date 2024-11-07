@@ -16,6 +16,9 @@ const AssignmentsForm = () => {
     hoursWorked: "",
   });
 
+  const [projects, setProjects] = useState([]);
+  const [employees, setEmployees] = useState([]);
+
   useEffect(() => {
     if (!assignments) {
       const storedAssignments =
@@ -30,6 +33,12 @@ const AssignmentsForm = () => {
         setFormData(foundAssignment);
       }
     }
+
+    const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
+    setProjects(storedProjects);
+
+    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
+    setEmployees(storedEmployees);
   }, [assignments, params.id]);
 
   const onAddAssignment = () => {
@@ -157,36 +166,56 @@ const AssignmentsForm = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="empNo" className="form-label">
-              Employee ID
+              Employee
             </label>
-            <input
-              type="text"
-              className={`form-control ${errors.empNo ? "is-invalid" : ""}`}
+            <select
               id="empNo"
               name="empNo"
+              className={`form-control ${
+                errors.department ? "is-invalid" : ""
+              }`}
               value={formData.empNo}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="" disabled>
+                Select Employee
+              </option>
+              {employees.map((employees) => (
+                <option key={employees.empNo} value={employees.empNo}>
+                  {employees.fName} {employees.lName}
+                </option>
+              ))}
+            </select>
             {errors.empNo && (
               <div className="invalid-feedback">{errors.empNo}</div>
             )}
           </div>
           <div className="mb-3">
             <label htmlFor="projNo" className="form-label">
-              Project ID
+              Project
             </label>
-            <input
-              type="text"
-              className={`form-control ${errors.projNo ? "is-invalid" : ""}`}
+            <select
               id="projNo"
               name="projNo"
+              className={`form-control ${
+                errors.department ? "is-invalid" : ""
+              }`}
               value={formData.projNo}
               onChange={handleChange}
               required
-            />
-            {errors.projNo && (
-              <div className="invalid-feedback">{errors.projNo}</div>
+            >
+              <option value="" disabled>
+                Select Project
+              </option>
+              {projects.map((projects) => (
+                <option key={projects.projNo} value={projects.projNo}>
+                  {projects.projName}
+                </option>
+              ))}
+            </select>
+            {errors.empNo && (
+              <div className="invalid-feedback">{errors.empNo}</div>
             )}
           </div>
           <div className="mb-3">

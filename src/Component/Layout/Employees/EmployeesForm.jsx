@@ -85,6 +85,48 @@ const EmployeesForm = () => {
     navigate("/employees");
   };
 
+  const [errors, setErrors] = useState({});
+  const validateForm = () => {
+    const newErrors = {};
+    if (
+      !formData.fName ||
+      formData.fName.length < 2 ||
+      formData.fName.length > 100
+    ) {
+      newErrors.fName = "First name must be between 2 and 100 characters.";
+    }
+
+    if (
+      !formData.lName ||
+      formData.lName.length < 2 ||
+      formData.lName.length > 100
+    ) {
+      newErrors.lName = "Last name must be between 2 and 100 characters.";
+    }
+
+    if (
+      !formData.address ||
+      formData.address.length > 200 ||
+      formData.address.length < 2
+    ) {
+      newErrors.address =
+        "Address must be between 2 and no exceed 200 characters.";
+    }
+
+    if (!formData.dob) {
+      newErrors.dob = "Date of birt is required.";
+    }
+
+    if (!formData.sex) {
+      newErrors.sex = "Gender is required.";
+    }
+    if (!formData.position) {
+      newErrors.sex = "Position is required.";
+    }
+
+    return newErrors;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(() => ({
@@ -95,32 +137,46 @@ const EmployeesForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length === 0) {
+      if (params.id) {
+        onUpdateEmployees();
+      } else {
+        onAddEmployees();
+      }
 
-    if (params.id) {
-      onUpdateEmployees();
+      setFormData({
+        empNo: "",
+        fName: "",
+        lName: "",
+        address: "",
+        dob: "",
+        sex: "",
+        position: "",
+        deptNo: "",
+      });
+
+      setErrors({});
     } else {
-      onAddEmployees();
+      setErrors(validationErrors);
     }
-
-    setFormData({
-      empNo: "",
-      fName: "",
-      lName: "",
-      address: "",
-      dob: "",
-      sex: "",
-      position: "",
-      deptNo: "",
-    });
   };
 
   const employeeId =
     employees.length > 0 ? employees[employees.length - 1].empNo + 1 : 1;
 
+  const position = [
+    "Programmer",
+    "Quality Assurance",
+    "Sales",
+    "Social Media Specialist",
+    "Administratif",
+    "Human Resources",
+  ];
   return (
     <>
       <div className="mb-5">
-      <h2 className="ms-5">
+        <h2 className="ms-5">
           {params.id
             ? "Form Edit Employees with id" + params.id
             : "Form Add Employees"}
@@ -151,13 +207,17 @@ const EmployeesForm = () => {
                     type="text"
                     id="fName"
                     name="fName"
-                    className={`form-control`}
+                    className={`form-control ${
+                      errors.fName ? "is-invalid" : ""
+                    }`}
                     value={formData.fName}
                     onChange={handleChange}
                     required
                     placeholder="Front Name"
-                    // ref={focusNameInput}
                   />
+                  {errors.fName && (
+                    <div className="invalid-feedback">{errors.fName}</div>
+                  )}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="lName" className="form-label">
@@ -167,13 +227,17 @@ const EmployeesForm = () => {
                     type="text"
                     id="lName"
                     name="lName"
-                    className={`form-control`}
+                    className={`form-control ${
+                      errors.lName ? "is-invalid" : ""
+                    }`}
                     value={formData.lName}
                     onChange={handleChange}
                     required
                     placeholder="Last Name"
-                    // ref={focusNameInput}
                   />
+                  {errors.lName && (
+                    <div className="invalid-feedback">{errors.lName}</div>
+                  )}
                 </div>
 
                 <div className="mb-1">
@@ -183,15 +247,17 @@ const EmployeesForm = () => {
                   <textarea
                     id="address"
                     name="address"
-                    className={`form-control `}
+                    className={`form-control ${
+                      errors.address ? "is-invalid" : ""
+                    }`}
                     value={formData.address}
                     onChange={handleChange}
                     required
                     placeholder="Address"
                   />
-                  {/* {errors.address && (
+                  {errors.address && (
                     <div className="invalid-feedback">{errors.address}</div>
-                  )} */}
+                  )}
                 </div>
               </div>
               <div className="col-md-6">
@@ -202,7 +268,9 @@ const EmployeesForm = () => {
                       type="radio"
                       id="sex1"
                       name="sex"
-                      className={`form-check-input`}
+                      className={`form-check-input ${
+                        errors.sex ? "is-invalid" : ""
+                      }`}
                       value="Laki laki"
                       onChange={handleChange}
                       checked={formData.sex === "Laki laki"}
@@ -223,9 +291,9 @@ const EmployeesForm = () => {
                     <label htmlFor="sex2" className="form-check-label ms-2">
                       Perempuan
                     </label>
-                    {/* {errors.gender && (
-                      <div className="invalid-feedback">{errors.gender}</div>
-                    )} */}
+                    {errors.sex && (
+                      <div className="invalid-feedback">{errors.sex}</div>
+                    )}
                   </div>
 
                   <div className="mb-3">
@@ -236,30 +304,45 @@ const EmployeesForm = () => {
                       type="date"
                       id="dob"
                       name="dob"
-                      className={`form-control`}
+                      className={`form-control ${
+                        errors.dob ? "is-invalid" : ""
+                      }`}
                       value={formData.dob}
                       onChange={handleChange}
                       required
                       placeholder="DD-MM-YYYY"
-                      // ref={focusNameInput}
                     />
+                    {errors.dob && (
+                      <div className="invalid-feedback">{errors.dob}</div>
+                    )}
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="position" className="form-label">
                       Position
                     </label>
-                    <input
-                      type="text"
+                    <select
                       id="position"
                       name="position"
-                      className={`form-control`}
+                      className={`form-control ${
+                        errors.position ? "is-invalid" : ""
+                      }`}
                       value={formData.position}
                       onChange={handleChange}
                       required
-                      placeholder="Position"
-                      // ref={focusNameInput}
-                    />
+                    >
+                      <option value="" disabled>
+                        Select Position
+                      </option>
+                      {position.map((position) => (
+                        <option key={position} value={position}>
+                          {position}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.position && (
+                      <div className="invalid-feedback">{errors.position}</div>
+                    )}
                   </div>
 
                   <div className="mb-3">
@@ -270,13 +353,17 @@ const EmployeesForm = () => {
                       type="number"
                       id="deptNo"
                       name="deptNo"
-                      className={`form-control`}
+                      className={`form-control ${
+                        errors.department ? "is-invalid" : ""
+                      }`}
                       value={formData.deptNo}
                       onChange={handleChange}
                       placeholder="Department Number"
                       required
-                      // ref={focusNameInput}
                     />
+                    {errors.deptNo && (
+                      <div className="invalid-feedback">{errors.deptNo}</div>
+                    )}
                   </div>
                 </div>
               </div>

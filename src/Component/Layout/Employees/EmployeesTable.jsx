@@ -40,45 +40,63 @@ const EmployeesTable = () => {
         <div className="d-flex justify-content-between align-items-center">
           <h2>Employees Table</h2>
         </div>
-        <table className="table table-striped table-bordered">
-          <thead className="thead-dark">
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Front Name</th>
-              <th scope="col">Last Name</th>
-              <th scope="col">Address</th>
-              <th scope="col">Date of Birth</th>
-              <th scope="col">Gender</th>
-              <th scope="col">Position</th>
-              <th scope="col">Department</th>
-              <th scope="col">ACTION</th>
+        <table className="table table-hover table-bordered">
+          <thead>
+            <tr className="table-dark">
+              <th scope="col" className="text-center">
+                ID
+              </th>
+              <th scope="col" className="text-center">
+                Front Name
+              </th>
+              <th scope="col" className="text-center">
+                Last Name
+              </th>
+              <th scope="col" className="text-center">
+                Address
+              </th>
+              <th scope="col" className="text-center">
+                Date of Birth
+              </th>
+              <th scope="col" className="text-center">
+                Gender
+              </th>
+              <th scope="col" className="text-center">
+                Position
+              </th>
+              <th scope="col" className="text-center">
+                Department
+              </th>
+              <th scope="col" className="text-center">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
-            {employees.map((employees) => (
-              <tr scope="row" key={employees.empNo}>
-                <td>{employees.empNo}</td>
-                <td>{employees.fName}</td>
-                <td>{employees.lName}</td>
-                <td>{employees.address}</td>
-                <td>{employees.dob}</td>
-                <td>{employees.sex}</td>
-                <td>{employees.position}</td>
-                <td>{employees.deptNo}</td>
-                <td>
-                  <div className="d-grid gap-2 d-md-flex justify-content-md">
+            {employees.map((employee) => (
+              <tr scope="row" key={employee.empNo}>
+                <td className="table-light text-center">{employee.empNo}</td>
+                <td className="table-light text-center">{employee.fName}</td>
+                <td className="table-light text-center">{employee.lName}</td>
+                <td className="table-light text-center">{employee.address}</td>
+                <td className="table-light text-center">{employee.dob}</td>
+                <td className="table-light text-center">{employee.sex}</td>
+                <td className="table-light text-center">{employee.position}</td>
+                <td className="table-light text-center">{employee.deptNo}</td>
+                <td className="table-light text-center">
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                     <button
                       type="button"
-                      className="btn btn-primary btn-sm"
-                      onClick={() => onEditingEmployees(employees.empNo)}
+                      className="btn btn-primary"
+                      onClick={() => onEditingEmployees(employee.empNo)}
                       value={"edit"}
                     >
                       Edit
                     </button>
                     <button
                       type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => onDeleteEmployees(employees.empNo)}
+                      className="btn btn-danger"
+                      onClick={() => onDeleteEmployees(employee.empNo)}
                       value={"delete"}
                     >
                       Delete
@@ -87,21 +105,19 @@ const EmployeesTable = () => {
                 </td>
               </tr>
             ))}
-            <tr>
               <td colSpan="9">
                 <div className="d-flex justify-content-end">
-                  <div className="d-grid gap-2 col-1">
+                  <div className="d-grid gap-2 col-2">
                     <button
                       type="button"
-                      className="btn btn-primary btn-sm btn-block me-1"
+                      className="btn btn-primary btn-block"
                       onClick={onAddEmployees}
                     >
-                      Add Employees
+                      Add Project
                     </button>
                   </div>
                 </div>
               </td>
-            </tr>
           </tbody>
         </table>
       </div>

@@ -8,6 +8,8 @@ const EmployeesForm = () => {
   const navigate = useNavigate();
   const params = useParams();
 
+  const [department, setDepartment] = useState([]);
+
   const [formData, setFormData] = useState({
     empNo: "",
     fName: "",
@@ -31,6 +33,10 @@ const EmployeesForm = () => {
       );
       setFormData(findEmployees);
     }
+    const storedDepartment =
+      JSON.parse(localStorage.getItem("departments")) || [];
+    setDepartment(storedDepartment);
+
   }, [employees, params.id]);
 
   const onAddEmployees = () => {
@@ -168,10 +174,12 @@ const EmployeesForm = () => {
   const position = [
     "Programmer",
     "Quality Assurance",
-    "Sales",
+    "Sales Consultant",
     "Social Media Specialist",
     "Administratif",
-    "Human Resources",
+    "Data Entry",
+    "Finance Analyst",
+    "Accounting",
   ];
   return (
     <>
@@ -344,8 +352,35 @@ const EmployeesForm = () => {
                       <div className="invalid-feedback">{errors.position}</div>
                     )}
                   </div>
-
                   <div className="mb-3">
+                    <label htmlFor="deptNo" className="form-label">
+                      Department
+                    </label>
+                    <select
+                      id="deptNo"
+                      name="deptNo"
+                      className={`form-control ${
+                        errors.department ? "is-invalid" : ""
+                      }`}
+                      value={formData.deptNo}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="" disabled>
+                        Select Department
+                      </option>
+                      {department.map((department) => (
+                        <option key={department.deptNo} value={department.deptNo}>
+                          {department.deptName}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.deptNo && (
+                      <div className="invalid-feedback">{errors.deptNo}</div>
+                    )}
+                  </div>
+
+                  {/* <div className="mb-3">
                     <label htmlFor="deptNo" className="form-label">
                       Department
                     </label>
@@ -364,7 +399,7 @@ const EmployeesForm = () => {
                     {errors.deptNo && (
                       <div className="invalid-feedback">{errors.deptNo}</div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

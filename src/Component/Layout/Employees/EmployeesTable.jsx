@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import DeleteConfirmation from "../../Elements/DeleteConfirmation";
 
@@ -7,9 +7,15 @@ const EmployeesTable = () => {
   const { employees, setEmployees } = useOutletContext();
   const navigate = useNavigate();
 
+  const [department, setDepartment] = useState([]);
+
   useEffect(() => {
     const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
     setEmployees(storedEmployees);
+
+    const storedDepartment =
+      JSON.parse(localStorage.getItem("departments")) || [];
+      setDepartment(storedDepartment);
   }, []);
 
   const onDeleteEmployees = (empNo) => {
@@ -33,6 +39,19 @@ const EmployeesTable = () => {
   const onAddEmployees = () => {
     navigate("/employees/new");
   };
+
+  const getDepartmentName = (deptNo) => {
+    const foundDepartment = department.find(
+      (department) => Number(department.deptNo) === Number(deptNo)
+    );
+
+    if(foundDepartment){
+      return foundDepartment.deptName;
+    } else {
+      return "";
+    }
+
+  }
 
   return (
     <>
@@ -82,7 +101,7 @@ const EmployeesTable = () => {
                 <td className="table-light text-center">{employee.dob}</td>
                 <td className="table-light text-center">{employee.sex}</td>
                 <td className="table-light text-center">{employee.position}</td>
-                <td className="table-light text-center">{employee.deptNo}</td>
+                <td className="table-light text-center">{getDepartmentName(employee.deptNo)}</td>
                 <td className="table-light text-center">
                   <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                     <button
@@ -105,19 +124,19 @@ const EmployeesTable = () => {
                 </td>
               </tr>
             ))}
-              <td colSpan="9">
-                <div className="d-flex justify-content-end">
-                  <div className="d-grid gap-2 col-2">
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-block"
-                      onClick={onAddEmployees}
-                    >
-                      Add Project
-                    </button>
-                  </div>
+            <td colSpan="9">
+              <div className="d-flex justify-content-end">
+                <div className="d-grid gap-2 col-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block"
+                    onClick={onAddEmployees}
+                  >
+                    Add Project
+                  </button>
                 </div>
-              </td>
+              </div>
+            </td>
           </tbody>
         </table>
       </div>

@@ -6,6 +6,9 @@ import EmployeesForm from "./Component/Layout/Employees/EmployeesForm";
 import DepartmentsPage from "./Page/DepartmentsPage";
 import DepartmentsTable from "./Component/Layout/Departments/DepartmentsTable";
 import DepartmentsForm from "./Component/Layout/Departments/DepartmentsForm";
+import ProjectsPage from "./Page/ProjectsPage";
+import ProjectsTable from "./Component/Layout/Projects/ProjectsTable";
+import ProjectsForm from "./Component/Layout/Projects/ProjectsForm";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +31,16 @@ export const router = createBrowserRouter([
           {path:"", element:<DepartmentsTable/>},
           { path: "/departments/new", element: <DepartmentsForm /> },
           { path: "/departments/:id", element: <DepartmentsForm /> },
+
+        ]
+      },
+      {
+        path:"/projects",
+        element: <ProjectsPage/>,
+        children:[
+          {path:"", element:<ProjectsTable/>},
+          { path: "/projects/new", element: <ProjectsForm/> },
+          { path: "/projects/:id", element: <ProjectsForm /> },
 
         ]
       }

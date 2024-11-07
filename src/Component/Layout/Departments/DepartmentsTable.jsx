@@ -81,7 +81,7 @@ const DepartmentsTable = () => {
           </tbody>
           <td colSpan="4" className="text-center">
             <div className="d-flex justify-content-end">
-              <div className="d-grid col-2">
+              <div className="d-grid col-3">
                 <button
                   type="button"
                   className="btn btn-primary btn-block"

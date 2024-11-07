@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 
@@ -31,43 +32,57 @@ const AssignmentsDetail = () => {
   }, [params]);
 
   return (
-    <div className="mt-5">
-      <h2>Work History</h2>
-      <div className="container border">
-        <h4>Employee Detail</h4>
-        <p>
-          <strong>Employee ID:</strong> {employee?.empNo || "N/A"}
-        </p>
-        <p>
-          <strong>Employee Department ID:</strong> {employee?.deptNo || "N/A"}
-        </p>
-        <p>
-          <strong>Employee Name:</strong>{" "}
-          {employee ? `${employee.fName} ${employee.lName}` : "N/A"}
-        </p>
-        <p>
-          <strong>Employee Position:</strong> {employee?.position || "N/A"}
-        </p>
-
-        <h4>Project Detail</h4>
-        <p>
-          <strong>Project ID:</strong> {project?.projNo || "N/A"}
-        </p>
-        <p>
-          <strong>Project Department ID:</strong> {project?.deptNo || "N/A"}
-        </p>
-        <p>
-          <strong>Project Name:</strong> {project?.projName || "N/A"}
-        </p>
-
-        <h4>Assignment Detail</h4>
-        <p>
-          <strong>Date Started:</strong> {assignmentDetail?.dateWorked || "N/A"}
-        </p>
-        <p>
-          <strong>Hours Worked:</strong>{" "}
-          {assignmentDetail?.hoursWorked || "N/A"}
-        </p>
+    <div className="">
+      <h2 className="ms-5">Work History</h2>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="mb-3 border">
+              <h4 className="m-2">Employee Detail</h4>
+              <p className="m-2">
+                <strong>Employee ID:</strong> {employee?.empNo || "null"}
+              </p>
+              <p className="m-2">
+                <strong>Employee Department ID:</strong>{" "}
+                {employee?.deptNo || "null"}
+              </p>
+              <p className="m-2">
+                <strong>Employee Name:</strong>{" "}
+                {employee ? `${employee.fName} ${employee.lName}` : "null"}
+              </p>
+              <p className="m-2">
+                <strong>Employee Position:</strong>{" "}
+                {employee?.position || "null"}
+              </p>
+            </div>
+            <div className="mb-3 border">
+              <h4 className="m-2">Assignment Detail</h4>
+              <p className="m-2">
+                <strong>Date Started:</strong>{" "}
+                {assignmentDetail?.dateWorked || "null"}
+              </p>
+              <p className="m-2">
+                <strong>Hours Worked:</strong>{" "}
+                {assignmentDetail?.hoursWorked || "null"}
+              </p>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 border">
+              <h4 className="m-2">Project Detail</h4>
+              <p className="m-2">
+                <strong>Project ID:</strong> {project?.projNo || "null"}
+              </p>
+              <p className="m-2">
+                <strong>Project Department ID:</strong>
+                {project?.deptNo || "null"}
+              </p>
+              <p className="m-2">
+                <strong>Project Name:</strong> {project?.projName || "null"}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

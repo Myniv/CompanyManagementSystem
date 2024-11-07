@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import DeleteConfirmation from "../../Elements/DeleteConfirmation";
 
 const DepartmentsTable = () => {
-const {departments, setDepartments} = useOutletContext();
+  const { departments, setDepartments } = useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,14 +14,17 @@ const {departments, setDepartments} = useOutletContext();
   }, []);
 
   const onDeleteDepartments = (deptNo) => {
-    const storedDepartments =
-      JSON.parse(localStorage.getItem("departments")) || [];
-    const deleteDepartments = storedDepartments.filter(
-      (b) => b.deptNo !== deptNo
-    );
+    const deleteDepartments = () => {
+      const storedDepartments =
+        JSON.parse(localStorage.getItem("departments")) || [];
+      const deleteDepartments = storedDepartments.filter(
+        (b) => b.deptNo !== deptNo
+      );
 
-    localStorage.setItem("departments", JSON.stringify(deleteDepartments));
-    setDepartments(deleteDepartments);
+      localStorage.setItem("departments", JSON.stringify(deleteDepartments));
+      setDepartments(deleteDepartments);
+    };
+    DeleteConfirmation({ deleteData: () => deleteDepartments() });
   };
 
   const onEditDepartments = (deptNo) => {
@@ -95,4 +100,4 @@ const {departments, setDepartments} = useOutletContext();
   );
 };
 
-export default DepartmentsTable
+export default DepartmentsTable;

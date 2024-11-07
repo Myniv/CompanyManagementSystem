@@ -9,6 +9,9 @@ import DepartmentsForm from "./Component/Layout/Departments/DepartmentsForm";
 import ProjectsPage from "./Page/ProjectsPage";
 import ProjectsTable from "./Component/Layout/Projects/ProjectsTable";
 import ProjectsForm from "./Component/Layout/Projects/ProjectsForm";
+import AssignmentPage from "./Page/AssignmentsPage";
+import AssignmentsTable from "./Component/Layout/Assignments/AssignmentsTable";
+import AssignmentsForm from "./Component/Layout/Assignments/AssignmentsForm";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +44,16 @@ export const router = createBrowserRouter([
           {path:"", element:<ProjectsTable/>},
           { path: "/projects/new", element: <ProjectsForm/> },
           { path: "/projects/:id", element: <ProjectsForm /> },
+
+        ]
+      },
+      {
+        path:"/assignments",
+        element: <AssignmentPage/>,
+        children:[
+          {path:"", element:<AssignmentsTable/>},
+          { path: "/assignments/new", element: <AssignmentsForm/> },
+          { path: "/assignments/:id", element: <AssignmentsForm /> },
 
         ]
       }

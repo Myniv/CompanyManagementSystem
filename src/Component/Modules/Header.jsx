@@ -19,7 +19,7 @@ const Header = () => {
   };
   return (
     <header
-      className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom"
+      className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start py-3 mb-4 border-bottom"
       style={{ backgroundColor: "#36454F", color: "white" }}
     >
       <div className="col-md-3 mb-2 mb-md-0 mx-5" style={{ flexGrow: 1 }}>

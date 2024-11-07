@@ -5,8 +5,9 @@ import { useOutletContext, useParams } from "react-router-dom";
 const AssignmentsDetail = () => {
   const { assignments, selectedAssignments } = useOutletContext();
   const params = useParams();
-  const [employee, setEmployee] = useState(null);
-  const [project, setProject] = useState(null);
+  const [employee, setEmployee] = useState([]);
+  const [project, setProject] = useState([]);
+  const [department, setDepartment] = useState([]);
   const [assignmentDetail, setAssignmentDetail] = useState([]);
 
   useEffect(() => {
@@ -15,24 +16,40 @@ const AssignmentsDetail = () => {
       const foundProject = storedProjects.find(
         (proj) => Number(proj.projNo) === Number(params.projId)
       );
-      setProject(foundProject || null);
+      setProject(foundProject);
 
       const storedEmployees =
         JSON.parse(localStorage.getItem("employees")) || [];
       const foundEmployee = storedEmployees.find(
         (emp) => Number(emp.empNo) === Number(params.empId)
       );
-      setEmployee(foundEmployee || null);
+      setEmployee(foundEmployee);
 
       const foundAssignment = assignments.find(
         (assign) => Number(assign.assNo) === Number(selectedAssignments)
       );
-      setAssignmentDetail(foundAssignment || null);
+      setAssignmentDetail(foundAssignment);
+
+      const storedDepartment =
+      JSON.parse(localStorage.getItem("departments")) || [];
+      setDepartment(storedDepartment);
     }
   }, [params]);
 
+  const getDepartmentName = (deptNo) => {
+    const foundDepartment = department.find(
+      (department) => Number(department.deptNo) === Number(deptNo)
+    );
+
+    if (foundDepartment) {
+      return foundDepartment.deptName;
+    } else {
+      return "";
+    }
+  };
+
   return (
-    <div className="">
+    <div>
       <h2 className="ms-5">Work History</h2>
       <div className="container">
         <div className="row">
@@ -40,30 +57,30 @@ const AssignmentsDetail = () => {
             <div className="mb-3 border">
               <h4 className="m-2">Employee Detail</h4>
               <p className="m-2">
-                <strong>Employee ID:</strong> {employee?.empNo || "null"}
+                <strong>Employee ID : </strong> {` ${employee.empNo}`}
               </p>
               <p className="m-2">
-                <strong>Employee Department ID:</strong>{" "}
-                {employee?.deptNo || "null"}
-              </p>
-              <p className="m-2">
-                <strong>Employee Name:</strong>{" "}
+                <strong>Employee Name: </strong>
                 {employee ? `${employee.fName} ${employee.lName}` : "null"}
               </p>
               <p className="m-2">
-                <strong>Employee Position:</strong>{" "}
-                {employee?.position || "null"}
+                <strong>Employee Department: </strong>
+                {getDepartmentName(employee.deptNo)}
+              </p>
+              <p className="m-2">
+                <strong>Employee Position: </strong>
+                {employee.position}
               </p>
             </div>
             <div className="mb-3 border">
               <h4 className="m-2">Assignment Detail</h4>
               <p className="m-2">
-                <strong>Date Started:</strong>{" "}
-                {assignmentDetail?.dateWorked || "null"}
+                <strong>Date Started: </strong>
+                {assignmentDetail.dateWorked}
               </p>
               <p className="m-2">
-                <strong>Hours Worked:</strong>{" "}
-                {assignmentDetail?.hoursWorked || "null"}
+                <strong>Hours Worked: </strong>
+                {assignmentDetail.hoursWorked}
               </p>
             </div>
           </div>
@@ -71,14 +88,14 @@ const AssignmentsDetail = () => {
             <div className="mb-3 border">
               <h4 className="m-2">Project Detail</h4>
               <p className="m-2">
-                <strong>Project ID:</strong> {project?.projNo || "null"}
+                <strong>Project ID: </strong> {project.projNo}
               </p>
               <p className="m-2">
-                <strong>Project Department ID:</strong>
-                {project?.deptNo || "null"}
+                <strong>Project Department: </strong>
+                {getDepartmentName(project.deptNo)}
               </p>
               <p className="m-2">
-                <strong>Project Name:</strong> {project?.projName || "null"}
+                <strong>Project Name: </strong> {project.projName}
               </p>
             </div>
           </div>

@@ -89,6 +89,19 @@ const DepartmentsForm = () => {
     }
     if (!formData.mgrEmpNo) {
       newErrors.mgrEmpNo = "Manager Employee Number is required.";
+    } else if (
+      departments.some(
+        (departments) =>
+          departments.mgrEmpNo === formData.mgrEmpNo && !params.id
+      ) ||
+      departments.some(
+        (department) =>
+          department.mgrEmpNo === formData.mgrEmpNo &&
+          department.deptNo !== formData.deptNo
+      )
+    ) {
+      newErrors.mgrEmpNo =
+        "Manager Employee must be unique and cant be the same like others.";
     }
     return newErrors;
   };

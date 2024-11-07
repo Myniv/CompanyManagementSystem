@@ -12,6 +12,7 @@ import ProjectsForm from "./Component/Layout/Projects/ProjectsForm";
 import AssignmentPage from "./Page/AssignmentsPage";
 import AssignmentsTable from "./Component/Layout/Assignments/AssignmentsTable";
 import AssignmentsForm from "./Component/Layout/Assignments/AssignmentsForm";
+import AssignmentsDetail from "./Component/Layout/Assignments/AssignmentsDetail";
 
 export const router = createBrowserRouter([
   {
@@ -28,35 +29,36 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path:"/departments",
-        element:<DepartmentsPage/>,
-        children:[
-          {path:"", element:<DepartmentsTable/>},
+        path: "/departments",
+        element: <DepartmentsPage />,
+        children: [
+          { path: "", element: <DepartmentsTable /> },
           { path: "/departments/new", element: <DepartmentsForm /> },
           { path: "/departments/:id", element: <DepartmentsForm /> },
-
-        ]
+        ],
       },
       {
-        path:"/projects",
-        element: <ProjectsPage/>,
-        children:[
-          {path:"", element:<ProjectsTable/>},
-          { path: "/projects/new", element: <ProjectsForm/> },
+        path: "/projects",
+        element: <ProjectsPage />,
+        children: [
+          { path: "", element: <ProjectsTable /> },
+          { path: "/projects/new", element: <ProjectsForm /> },
           { path: "/projects/:id", element: <ProjectsForm /> },
-
-        ]
+        ],
       },
       {
-        path:"/assignments",
-        element: <AssignmentPage/>,
-        children:[
-          {path:"", element:<AssignmentsTable/>},
-          { path: "/assignments/new", element: <AssignmentsForm/> },
+        path: "/assignments",
+        element: <AssignmentPage />,
+        children: [
+          { path: "", element: <AssignmentsTable /> },
+          { path: "/assignments/new", element: <AssignmentsForm /> },
           { path: "/assignments/:id", element: <AssignmentsForm /> },
-
-        ]
-      }
+          {
+            path: "/assignments/:empId/:projId",
+            element: <AssignmentsDetail />,
+          },
+        ],
+      },
     ],
   },
 ]);

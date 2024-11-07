@@ -4,7 +4,8 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import DeleteConfirmation from "../../Elements/DeleteConfirmation";
 
 const AssignmentsTable = () => {
-  const { assignments, setAssignments } = useOutletContext();
+  const { assignments, setAssignments, setSelectedAssignments } =
+    useOutletContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +34,10 @@ const AssignmentsTable = () => {
 
   const onAddAssignment = () => {
     navigate("/assignments/new");
+  };
+  const onDetailAssignment = (empId, projId, assNo) => {
+    navigate(`/assignments/${empId}/${projId}`);
+    setSelectedAssignments(assNo);
   };
 
   return (
@@ -86,6 +91,19 @@ const AssignmentsTable = () => {
                     onClick={() => onDeleteAssignment(assignment.assNo)}
                   >
                     Delete
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-info"
+                    onClick={() =>
+                      onDetailAssignment(
+                        assignment.empNo,
+                        assignment.projNo,
+                        assignment.assNo
+                      )
+                    }
+                  >
+                    Detail
                   </button>
                 </div>
               </td>

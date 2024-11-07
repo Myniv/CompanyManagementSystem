@@ -74,12 +74,12 @@ const {departments, setDepartments} = useOutletContext();
               </tr>
             ))}
             <tr>
-              <td colSpan="9">
+              <td colSpan="4">
                 <div className="d-flex justify-content-end">
-                  <div className="d-grid gap-2 col-1">
+                  <div className="d-grid gap-2 col-2">
                     <button
                       type="button"
-                      className="btn btn-primary btn-sm btn-block me-1"
+                      className="btn btn-primary btn-sm btn-block"
                       onClick={onAddDepartments}
                     >
                       Add Departments

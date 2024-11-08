@@ -1,24 +1,24 @@
 import { createBrowserRouter } from "react-router-dom";
-import LandingPage from "./Page/LandingPage";
-import EmployeesTable from "./Component/Layout/Employees/EmployeesTable";
-import EmployeesPage from "./Page/EmployeesPage";
-import EmployeesForm from "./Component/Layout/Employees/EmployeesForm";
-import DepartmentsPage from "./Page/DepartmentsPage";
-import DepartmentsTable from "./Component/Layout/Departments/DepartmentsTable";
-import DepartmentsForm from "./Component/Layout/Departments/DepartmentsForm";
-import ProjectsPage from "./Page/ProjectsPage";
-import ProjectsTable from "./Component/Layout/Projects/ProjectsTable";
-import ProjectsForm from "./Component/Layout/Projects/ProjectsForm";
-import AssignmentPage from "./Page/AssignmentsPage";
-import AssignmentsTable from "./Component/Layout/Assignments/AssignmentsTable";
-import AssignmentsForm from "./Component/Layout/Assignments/AssignmentsForm";
-import AssignmentsDetail from "./Component/Layout/Assignments/AssignmentsDetail";
 import MainPage from "./Page/MainPage";
+import LandingPage from "./Component/Layout/LandingPage";
+import EmployeesPage from "./Component/Layout/EmployeesPage";
+import EmployeesTable from "./Page/Employees/EmployeesTable";
+import EmployeesForm from "./Page/Employees/EmployeesForm";
+import DepartmentsPage from "./Component/Layout/DepartmentsPage";
+import DepartmentsTable from "./Page/Departments/DepartmentsTable";
+import DepartmentsForm from "./Page/Departments/DepartmentsForm";
+import ProjectsPage from "./Component/Layout/ProjectsPage";
+import ProjectsTable from "./Page/Projects/ProjectsTable";
+import ProjectsForm from "./Page/Projects/ProjectsForm";
+import AssignmentPage from "./Component/Layout/AssignmentsPage";
+import AssignmentsTable from "./Page/Assignments/AssignmentsTable";
+import AssignmentsDetail from "./Page/Assignments/AssignmentsDetail";
+import AssignmentsForm from "./Page/Assignments/AssignmentsForm";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <LandingPage />,
+    element: <LandingPage/>,
     children: [
       { path: "", element: <MainPage /> },
       {

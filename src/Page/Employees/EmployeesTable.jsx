@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import DeleteConfirmation from "../../Elements/DeleteConfirmation";
+import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 
-const ProjectsTable = () => {
-  const { projects, setProjects } = useOutletContext();
+const EmployeesTable = () => {
+  const { employees, setEmployees } = useOutletContext();
   const navigate = useNavigate();
 
-  const [departments, setDepartments] = useState([]);
+  const [department, setDepartment] = useState([]);
 
   useEffect(() => {
-    const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-    setProjects(storedProjects);
+    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
+    setEmployees(storedEmployees);
 
     const storedDepartment =
       JSON.parse(localStorage.getItem("departments")) || [];
-    setDepartments(storedDepartment);
+    setDepartment(storedDepartment);
   }, []);
 
   const [loading, setLoading] = useState(true);
@@ -30,29 +30,30 @@ const ProjectsTable = () => {
     }
   }, [loading]);
 
-  const onDeleteProject = (projNo) => {
-    const deleteProject = () => {
-      const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-      const updatedProjects = storedProjects.filter(
-        (proj) => proj.projNo !== projNo
-      );
+  const onDeleteEmployees = (empNo) => {
+    const deletedEmployees = () => {
+      const storedEmployees =
+        JSON.parse(localStorage.getItem("employees")) || [];
+      const deleteEmployees = storedEmployees.filter((b) => b.empNo !== empNo);
 
-      localStorage.setItem("projects", JSON.stringify(updatedProjects));
-      setProjects(updatedProjects);
+      localStorage.setItem("employees", JSON.stringify(deleteEmployees));
+      setEmployees(deleteEmployees);
     };
-    DeleteConfirmation({ deleteData: () => deleteProject() });
+    DeleteConfirmation({ deleteData: () => deletedEmployees() });
   };
 
-  const onEditProject = (projNo) => {
-    navigate(`/projects/${projNo}`);
+  const onEditingEmployees = (empNo) => {
+    // const selectEmployees = employees.find((employees) => employees.id === id);
+    console.log("EditEmployees" + empNo);
+    navigate(`/employees/${empNo}`);
   };
 
-  const onAddProject = () => {
-    navigate(`/projects/new`);
+  const onAddEmployees = () => {
+    navigate("/employees/new");
   };
 
   const getDepartmentName = (deptNo) => {
-    const foundDepartment = departments.find(
+    const foundDepartment = department.find(
       (department) => Number(department.deptNo) === Number(deptNo)
     );
 
@@ -72,16 +73,31 @@ const ProjectsTable = () => {
       ) : (
         <div className="m-4">
           <div className="d-flex justify-content-between align-items-center">
-            <h2>Projects Table</h2>
+            <h2>Employees Table</h2>
           </div>
           <table className="table table-hover table-bordered">
             <thead>
               <tr className="table-dark">
                 <th scope="col" className="text-center">
-                  ID Project
+                  ID
                 </th>
                 <th scope="col" className="text-center">
-                  Project Name
+                  Front Name
+                </th>
+                <th scope="col" className="text-center">
+                  Last Name
+                </th>
+                <th scope="col" className="text-center">
+                  Address
+                </th>
+                <th scope="col" className="text-center">
+                  Date of Birth
+                </th>
+                <th scope="col" className="text-center">
+                  Gender
+                </th>
+                <th scope="col" className="text-center">
+                  Position
                 </th>
                 <th scope="col" className="text-center">
                   Department
@@ -92,28 +108,37 @@ const ProjectsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {projects.map((project) => (
-                <tr scope="row" key={project.projNo}>
-                  <td className="table-light text-center">{project.projNo}</td>
+              {employees.map((employee) => (
+                <tr scope="row" key={employee.empNo}>
+                  <td className="table-light text-center">{employee.empNo}</td>
+                  <td className="table-light text-center">{employee.fName}</td>
+                  <td className="table-light text-center">{employee.lName}</td>
                   <td className="table-light text-center">
-                    {project.projName}
+                    {employee.address}
+                  </td>
+                  <td className="table-light text-center">{employee.dob}</td>
+                  <td className="table-light text-center">{employee.sex}</td>
+                  <td className="table-light text-center">
+                    {employee.position}
                   </td>
                   <td className="table-light text-center">
-                    {getDepartmentName(project.deptNo)}
+                    {getDepartmentName(employee.deptNo)}
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                       <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={() => onEditProject(project.projNo)}
+                        onClick={() => onEditingEmployees(employee.empNo)}
+                        value={"edit"}
                       >
                         Edit
                       </button>
                       <button
                         type="button"
                         className="btn btn-danger"
-                        onClick={() => onDeleteProject(project.projNo)}
+                        onClick={() => onDeleteEmployees(employee.empNo)}
+                        value={"delete"}
                       >
                         Delete
                       </button>
@@ -121,15 +146,15 @@ const ProjectsTable = () => {
                   </td>
                 </tr>
               ))}
-              <td colSpan="4" className="text-center">
+              <td colSpan="9">
                 <div className="d-flex justify-content-end">
-                  <div className="d-grid col-3">
+                  <div className="d-grid gap-2 col-2">
                     <button
                       type="button"
                       className="btn btn-primary btn-block"
-                      onClick={onAddProject}
+                      onClick={onAddEmployees}
                     >
-                      Add Projects
+                      Add Employees
                     </button>
                   </div>
                 </div>
@@ -142,4 +167,4 @@ const ProjectsTable = () => {
   );
 };
 
-export default ProjectsTable;
+export default EmployeesTable;

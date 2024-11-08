@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import DeleteConfirmation from "../../Elements/DeleteConfirmation";
+import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 
 const DepartmentsTable = () => {
   const { departments, setDepartments } = useOutletContext();

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import DeleteConfirmation from "../../Elements/DeleteConfirmation";
+import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 
 const AssignmentsTable = () => {
   const { assignments, setAssignments, setSelectedAssignments } =

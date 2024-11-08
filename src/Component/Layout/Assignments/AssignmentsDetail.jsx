@@ -31,10 +31,22 @@ const AssignmentsDetail = () => {
       setAssignmentDetail(foundAssignment);
 
       const storedDepartment =
-      JSON.parse(localStorage.getItem("departments")) || [];
+        JSON.parse(localStorage.getItem("departments")) || [];
       setDepartment(storedDepartment);
     }
   }, [params]);
+
+  const [loading, setLoading] = useState(true);
+  const showLoading = () => {
+    setTimeout(() => {
+      return setLoading(false);
+    }, 1000);
+  };
+  useEffect(() => {
+    if (loading) {
+      showLoading();
+    }
+  }, [loading]);
 
   const getDepartmentName = (deptNo) => {
     const foundDepartment = department.find(
@@ -49,59 +61,67 @@ const AssignmentsDetail = () => {
   };
 
   return (
-    <div>
-      <h2 className="ms-5">Work History</h2>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6">
-            <div className="mb-3 border">
-              <h4 className="m-2">Employee Detail</h4>
-              <p className="m-2">
-                <strong>Employee ID : </strong> {` ${employee.empNo}`}
-              </p>
-              <p className="m-2">
-                <strong>Employee Name: </strong>
-                {employee ? `${employee.fName} ${employee.lName}` : "null"}
-              </p>
-              <p className="m-2">
-                <strong>Employee Department: </strong>
-                {getDepartmentName(employee.deptNo)}
-              </p>
-              <p className="m-2">
-                <strong>Employee Position: </strong>
-                {employee.position}
-              </p>
-            </div>
-            <div className="mb-3 border">
-              <h4 className="m-2">Assignment Detail</h4>
-              <p className="m-2">
-                <strong>Date Started: </strong>
-                {assignmentDetail.dateWorked}
-              </p>
-              <p className="m-2">
-                <strong>Hours Worked: </strong>
-                {assignmentDetail.hoursWorked}
-              </p>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="mb-3 border">
-              <h4 className="m-2">Project Detail</h4>
-              <p className="m-2">
-                <strong>Project ID: </strong> {project.projNo}
-              </p>
-              <p className="m-2">
-                <strong>Project Department: </strong>
-                {getDepartmentName(project.deptNo)}
-              </p>
-              <p className="m-2">
-                <strong>Project Name: </strong> {project.projName}
-              </p>
+    <>
+      {loading ? (
+        <div className="d-flex justify-content-center align-items-center vh-100">
+          <img src="/img/LoadingSpinner.svg" alt="Loading..." />
+        </div>
+      ) : (
+        <div>
+          <h2 className="ms-5">Work History</h2>
+          <div className="container">
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3 border">
+                  <h4 className="m-2">Employee Detail</h4>
+                  <p className="m-2">
+                    <strong>Employee ID : </strong> {` ${employee.empNo}`}
+                  </p>
+                  <p className="m-2">
+                    <strong>Employee Name: </strong>
+                    {employee ? `${employee.fName} ${employee.lName}` : "null"}
+                  </p>
+                  <p className="m-2">
+                    <strong>Employee Department: </strong>
+                    {getDepartmentName(employee.deptNo)}
+                  </p>
+                  <p className="m-2">
+                    <strong>Employee Position: </strong>
+                    {employee.position}
+                  </p>
+                </div>
+                <div className="mb-3 border">
+                  <h4 className="m-2">Assignment Detail</h4>
+                  <p className="m-2">
+                    <strong>Date Started: </strong>
+                    {assignmentDetail.dateWorked}
+                  </p>
+                  <p className="m-2">
+                    <strong>Hours Worked: </strong>
+                    {assignmentDetail.hoursWorked}
+                  </p>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3 border">
+                  <h4 className="m-2">Project Detail</h4>
+                  <p className="m-2">
+                    <strong>Project ID: </strong> {project.projNo}
+                  </p>
+                  <p className="m-2">
+                    <strong>Project Department: </strong>
+                    {getDepartmentName(project.deptNo)}
+                  </p>
+                  <p className="m-2">
+                    <strong>Project Name: </strong> {project.projName}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

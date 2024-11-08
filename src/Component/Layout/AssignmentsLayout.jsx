@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-const AssignmentPage = () => {
+const AssignmentLayout = () => {
   const [assignments, setAssignments] = useState([]);
   const [selectedAssignments, setSelectedAssignments] = useState(null);
 
@@ -19,4 +19,4 @@ const AssignmentPage = () => {
   );
 };
 
-export default AssignmentPage;
+export default AssignmentLayout;

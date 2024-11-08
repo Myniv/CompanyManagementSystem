@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-const ProjectsPage = () => {
+const ProjectsLayout = () => {
   const [projects, setProjects] = useState([]);
 
   return (
@@ -11,4 +11,4 @@ const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage;
+export default ProjectsLayout;

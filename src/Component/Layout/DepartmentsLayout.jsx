@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-const DepartmentsPage = () => {
+const DepartmentsLayout = () => {
   const [departments, setDepartments] = useState([]);
 
   return (
@@ -10,4 +10,4 @@ const DepartmentsPage = () => {
     </>
   );
 };
-export default DepartmentsPage;
+export default DepartmentsLayout;

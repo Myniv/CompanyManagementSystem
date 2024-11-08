@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-const EmployeesPage = () => {
+const EmployeesLayout = () => {
   const [employees, setEmployees] = useState([]);
 
   return (
@@ -11,4 +11,4 @@ const EmployeesPage = () => {
   );
 };
 
-export default EmployeesPage;
+export default EmployeesLayout;

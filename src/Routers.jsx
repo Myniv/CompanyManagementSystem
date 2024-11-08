@@ -1,16 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainPage from "./Page/MainPage";
-import LandingPage from "./Component/Layout/LandingPage";
-import EmployeesPage from "./Component/Layout/EmployeesPage";
+import LandingLayout from "./Component/Layout/LandingLayout";
+import EmployeesLayout from "./Component/Layout/EmployeesLayout";
 import EmployeesTable from "./Page/Employees/EmployeesTable";
 import EmployeesForm from "./Page/Employees/EmployeesForm";
-import DepartmentsPage from "./Component/Layout/DepartmentsPage";
+import DepartmentsLayout from "./Component/Layout/DepartmentsLayout";
 import DepartmentsTable from "./Page/Departments/DepartmentsTable";
 import DepartmentsForm from "./Page/Departments/DepartmentsForm";
-import ProjectsPage from "./Component/Layout/ProjectsPage";
+import ProjectsLayout from "./Component/Layout/ProjectsLayout";
 import ProjectsTable from "./Page/Projects/ProjectsTable";
 import ProjectsForm from "./Page/Projects/ProjectsForm";
-import AssignmentPage from "./Component/Layout/AssignmentsPage";
+import AssignmentLayout from "./Component/Layout/AssignmentsLayout";
 import AssignmentsTable from "./Page/Assignments/AssignmentsTable";
 import AssignmentsDetail from "./Page/Assignments/AssignmentsDetail";
 import AssignmentsForm from "./Page/Assignments/AssignmentsForm";
@@ -18,12 +18,12 @@ import AssignmentsForm from "./Page/Assignments/AssignmentsForm";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <LandingPage/>,
+    element: <LandingLayout />,
     children: [
       { path: "", element: <MainPage /> },
       {
         path: "/employees",
-        element: <EmployeesPage />,
+        element: <EmployeesLayout />,
         children: [
           { path: "", element: <EmployeesTable /> },
           { path: "/employees/new", element: <EmployeesForm /> },
@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/departments",
-        element: <DepartmentsPage />,
+        element: <DepartmentsLayout />,
         children: [
           { path: "", element: <DepartmentsTable /> },
           { path: "/departments/new", element: <DepartmentsForm /> },
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/projects",
-        element: <ProjectsPage />,
+        element: <ProjectsLayout />,
         children: [
           { path: "", element: <ProjectsTable /> },
           { path: "/projects/new", element: <ProjectsForm /> },
@@ -50,7 +50,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/assignments",
-        element: <AssignmentPage />,
+        element: <AssignmentLayout />,
         children: [
           { path: "", element: <AssignmentsTable /> },
           { path: "/assignments/new", element: <AssignmentsForm /> },

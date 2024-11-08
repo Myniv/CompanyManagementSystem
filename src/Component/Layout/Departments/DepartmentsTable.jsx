@@ -1,17 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import DeleteConfirmation from "../../Elements/DeleteConfirmation";
 
 const DepartmentsTable = () => {
   const { departments, setDepartments } = useOutletContext();
+  const [employees, setEmployees] = useState([]);
+  const [employeesDepartment, setEmployeesDepartment] = useState([]);
+  const [show, setShow] = useState(false);
+  const [departmentId, setDepartmentId] = useState([]);
+
+  const focusDetail = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedDepartments =
       JSON.parse(localStorage.getItem("departments")) || [];
     setDepartments(storedDepartments);
+
+    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
+    setEmployees(storedEmployees);
   }, []);
+
+  useEffect(() => {
+    if (show && focusDetail.current) {
+      focusDetail.current.focus();
+    }
+  }, [show]);
 
   const [loading, setLoading] = useState(true);
   const showLoading = () => {
@@ -45,6 +60,19 @@ const DepartmentsTable = () => {
 
   const onAddDepartments = () => {
     navigate(`/departments/new`);
+  };
+
+  const onDetailEmployee = (deptNo) => {
+    const employeeDepartment = employees.filter(
+      (emp) => Number(emp.deptNo) === Number(deptNo)
+    );
+    setEmployeesDepartment(employeeDepartment);
+
+    const departmentId = departments.find(
+      (departments) => Number(departments.deptNo) === Number(deptNo)
+    );
+    setDepartmentId(departmentId);
+    setShow(true);
   };
 
   return (
@@ -105,6 +133,13 @@ const DepartmentsTable = () => {
                       >
                         Delete
                       </button>
+                      <button
+                        type="button"
+                        className="btn btn-info"
+                        onClick={() => onDetailEmployee(departments.deptNo)}
+                      >
+                        Detail
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -124,6 +159,46 @@ const DepartmentsTable = () => {
               </div>
             </td>
           </table>
+          {show && (
+            <div className="mt-4">
+              <div className="card">
+                <div
+                  className="card-header d-flex justify-content-between bg-dark"
+                  ref={focusDetail}
+                >
+                  <h5 className="text-white">
+                    Employee Details on {departmentId.deptName}
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close btn-close-white"
+                    ref={focusDetail}
+                    onClick={() => setShow(false)}
+                  ></button>
+                </div>
+                <div className="card-body">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Employee ID</th>
+                        <th scope="col">Employee Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {employeesDepartment.map((emp) => (
+                        <tr key={emp.empNo}>
+                          <td>{emp.empNo}</td>
+                          <td>
+                            {emp.fName} {emp.lName}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>

@@ -151,11 +151,9 @@ const AssignmentsForm = () => {
       <div className="container border">
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
-            <label htmlFor="assNo" className="form-label">
-              Assignment ID
-            </label>
+            
             <input
-              type="number"
+              type="hidden"
               className={`form-control ${errors.assNo ? "is-invalid" : ""}`}
               id="assNo"
               name="assNo"

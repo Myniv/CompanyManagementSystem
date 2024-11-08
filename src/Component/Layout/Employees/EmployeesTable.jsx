@@ -27,7 +27,7 @@ const EmployeesTable = () => {
       localStorage.setItem("employees", JSON.stringify(deleteEmployees));
       setEmployees(deleteEmployees);
     };
-    DeleteConfirmation({ deleteData: () => deletedEmployees });
+    DeleteConfirmation({ deleteData: () => deletedEmployees() });
   };
 
   const onEditingEmployees = (empNo) => {
@@ -132,7 +132,7 @@ const EmployeesTable = () => {
                     className="btn btn-primary btn-block"
                     onClick={onAddEmployees}
                   >
-                    Add Project
+                    Add Employees
                   </button>
                 </div>
               </div>

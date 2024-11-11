@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
 
 const DepartmentsTable = () => {
   const { departments, setDepartments } = useOutletContext();
@@ -9,43 +11,23 @@ const DepartmentsTable = () => {
   const [employeesDepartment, setEmployeesDepartment] = useState([]);
   const [show, setShow] = useState(false);
   const [departmentId, setDepartmentId] = useState([]);
-
-  const focusDetail = useRef(null);
+  
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedDepartments =
-      JSON.parse(localStorage.getItem("departments")) || [];
-    setDepartments(storedDepartments);
 
-    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    setEmployees(storedEmployees);
+  const dispatch = useDispatch();
+  const dataDepartment = useSelector((state) => state.department);
+  useEffect(() => {
+    dispatch(fetchDepartment());
   }, []);
+  console.log(dataDepartment);
 
-  useEffect(() => {
-    if (show && focusDetail.current) {
-      focusDetail.current.focus();
-    }
-  }, [show]);
-
-  const [loading, setLoading] = useState(true);
-  const showLoading = () => {
-    setTimeout(() => {
-      return setLoading(false);
-    }, 1000);
-  };
-  useEffect(() => {
-    if (loading) {
-      showLoading();
-    }
-  }, [loading]);
-
-  const onDeleteDepartments = (deptNo) => {
+  const onDeleteDepartments = (deptno) => {
     const deleteDepartments = () => {
       const storedDepartments =
         JSON.parse(localStorage.getItem("departments")) || [];
       const deleteDepartments = storedDepartments.filter(
-        (b) => b.deptNo !== deptNo
+        (b) => b.deptno !== deptno
       );
 
       localStorage.setItem("departments", JSON.stringify(deleteDepartments));
@@ -54,22 +36,22 @@ const DepartmentsTable = () => {
     DeleteConfirmation({ deleteData: () => deleteDepartments() });
   };
 
-  const onEditDepartments = (deptNo) => {
-    navigate(`/departments/${deptNo}`);
+  const onEditDepartments = (deptno) => {
+    navigate(`/departments/${deptno}`);
   };
 
   const onAddDepartments = () => {
     navigate(`/departments/new`);
   };
 
-  const onDetailEmployee = (deptNo) => {
+  const onDetailEmployee = (deptno) => {
     const employeeDepartment = employees.filter(
-      (emp) => Number(emp.deptNo) === Number(deptNo)
+      (emp) => Number(emp.deptno) === Number(deptno)
     );
     setEmployeesDepartment(employeeDepartment);
 
     const departmentId = departments.find(
-      (departments) => Number(departments.deptNo) === Number(deptNo)
+      (departments) => Number(departments.deptno) === Number(deptno)
     );
     setDepartmentId(departmentId);
     setShow(true);
@@ -77,7 +59,7 @@ const DepartmentsTable = () => {
 
   return (
     <>
-      {loading ? (
+      {dataDepartment.isLoading ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <img src="/img/LoadingSpinner.svg" alt="Loading..." />
         </div>
@@ -104,23 +86,23 @@ const DepartmentsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {departments.map((departments) => (
-                <tr scope="row" key={departments.deptNo}>
+              {dataDepartment.data.map((departments) => (
+                <tr scope="row" key={departments.deptno}>
                   <td className="table-light text-center">
-                    {departments.deptNo}
+                    {departments.deptno}
                   </td>
                   <td className="table-light text-center">
-                    {departments.deptName}
+                    {departments.deptname}
                   </td>
                   <td className="table-light text-center">
-                    {departments.mgrEmpNo}
+                    {departments.mgrempno}
                   </td>
                   <td className="table-light text-center">
                     <div>
                       <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={() => onEditDepartments(departments.deptNo)}
+                        onClick={() => onEditDepartments(departments.deptno)}
                         value={"edit"}
                       >
                         Edit
@@ -128,7 +110,7 @@ const DepartmentsTable = () => {
                       <button
                         type="button"
                         className="btn btn-danger"
-                        onClick={() => onDeleteDepartments(departments.deptNo)}
+                        onClick={() => onDeleteDepartments(departments.deptno)}
                         value={"delete"}
                       >
                         Delete
@@ -136,7 +118,7 @@ const DepartmentsTable = () => {
                       <button
                         type="button"
                         className="btn btn-info"
-                        onClick={() => onDetailEmployee(departments.deptNo)}
+                        onClick={() => onDetailEmployee(departments.deptno)}
                       >
                         Detail
                       </button>
@@ -164,7 +146,6 @@ const DepartmentsTable = () => {
               <div className="card">
                 <div
                   className="card-header d-flex justify-content-between bg-dark"
-                  ref={focusDetail}
                 >
                   <h5 className="text-white">
                     Employee Details on {departmentId.deptName}
@@ -172,7 +153,6 @@ const DepartmentsTable = () => {
                   <button
                     type="button"
                     className="btn-close btn-close-white"
-                    ref={focusDetail}
                     onClick={() => setShow(false)}
                   ></button>
                 </div>

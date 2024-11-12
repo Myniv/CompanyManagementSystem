@@ -1,40 +1,41 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
+import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 
 const DepartmentsTable = () => {
-  const { departments, setDepartments } = useOutletContext();
-  const [employees, setEmployees] = useState([]);
   const [employeesDepartment, setEmployeesDepartment] = useState([]);
   const [show, setShow] = useState(false);
   const [departmentId, setDepartmentId] = useState([]);
-  
+
   const navigate = useNavigate();
 
-
   const dispatch = useDispatch();
-  const dataDepartment = useSelector((state) => state.department);
+  const department = useSelector((state) => state.department);
+  const employee = useSelector((state) => state.employee);
   useEffect(() => {
     dispatch(fetchDepartment());
+    dispatch(fetchEmployee());
   }, []);
-  console.log(dataDepartment);
+  // console.log(department);
+  // console.log("employee data structure:", employee.data);
 
-  const onDeleteDepartments = (deptno) => {
-    const deleteDepartments = () => {
-      const storedDepartments =
-        JSON.parse(localStorage.getItem("departments")) || [];
-      const deleteDepartments = storedDepartments.filter(
-        (b) => b.deptno !== deptno
-      );
+  // const onDeleteDepartments = (deptno) => {
+  //   const deleteDepartments = () => {
+  //     const storedDepartments =
+  //       JSON.parse(localStorage.getItem("departments")) || [];
+  //     const deleteDepartments = storedDepartments.filter(
+  //       (b) => b.deptno !== deptno
+  //     );
 
-      localStorage.setItem("departments", JSON.stringify(deleteDepartments));
-      setDepartments(deleteDepartments);
-    };
-    DeleteConfirmation({ deleteData: () => deleteDepartments() });
-  };
+  //     localStorage.setItem("departments", JSON.stringify(deleteDepartments));
+  //     setDepartments(deleteDepartments);
+  //   };
+  //   DeleteConfirmation({ deleteData: () => deleteDepartments() });
+  // };
 
   const onEditDepartments = (deptno) => {
     navigate(`/departments/${deptno}`);
@@ -45,21 +46,34 @@ const DepartmentsTable = () => {
   };
 
   const onDetailEmployee = (deptno) => {
-    const employeeDepartment = employees.filter(
+    const employeeDepartment = employee?.filter(
       (emp) => Number(emp.deptno) === Number(deptno)
     );
     setEmployeesDepartment(employeeDepartment);
 
-    const departmentId = departments.find(
+    const departmentId = department?.find(
       (departments) => Number(departments.deptno) === Number(deptno)
     );
     setDepartmentId(departmentId);
     setShow(true);
   };
 
+  const getEmployeesName = (mgrempno) => {
+    const foundEmployees = employee.data.find(
+      (emp) => Number(emp.empno) === Number(mgrempno)
+    );
+
+    if (foundEmployees) {
+      return <>{`${foundEmployees.fname} ${foundEmployees.lname}`}</>;
+    } else {
+      console.log(`No match found for mgrempno: ${mgrempno}`);
+      return mgrempno;
+    }
+  };
+
   return (
     <>
-      {dataDepartment.isLoading ? (
+      {department.isLoading ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <img src="/img/LoadingSpinner.svg" alt="Loading..." />
         </div>
@@ -86,7 +100,7 @@ const DepartmentsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {dataDepartment.data.map((departments) => (
+              {department.data.map((departments) => (
                 <tr scope="row" key={departments.deptno}>
                   <td className="table-light text-center">
                     {departments.deptno}
@@ -95,7 +109,9 @@ const DepartmentsTable = () => {
                     {departments.deptname}
                   </td>
                   <td className="table-light text-center">
-                    {departments.mgrempno}
+                    {departments.mgrempno
+                      ? getEmployeesName(departments.mgrempno)
+                      : "N/A"}
                   </td>
                   <td className="table-light text-center">
                     <div>
@@ -144,9 +160,7 @@ const DepartmentsTable = () => {
           {show && (
             <div className="mt-4">
               <div className="card">
-                <div
-                  className="card-header d-flex justify-content-between bg-dark"
-                >
+                <div className="card-header d-flex justify-content-between bg-dark">
                   <h5 className="text-white">
                     Employee Details on {departmentId.deptName}
                   </h5>

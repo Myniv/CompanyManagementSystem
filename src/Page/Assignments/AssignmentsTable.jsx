@@ -1,52 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAssignment } from "../../redux/Slicer/assignmentSlicer";
+import { fetchProject } from "../../redux/Slicer/projectSlicer";
+import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 
 const AssignmentsTable = () => {
-  const { assignments, setAssignments, setSelectedAssignments } =
-    useOutletContext();
   const navigate = useNavigate();
 
-  const [projects, setProjects] = useState([]);
-  const [employees, setEmployees] = useState([]);
-
+  const dispatch = useDispatch();
+  const assignment = useSelector((state) => state.assignment);
+  const project = useSelector((state) => state.project);
+  const employee = useSelector((state) => state.employee);
   useEffect(() => {
-    const storedAssignments =
-      JSON.parse(localStorage.getItem("assignments")) || [];
-    setAssignments(storedAssignments);
-
-    const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-    setProjects(storedProjects);
-
-    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    setEmployees(storedEmployees);
+    dispatch(fetchAssignment());
+    dispatch(fetchProject());
+    dispatch(fetchEmployee());
   }, []);
 
-  const [loading, setLoading] = useState(true);
-  const showLoading = () => {
-    setTimeout(() => {
-      return setLoading(false);
-    }, 1000);
-  };
-  useEffect(() => {
-    if (loading) {
-      showLoading();
-    }
-  }, [loading]);
-
-  const onDeleteAssignment = (assNo) => {
-    const deleteAssignment = () => {
-      const storedAssignments =
-        JSON.parse(localStorage.getItem("assignments")) || [];
-      const updatedAssignments = storedAssignments.filter(
-        (a) => a.assNo !== assNo
-      );
-
-      localStorage.setItem("assignments", JSON.stringify(updatedAssignments));
-      setAssignments(updatedAssignments);
-    };
-    DeleteConfirmation({ deleteData: () => deleteAssignment() });
+  const onDeleteAssignment = (projno, empno) => {
+    // const deleteAssignment = () => {
+    //   const storedAssignments =
+    //     JSON.parse(localStorage.getItem("assignments")) || [];
+    //   const updatedAssignments = storedAssignments.filter(
+    //     (a) => a.assNo !== assNo
+    //   );
+    //   localStorage.setItem("assignments", JSON.stringify(updatedAssignments));
+    //   setAssignments(updatedAssignments);
+    // };
+    // DeleteConfirmation({ deleteData: () => deleteAssignment() });
   };
 
   const onEditAssignment = (assNo) => {
@@ -56,30 +40,29 @@ const AssignmentsTable = () => {
   const onAddAssignment = () => {
     navigate("/assignments/new");
   };
-  const onDetailAssignment = (empId, projId, assNo) => {
+  const onDetailAssignment = (empId, projId) => {
     navigate(`/assignments/${empId}/${projId}`);
-    setSelectedAssignments(assNo);
   };
 
-  const getProjectsName = (projNo) => {
-    const foundProjects = projects.find(
-      (projects) => Number(projects.projNo) === Number(projNo)
+  const getProjectsName = (projno) => {
+    const foundProjects = project.data.find(
+      (projects) => Number(projects.projno) === Number(projno)
     );
 
     if (foundProjects) {
-      return foundProjects.projName;
+      return foundProjects.projname;
     } else {
       return "";
     }
   };
 
-  const getEmployeesName = (empNo) => {
-    const foundEmployees = employees.find(
-      (employees) => Number(employees.empNo) === Number(empNo)
+  const getEmployeesName = (empno) => {
+    const foundEmployees = employee.data.find(
+      (employees) => Number(employees.empno) === Number(empno)
     );
 
     if (foundEmployees) {
-      return <>{`${foundEmployees.fName} ${foundEmployees.lName}`}</>;
+      return <>{`${foundEmployees.fname} ${foundEmployees.lname}`}</>;
     } else {
       return "";
     }
@@ -87,7 +70,7 @@ const AssignmentsTable = () => {
 
   return (
     <>
-      {loading ? (
+      {assignment.isLoading ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <img src="/img/LoadingSpinner.svg" alt="Loading..." />
         </div>
@@ -117,19 +100,19 @@ const AssignmentsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {assignments.map((assignment) => (
-                <tr scope="row" key={assignment.assNo}>
+              {assignment.data.map((assignment) => (
+                <tr scope="row" key={(assignment.empno, assignment.projno)}>
                   <td className="table-light text-center">
-                    {getEmployeesName(assignment.empNo)}
+                    {getEmployeesName(assignment.empno)}
                   </td>
                   <td className="table-light text-center">
-                    {getProjectsName(assignment.projNo)}
+                    {getProjectsName(assignment.projno)}
                   </td>
                   <td className="table-light text-center">
-                    {assignment.dateWorked}
+                    {assignment.dateworked}
                   </td>
                   <td className="table-light text-center">
-                    {assignment.hoursWorked}
+                    {assignment.hoursworked}
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
@@ -143,7 +126,12 @@ const AssignmentsTable = () => {
                       <button
                         type="button"
                         className="btn btn-danger"
-                        onClick={() => onDeleteAssignment(assignment.assNo)}
+                        onClick={() =>
+                          onDeleteAssignment(
+                            assignment.projno,
+                            assignment.empno
+                          )
+                        }
                       >
                         Delete
                       </button>
@@ -152,9 +140,8 @@ const AssignmentsTable = () => {
                         className="btn btn-info"
                         onClick={() =>
                           onDetailAssignment(
-                            assignment.empNo,
-                            assignment.projNo,
-                            assignment.assNo
+                            assignment.empno,
+                            assignment.projno
                           )
                         }
                       >

@@ -1,34 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProject } from "../../redux/Slicer/projectSlicer";
+import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
 
 const ProjectsTable = () => {
-  const { projects, setProjects } = useOutletContext();
   const navigate = useNavigate();
 
-  const [departments, setDepartments] = useState([]);
-
+  const dispatch = useDispatch();
+  const departments = useSelector((state) => state.department);
+  const projects = useSelector((state) => state.project);
   useEffect(() => {
-    const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-    setProjects(storedProjects);
-
-    const storedDepartment =
-      JSON.parse(localStorage.getItem("departments")) || [];
-    setDepartments(storedDepartment);
+    dispatch(fetchDepartment());
+    dispatch(fetchProject());
   }, []);
-
-  const [loading, setLoading] = useState(true);
-  const showLoading = () => {
-    setTimeout(() => {
-      return setLoading(false);
-    }, 1000);
-  };
-  useEffect(() => {
-    if (loading) {
-      showLoading();
-    }
-  }, [loading]);
 
   const onDeleteProject = (projNo) => {
     const deleteProject = () => {
@@ -52,12 +39,12 @@ const ProjectsTable = () => {
   };
 
   const getDepartmentName = (deptNo) => {
-    const foundDepartment = departments.find(
-      (department) => Number(department.deptNo) === Number(deptNo)
+    const foundDepartment = departments.data.find(
+      (department) => Number(department.deptno) === Number(deptNo)
     );
 
     if (foundDepartment) {
-      return foundDepartment.deptName;
+      return foundDepartment.deptname;
     } else {
       return "";
     }
@@ -65,7 +52,7 @@ const ProjectsTable = () => {
 
   return (
     <>
-      {loading ? (
+      {projects.isLoading ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <img src="/img/LoadingSpinner.svg" alt="Loading..." />
         </div>
@@ -92,28 +79,28 @@ const ProjectsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {projects.map((project) => (
-                <tr scope="row" key={project.projNo}>
-                  <td className="table-light text-center">{project.projNo}</td>
+              {projects.data.map((project) => (
+                <tr scope="row" key={project.projno}>
+                  <td className="table-light text-center">{project.projno}</td>
                   <td className="table-light text-center">
-                    {project.projName}
+                    {project.projname}
                   </td>
                   <td className="table-light text-center">
-                    {getDepartmentName(project.deptNo)}
+                    {getDepartmentName(project.deptno)}
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                       <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={() => onEditProject(project.projNo)}
+                        onClick={() => onEditProject(project.projno)}
                       >
                         Edit
                       </button>
                       <button
                         type="button"
                         className="btn btn-danger"
-                        onClick={() => onDeleteProject(project.projNo)}
+                        onClick={() => onDeleteProject(project.projno)}
                       >
                         Delete
                       </button>

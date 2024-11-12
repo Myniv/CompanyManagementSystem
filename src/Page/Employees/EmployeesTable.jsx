@@ -1,34 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
+import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
 
 const EmployeesTable = () => {
-  const { employees, setEmployees } = useOutletContext();
   const navigate = useNavigate();
 
-  const [department, setDepartment] = useState([]);
-
+  const dispatch = useDispatch();
+  const department = useSelector((state) => state.department);
+  const employee = useSelector((state) => state.employee);
   useEffect(() => {
-    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    setEmployees(storedEmployees);
-
-    const storedDepartment =
-      JSON.parse(localStorage.getItem("departments")) || [];
-    setDepartment(storedDepartment);
+    dispatch(fetchDepartment());
+    dispatch(fetchEmployee());
   }, []);
-
-  const [loading, setLoading] = useState(true);
-  const showLoading = () => {
-    setTimeout(() => {
-      return setLoading(false);
-    }, 1000);
-  };
-  useEffect(() => {
-    if (loading) {
-      showLoading();
-    }
-  }, [loading]);
 
   const onDeleteEmployees = (empNo) => {
     const deletedEmployees = () => {
@@ -53,12 +40,12 @@ const EmployeesTable = () => {
   };
 
   const getDepartmentName = (deptNo) => {
-    const foundDepartment = department.find(
-      (department) => Number(department.deptNo) === Number(deptNo)
+    const foundDepartment = department.data.find(
+      (department) => Number(department.deptno) === Number(deptNo)
     );
 
     if (foundDepartment) {
-      return foundDepartment.deptName;
+      return foundDepartment.deptname;
     } else {
       return "";
     }
@@ -66,7 +53,7 @@ const EmployeesTable = () => {
 
   return (
     <>
-      {loading ? (
+      {employee.isLoading ? (
         <div className="d-flex justify-content-center align-items-center vh-100">
           <img src="/img/LoadingSpinner.svg" alt="Loading..." />
         </div>
@@ -108,11 +95,11 @@ const EmployeesTable = () => {
               </tr>
             </thead>
             <tbody>
-              {employees.map((employee) => (
+              {employee.data.map((employee) => (
                 <tr scope="row" key={employee.empNo}>
-                  <td className="table-light text-center">{employee.empNo}</td>
-                  <td className="table-light text-center">{employee.fName}</td>
-                  <td className="table-light text-center">{employee.lName}</td>
+                  <td className="table-light text-center">{employee.empno}</td>
+                  <td className="table-light text-center">{employee.fname}</td>
+                  <td className="table-light text-center">{employee.lname}</td>
                   <td className="table-light text-center">
                     {employee.address}
                   </td>
@@ -122,14 +109,14 @@ const EmployeesTable = () => {
                     {employee.position}
                   </td>
                   <td className="table-light text-center">
-                    {getDepartmentName(employee.deptNo)}
+                    {getDepartmentName(employee.deptno)}
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                       <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={() => onEditingEmployees(employee.empNo)}
+                        onClick={() => onEditingEmployees(employee.empno)}
                         value={"edit"}
                       >
                         Edit
@@ -137,7 +124,7 @@ const EmployeesTable = () => {
                       <button
                         type="button"
                         className="btn btn-danger"
-                        onClick={() => onDeleteEmployees(employee.empNo)}
+                        onClick={() => onDeleteEmployees(employee.empno)}
                         value={"delete"}
                       >
                         Delete

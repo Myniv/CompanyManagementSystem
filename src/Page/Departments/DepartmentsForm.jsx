@@ -1,77 +1,81 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ShowLoading from "../../Component/Elements/ShowLoading";
+import { useSelector } from "react-redux";
+import baseApi from "../../baseApi";
 
 const DepartmentsForm = () => {
-  const { departments, setDepartments } = useOutletContext();
   const navigate = useNavigate();
   const params = useParams();
 
+  const [submit, setSubmit] = useState(false);
+
   const [formData, setFormData] = useState({
-    deptNo: "",
-    deptName: "",
-    mgrEmpNo: "",
+    deptno: "",
+    deptname: "",
+    mgrempno: null,
   });
 
-  //
-  useEffect(() => {
-    if (!departments) {
-      const storedDepartments =
-        JSON.parse(localStorage.getItem("departments")) || [];
-      setDepartments(storedDepartments);
-    }
+  const department = useSelector((state) => state.department);
+  const employee = useSelector((state) => state.employee);
 
+  useEffect(() => {
     if (params.id) {
-      const findDepartment = departments.find(
-        (department) => department.deptNo === Number(params.id)
+      const findDepartment = department.data.find(
+        (department) => Number(department.deptno) === Number(params.id)
       );
       setFormData(findDepartment);
     }
-  }, [departments, params.id]);
+  }, [params.id]);
+
+  useEffect(() => {
+    if (submit) {
+      if (params.id) {
+        onUpdateDepartment();
+      } else {
+        onAddDepartment();
+      }
+    }
+  });
 
   const onAddDepartment = () => {
     const newDepartmentId = {
       ...formData,
-      deptNo:
-        departments.length > 0
-          ? departments[departments.length - 1].deptNo + 1
+      deptno:
+        department.data.length > 0
+          ? department.data[department.data.length - 1].deptno + 1
           : 1,
     };
 
-    const newDepartments = [...departments, newDepartmentId];
-    localStorage.setItem("departments", JSON.stringify(newDepartments));
-    setDepartments(newDepartments);
-
-    ShowLoading({
-      loadingMessage: "The new department is being added...",
-      nextPage: () => navigate("/departments"),
-    });
+    baseApi
+      .post("v1/Departements", newDepartmentId)
+      .then(() => {
+        ShowLoading({
+          loadingMessage: "The new Department is being added...",
+          nextPage: () => navigate("/departments"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onUpdateDepartment = () => {
-    const editingDepartments = departments.map((department) => {
-      if (department.deptNo === formData.deptNo) {
-        return { ...department, ...formData };
-      } else {
-        return department;
-      }
-    });
-
-    setDepartments(editingDepartments);
-    localStorage.setItem("departments", JSON.stringify(editingDepartments));
-
-    ShowLoading({
-      loadingMessage: `The department with id ${params.id} is updating...`,
-      nextPage: () => navigate("/departments"),
-    });
+    baseApi
+      .put(`v1/Departements/${params.id}`, formData)
+      .then(() => {
+        ShowLoading({
+          loadingMessage: "The Department is being edited...",
+          nextPage: () => navigate("/departments"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onCancel = () => {
     setFormData({
-      deptNo: "",
-      deptName: "",
-      mgrEmpNo: "",
+      deptno: "",
+      deptname: "",
+      mgrempno: null,
     });
     navigate("/departments");
   };
@@ -80,27 +84,27 @@ const DepartmentsForm = () => {
   const validateForm = () => {
     const newErrors = {};
     if (
-      !formData.deptName ||
-      formData.deptName.length < 2 ||
-      formData.deptName.length > 100
+      !formData.deptname ||
+      formData.deptname.length < 2 ||
+      formData.deptname.length > 100
     ) {
-      newErrors.deptName =
+      newErrors.deptname =
         "Department name must be between 2 and 100 characters.";
     }
-    if (!formData.mgrEmpNo) {
-      newErrors.mgrEmpNo = "Manager Employee Number is required.";
-    } else if (
-      departments.some(
-        (departments) =>
-          departments.mgrEmpNo === formData.mgrEmpNo && !params.id
-      ) ||
-      departments.some(
-        (department) =>
-          department.mgrEmpNo === formData.mgrEmpNo &&
-          department.deptNo !== formData.deptNo
-      )
+    if (
+      (formData.mgrempno !== null &&
+        department.data.some(
+          (departments) =>
+            departments.mgrempno === formData.mgrempno && !params.id
+        )) ||
+      (formData.mgrempno !== null &&
+        department.data.some(
+          (department) =>
+            department.mgrempno === formData.mgrempno &&
+            department.deptno !== formData.deptno
+        ))
     ) {
-      newErrors.mgrEmpNo =
+      newErrors.mgrempno =
         "Manager Employee must be unique and cant be the same like others.";
     }
     return newErrors;
@@ -118,16 +122,7 @@ const DepartmentsForm = () => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length === 0) {
-      if (params.id) {
-        onUpdateDepartment();
-      } else {
-        onAddDepartment();
-      }
-      setFormData({
-        deptNo: "",
-        deptName: "",
-        mgrEmpNo: "",
-      });
+      setSubmit(true);
       setErrors({});
     } else {
       setErrors(validationErrors);
@@ -135,7 +130,9 @@ const DepartmentsForm = () => {
   };
 
   const departmentId =
-    departments.length > 0 ? departments[departments.length - 1].deptNo + 1 : 1;
+    department.data.length > 0
+      ? department.data[department.data.length - 1].deptno + 1
+      : 1;
 
   return (
     <div className="mb-5">
@@ -145,52 +142,62 @@ const DepartmentsForm = () => {
       <div className="container border">
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
-            <label htmlFor="deptNo" className="form-label">
+            <label htmlFor="deptno" className="form-label">
               Department ID
             </label>
             <input
               type="number"
               className="form-control"
-              id="deptNo"
-              name="deptNo"
-              value={params.id ? params.id : departmentId}
+              id="deptno"
+              name="deptno"
+              placeholder={departmentId}
+              value={params.id}
               disabled
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="deptName" className="form-label">
+            <label htmlFor="deptname" className="form-label">
               Department Name
             </label>
             <input
               type="text"
-              id="deptName"
-              name="deptName"
-              className={`form-control ${errors.deptName ? "is-invalid" : ""}`}
+              id="deptname"
+              name="deptname"
+              className={`form-control ${errors.deptname ? "is-invalid" : ""}`}
               onChange={handleChange}
-              value={formData.deptName}
+              value={formData.deptname}
               required
               placeholder="Department Name"
             />
-            {errors.deptName && (
-              <div className="invalid-feedback">{errors.deptName}</div>
+            {errors.deptname && (
+              <div className="invalid-feedback">{errors.deptname}</div>
             )}
           </div>
           <div className="mb-3">
-            <label htmlFor="mgrEmpNo" className="form-label">
-              Manager Employee Number
+            <label htmlFor="deptNo" className="form-label">
+              Department Manager
             </label>
-            <input
-              type="number"
-              id="mgrEmpNo"
-              name="mgrEmpNo"
-              className={`form-control ${errors.mgrEmpNo ? "is-invalid" : ""}`}
-              value={formData.mgrEmpNo}
+            <select
+              id="mgrempno"
+              name="mgrempno"
+              className={`form-control ${errors.mgrempno ? "is-invalid" : ""}`}
+              value={formData.mgrempno}
               onChange={handleChange}
-              required
-              placeholder="Manager Employee Number"
-            />
-            {errors.mgrEmpNo && (
-              <div className="invalid-feedback">{errors.mgrEmpNo}</div>
+            >
+              <option value={null} disabled selected>
+                Select Department Manager
+              </option>
+
+              {employee.data
+                .filter((emp) => emp.deptno === formData.deptno)
+                .map((employee) => (
+                  <option key={employee.empno} value={employee.empno}>
+                    {employee.fname} {employee.lname}
+                  </option>
+                ))}
+            </select>
+            {errors.mgrempno && (
+              <div className="invalid-feedback">{errors.mgrempno}</div>
             )}
           </div>
           <button type="submit" className="btn btn-primary m-1">

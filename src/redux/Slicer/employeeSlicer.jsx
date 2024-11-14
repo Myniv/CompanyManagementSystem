@@ -3,7 +3,6 @@ import baseApi from "../../baseApi";
 
 export const fetchEmployee = createAsyncThunk("fetchEmployee", async () => {
   const response = await baseApi.get("v1/Employees");
-  console.log("API response data:", response.data); // Log API response
   return response.data;
 });
 

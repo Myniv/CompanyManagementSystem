@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
+import baseApi from "../../baseApi";
 
 const EmployeesTable = () => {
   const navigate = useNavigate();
@@ -19,19 +20,20 @@ const EmployeesTable = () => {
 
   const onDeleteEmployees = (empNo) => {
     const deletedEmployees = () => {
-      const storedEmployees =
-        JSON.parse(localStorage.getItem("employees")) || [];
-      const deleteEmployees = storedEmployees.filter((b) => b.empNo !== empNo);
-
-      localStorage.setItem("employees", JSON.stringify(deleteEmployees));
-      setEmployees(deleteEmployees);
+      baseApi
+        .delete(`v1/Employees/${empNo}`)
+        .then((res) => {
+          console.log(res);
+          dispatch(fetchEmployee());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     };
     DeleteConfirmation({ deleteData: () => deletedEmployees() });
   };
 
   const onEditingEmployees = (empNo) => {
-    // const selectEmployees = employees.find((employees) => employees.id === id);
-    console.log("EditEmployees" + empNo);
     navigate(`/employees/${empNo}`);
   };
 

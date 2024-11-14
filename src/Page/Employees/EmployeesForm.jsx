@@ -1,91 +1,88 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ShowLoading from "../../Component/Elements/ShowLoading";
+import { useSelector } from "react-redux";
+import baseApi from "../../baseApi";
 
 const EmployeesForm = () => {
-  const { employees, setEmployees } = useOutletContext();
   const navigate = useNavigate();
   const params = useParams();
 
-  const [department, setDepartment] = useState([]);
+  const [submit, setSubmit] = useState(false);
+
+  const department = useSelector((state) => state.department);
+  const employee = useSelector((state) => state.employee);
 
   const [formData, setFormData] = useState({
-    empNo: "",
-    fName: "",
-    lName: "",
+    empno: "",
+    fname: "",
+    lname: "",
     address: "",
     dob: "",
     sex: "",
     position: "",
-    deptNo: "",
+    deptno: "",
   });
 
   useEffect(() => {
-    if (!employees) {
-      const storedEmployees =
-        JSON.parse(localStorage.getItem("employees")) || [];
-      setEmployees(storedEmployees);
-    }
     if (params.id) {
-      const findEmployees = employees.find(
-        (employees) => employees.empNo === Number(params.id)
+      const findEmployees = employee.data.find(
+        (employees) => Number(employees.empno) === Number(params.id)
       );
       setFormData(findEmployees);
     }
-    const storedDepartment =
-      JSON.parse(localStorage.getItem("departments")) || [];
-    setDepartment(storedDepartment);
-  }, [employees, params.id]);
+  }, [params.id]);
+
+  useEffect(() => {
+    if (submit) {
+      if (params.id) {
+        onUpdateEmployees();
+      } else {
+        onAddEmployees();
+      }
+    }
+  }, [submit]);
 
   const onAddEmployees = () => {
     const newEmployeesId = {
       ...formData,
-      empNo:
-        employees.length > 0 ? employees[employees.length - 1].empNo + 1 : 1,
+      empno: employee.length > 0 ? employee[employee.length - 1].empno + 1 : 1,
     };
 
-    const newEmployee = [...employees, newEmployeesId];
-
-    localStorage.setItem("employees", JSON.stringify(newEmployee));
-    setEmployees(newEmployee);
-    ShowLoading({
-      loadingMessage: "The new employees is being added...",
-      nextPage: () => navigate("/employees"),
-    });
+    baseApi
+      .post("v1/Employees", newEmployeesId)
+      .then(() => {
+        ShowLoading({
+          loadingMessage: "The new employees is being added...",
+          nextPage: () => navigate("/employees"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onUpdateEmployees = () => {
-    const editingEmployees = employees.map((employees) => {
-      if (employees.empNo === formData.empNo) {
-        return {
-          ...employees,
-          ...formData,
-        };
-      } else {
-        return employees;
-      }
-    });
-
-    setEmployees(editingEmployees);
-    localStorage.setItem("employees", JSON.stringify(editingEmployees));
-
-    ShowLoading({
-      loadingMessage: `The employees with id ${params.id} is updating...`,
-      nextPage: () => navigate("/employees"),
-    });
+    baseApi
+      .put(`v1/Employees/${params.id}`, formData)
+      .then(() => {
+        ShowLoading({
+          loadingMessage: `The employees with id ${params.id} is updating...`,
+          nextPage: () => navigate("/employees"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onCancel = () => {
     setFormData({
-      empNo: "",
-      fName: "",
-      lName: "",
+      empno: "",
+      fname: "",
+      lname: "",
       address: "",
       dob: "",
       sex: "",
       position: "",
-      deptNo: "",
+      deptno: "",
     });
     navigate("/employees");
   };
@@ -94,19 +91,19 @@ const EmployeesForm = () => {
   const validateForm = () => {
     const newErrors = {};
     if (
-      !formData.fName ||
-      formData.fName.length < 2 ||
-      formData.fName.length > 100
+      !formData.fname ||
+      formData.fname.length < 2 ||
+      formData.fname.length > 100
     ) {
-      newErrors.fName = "First name must be between 2 and 100 characters.";
+      newErrors.fname = "First name must be between 2 and 100 characters.";
     }
 
     if (
-      !formData.lName ||
-      formData.lName.length < 2 ||
-      formData.lName.length > 100
+      !formData.lname ||
+      formData.lname.length < 2 ||
+      formData.lname.length > 100
     ) {
-      newErrors.lName = "Last name must be between 2 and 100 characters.";
+      newErrors.lname = "Last name must be between 2 and 100 characters.";
     }
 
     if (
@@ -114,8 +111,7 @@ const EmployeesForm = () => {
       formData.address.length > 200 ||
       formData.address.length < 2
     ) {
-      newErrors.address =
-        "Address must be between 2 and 200 characters.";
+      newErrors.address = "Address must be between 2 and 200 characters.";
     }
 
     const minimumYears = 2006;
@@ -147,23 +143,7 @@ const EmployeesForm = () => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length === 0) {
-      if (params.id) {
-        onUpdateEmployees();
-      } else {
-        onAddEmployees();
-      }
-
-      setFormData({
-        empNo: "",
-        fName: "",
-        lName: "",
-        address: "",
-        dob: "",
-        sex: "",
-        position: "",
-        deptNo: "",
-      });
-
+      setSubmit(true);
       setErrors({});
     } else {
       setErrors(validationErrors);
@@ -171,7 +151,9 @@ const EmployeesForm = () => {
   };
 
   const employeeId =
-    employees.length > 0 ? employees[employees.length - 1].empNo + 1 : 1;
+    employee.data.length > 0
+      ? employee.data[employee.data.length - 1].empno + 1
+      : 1;
 
   const position = [
     "Programmer",
@@ -196,57 +178,56 @@ const EmployeesForm = () => {
             <div className="row">
               <div className="col-md-6">
                 <div className="mb-3">
-                  <label htmlFor="empNo" className="form-label">
+                  <label htmlFor="empno" className="form-label">
                     ID
                   </label>
                   <input
                     type="number"
                     className="form-control"
-                    id="empNo"
-                    name="empNo"
+                    id="empno"
+                    name="empno"
                     value={params.id ? params.id : employeeId}
-                    // value={employeeId}
                     disabled
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="fName" className="form-label">
+                  <label htmlFor="fname" className="form-label">
                     Front Name
                   </label>
                   <input
                     type="text"
-                    id="fName"
-                    name="fName"
+                    id="fname"
+                    name="fname"
                     className={`form-control ${
-                      errors.fName ? "is-invalid" : ""
+                      errors.fname ? "is-invalid" : ""
                     }`}
-                    value={formData.fName}
+                    value={formData.fname}
                     onChange={handleChange}
                     required
                     placeholder="Front Name"
                   />
-                  {errors.fName && (
-                    <div className="invalid-feedback">{errors.fName}</div>
+                  {errors.fname && (
+                    <div className="invalid-feedback">{errors.fname}</div>
                   )}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="lName" className="form-label">
+                  <label htmlFor="lname" className="form-label">
                     Last Name
                   </label>
                   <input
                     type="text"
-                    id="lName"
-                    name="lName"
+                    id="lname"
+                    name="lname"
                     className={`form-control ${
-                      errors.lName ? "is-invalid" : ""
+                      errors.lname ? "is-invalid" : ""
                     }`}
-                    value={formData.lName}
+                    value={formData.lname}
                     onChange={handleChange}
                     required
                     placeholder="Last Name"
                   />
-                  {errors.lName && (
-                    <div className="invalid-feedback">{errors.lName}</div>
+                  {errors.lname && (
+                    <div className="invalid-feedback">{errors.lname}</div>
                   )}
                 </div>
 
@@ -281,12 +262,12 @@ const EmployeesForm = () => {
                       className={`form-check-input ${
                         errors.sex ? "is-invalid" : ""
                       }`}
-                      value="Laki laki"
+                      value="Male"
                       onChange={handleChange}
-                      checked={formData.sex === "Laki laki"}
+                      checked={formData.sex === "Male"}
                     />
                     <label htmlFor="sex1" className="form-check-label ms-2">
-                      Laki laki
+                      Male
                     </label>
 
                     <input
@@ -294,12 +275,12 @@ const EmployeesForm = () => {
                       id="sex2"
                       name="sex"
                       className={`form-check-input ms-2`}
-                      value="Perempuan"
+                      value="Female"
                       onChange={handleChange}
-                      checked={formData.sex === "Perempuan"}
+                      checked={formData.sex === "Female"}
                     />
                     <label htmlFor="sex2" className="form-check-label ms-2">
-                      Perempuan
+                      Female
                     </label>
                     {errors.sex && (
                       <div className="invalid-feedback">{errors.sex}</div>
@@ -355,56 +336,35 @@ const EmployeesForm = () => {
                     )}
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="deptNo" className="form-label">
+                    <label htmlFor="deptno" className="form-label">
                       Department
                     </label>
                     <select
-                      id="deptNo"
-                      name="deptNo"
+                      id="deptno"
+                      name="deptno"
                       className={`form-control ${
                         errors.department ? "is-invalid" : ""
                       }`}
-                      value={formData.deptNo}
+                      value={formData.deptno}
                       onChange={handleChange}
                       required
                     >
                       <option value="" disabled>
                         Select Department
                       </option>
-                      {department.map((department) => (
+                      {department.data.map((department) => (
                         <option
-                          key={department.deptNo}
-                          value={department.deptNo}
+                          key={department.deptno}
+                          value={department.deptno}
                         >
-                          {department.deptName}
+                          {department.deptname}
                         </option>
                       ))}
                     </select>
-                    {errors.deptNo && (
-                      <div className="invalid-feedback">{errors.deptNo}</div>
+                    {errors.deptno && (
+                      <div className="invalid-feedback">{errors.deptno}</div>
                     )}
                   </div>
-
-                  {/* <div className="mb-3">
-                    <label htmlFor="deptNo" className="form-label">
-                      Department
-                    </label>
-                    <input
-                      type="number"
-                      id="deptNo"
-                      name="deptNo"
-                      className={`form-control ${
-                        errors.department ? "is-invalid" : ""
-                      }`}
-                      value={formData.deptNo}
-                      onChange={handleChange}
-                      placeholder="Department Number"
-                      required
-                    />
-                    {errors.deptNo && (
-                      <div className="invalid-feedback">{errors.deptNo}</div>
-                    )}
-                  </div> */}
                 </div>
               </div>
             </div>

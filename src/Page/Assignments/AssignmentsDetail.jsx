@@ -1,40 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const AssignmentsDetail = () => {
-  const { assignments, selectedAssignments } = useOutletContext();
   const params = useParams();
-  const [employee, setEmployee] = useState([]);
-  const [project, setProject] = useState([]);
-  const [department, setDepartment] = useState([]);
-  const [assignmentDetail, setAssignmentDetail] = useState([]);
+  const [employees, setEmployee] = useState([]);
+  const [projects, setProject] = useState([]);
+  const [assignments, setAssignment] = useState([]);
+
+  const department = useSelector((state) => state.department);
+  const employee = useSelector((state) => state.employee);
+  const project = useSelector((state) => state.project);
+  const assignment = useSelector((state) => state.assignment);
 
   useEffect(() => {
-    if (params) {
-      const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-      const foundProject = storedProjects.find(
-        (proj) => Number(proj.projNo) === Number(params.projId)
+    if (params.empId && params.projId) {
+      const foundAssignment = assignment.data.find(
+        (assignment) =>
+          Number(assignment.projno) === Number(params.projId) &&
+          Number(assignment.empno) === Number(params.empId)
+      );
+      setAssignment(foundAssignment);
+
+      const foundProject = project.data.find(
+        (proj) => Number(proj.projno) === Number(params.projId)
       );
       setProject(foundProject);
 
-      const storedEmployees =
-        JSON.parse(localStorage.getItem("employees")) || [];
-      const foundEmployee = storedEmployees.find(
-        (emp) => Number(emp.empNo) === Number(params.empId)
+      const foundEmployee = employee.data.find(
+        (emp) => Number(emp.empno) === Number(params.empId)
       );
       setEmployee(foundEmployee);
-
-      const foundAssignment = assignments.find(
-        (assign) => Number(assign.assNo) === Number(selectedAssignments)
-      );
-      setAssignmentDetail(foundAssignment);
-
-      const storedDepartment =
-        JSON.parse(localStorage.getItem("departments")) || [];
-      setDepartment(storedDepartment);
+      console.log(employees.deptno);
     }
-  }, [params]);
+  }, [params.empId, params.projId]);
 
   const [loading, setLoading] = useState(true);
   const showLoading = () => {
@@ -49,12 +49,12 @@ const AssignmentsDetail = () => {
   }, [loading]);
 
   const getDepartmentName = (deptNo) => {
-    const foundDepartment = department.find(
-      (department) => Number(department.deptNo) === Number(deptNo)
+    const foundDepartment = department.data.find(
+      (department) => Number(department.deptno) === Number(deptNo)
     );
 
     if (foundDepartment) {
-      return foundDepartment.deptName;
+      return foundDepartment.deptname;
     } else {
       return "";
     }
@@ -75,30 +75,32 @@ const AssignmentsDetail = () => {
                 <div className="mb-3 border">
                   <h4 className="m-2">Employee Detail</h4>
                   <p className="m-2">
-                    <strong>Employee ID : </strong> {` ${employee.empNo}`}
+                    <strong>Employee ID : </strong> {` ${employees.empno}`}
                   </p>
                   <p className="m-2">
                     <strong>Employee Name: </strong>
-                    {employee ? `${employee.fName} ${employee.lName}` : "null"}
+                    {employees
+                      ? `${employees.fname} ${employees.lname}`
+                      : "null"}
                   </p>
                   <p className="m-2">
                     <strong>Employee Department: </strong>
-                    {getDepartmentName(employee.deptNo)}
+                    {getDepartmentName(employees.deptno)}
                   </p>
                   <p className="m-2">
                     <strong>Employee Position: </strong>
-                    {employee.position}
+                    {employees.position}
                   </p>
                 </div>
                 <div className="mb-3 border">
                   <h4 className="m-2">Assignment Detail</h4>
                   <p className="m-2">
                     <strong>Date Started: </strong>
-                    {assignmentDetail.dateWorked}
+                    {assignments.dateworked}
                   </p>
                   <p className="m-2">
                     <strong>Hours Worked: </strong>
-                    {assignmentDetail.hoursWorked}
+                    {assignments.hoursworked}
                   </p>
                 </div>
               </div>
@@ -106,14 +108,14 @@ const AssignmentsDetail = () => {
                 <div className="mb-3 border">
                   <h4 className="m-2">Project Detail</h4>
                   <p className="m-2">
-                    <strong>Project ID: </strong> {project.projNo}
+                    <strong>Project ID: </strong> {projects.projno}
                   </p>
                   <p className="m-2">
                     <strong>Project Department: </strong>
-                    {getDepartmentName(project.deptNo)}
+                    {getDepartmentName(projects.deptno)}
                   </p>
                   <p className="m-2">
-                    <strong>Project Name: </strong> {project.projName}
+                    <strong>Project Name: </strong> {projects.projname}
                   </p>
                 </div>
               </div>

@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAssignment } from "../../redux/Slicer/assignmentSlicer";
 import { fetchProject } from "../../redux/Slicer/projectSlicer";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
+import baseApi from "../../baseApi";
 
 const AssignmentsTable = () => {
   const navigate = useNavigate();
@@ -21,20 +22,22 @@ const AssignmentsTable = () => {
   }, []);
 
   const onDeleteAssignment = (projno, empno) => {
-    // const deleteAssignment = () => {
-    //   const storedAssignments =
-    //     JSON.parse(localStorage.getItem("assignments")) || [];
-    //   const updatedAssignments = storedAssignments.filter(
-    //     (a) => a.assNo !== assNo
-    //   );
-    //   localStorage.setItem("assignments", JSON.stringify(updatedAssignments));
-    //   setAssignments(updatedAssignments);
-    // };
-    // DeleteConfirmation({ deleteData: () => deleteAssignment() });
+    const deleteAssignment = () => {
+      baseApi
+        .delete(`v1/Worksons/${projno}/${empno}`)
+        .then((res) => {
+          console.log(res);
+          dispatch(fetchAssignment());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    DeleteConfirmation({ deleteData: () => deleteAssignment() });
   };
 
-  const onEditAssignment = (assNo) => {
-    navigate(`/assignments/${assNo}`);
+  const onEditAssignment = (projId, empId) => {
+    navigate(`/assignments/edit/${projId}/${empId}`);
   };
 
   const onAddAssignment = () => {
@@ -119,7 +122,7 @@ const AssignmentsTable = () => {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={() => onEditAssignment(assignment.assNo)}
+                        onClick={() => onEditAssignment(assignment.projno, assignment.empno)}
                       >
                         Edit
                       </button>

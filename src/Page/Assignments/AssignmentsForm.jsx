@@ -1,90 +1,68 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ShowLoading from "../../Component/Elements/ShowLoading";
+import { useSelector } from "react-redux";
+import baseApi from "../../baseApi";
 
 const AssignmentsForm = () => {
-  const { assignments, setAssignments } = useOutletContext();
   const navigate = useNavigate();
   const params = useParams();
 
   const [formData, setFormData] = useState({
-    assNo: "",
-    empNo: "",
-    projNo: "",
-    dateWorked: "",
-    hoursWorked: "",
+    assno: "",
+    empno: "",
+    projno: "",
+    dateworked: "",
+    hoursworked: "",
   });
 
-  const [projects, setProjects] = useState([]);
-  const [employees, setEmployees] = useState([]);
+  const assignments = useSelector((state) => state.assignment);
+  const projects = useSelector((state) => state.project);
+  const employees = useSelector((state) => state.employee);
 
   useEffect(() => {
-    if (!assignments) {
-      const storedAssignments =
-        JSON.parse(localStorage.getItem("assignments")) || [];
-      setAssignments(storedAssignments);
-    }
-    if (params.id) {
-      const foundAssignment = assignments.find(
-        (assignment) => assignment.assNo === Number(params.id)
+    if (params.projId && params.empId) {
+      const foundAssignment = assignments.data.find(
+        (assignment) =>
+          Number(assignment.projno) === Number(params.projId) &&
+          Number(assignment.empno) === Number(params.empId)
       );
-      if (foundAssignment) {
-        setFormData(foundAssignment);
-      }
+      setFormData(foundAssignment);
     }
-
-    const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-    setProjects(storedProjects);
-
-    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    setEmployees(storedEmployees);
-  }, [assignments, params.id]);
+  }, [params.projId, params.empId]);
 
   const onAddAssignment = () => {
-    const newAssignmentId = {
-      ...formData,
-      assNo:
-        assignments.length > 0
-          ? assignments[assignments.length - 1].assNo + 1
-          : 1,
-    };
-
-    const newAssignments = [...assignments, newAssignmentId];
-    localStorage.setItem("assignments", JSON.stringify(newAssignments));
-    setAssignments(newAssignments);
-
-    ShowLoading({
-      loadingMessage: "The new assignment is being added...",
-      nextPage: () => navigate("/assignments"),
-    });
+    baseApi
+      .post("v1/Worksons", formData)
+      .then(() => {
+        ShowLoading({
+          loadingMessage: "The new Assignment is being added...",
+          nextPage: () => navigate("/assignments"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onUpdateAssignment = () => {
-    const updatedAssignments = assignments.map((assignment) => {
-      if (assignment.assNo === formData.assNo) {
-        return { ...assignment, ...formData };
-      } else {
-        return assignment;
-      }
-    });
-
-    setAssignments(updatedAssignments);
-    localStorage.setItem("assignments", JSON.stringify(updatedAssignments));
-
-    ShowLoading({
-      loadingMessage: `The assignment with id ${params.id} is updating...`,
-      nextPage: () => navigate("/assignments"),
-    });
+    baseApi
+      .put(`v1/Worksons/${params.projId}/${params.empId}`, formData) // Use projId and empId
+      .then(() => {
+        ShowLoading({
+          loadingMessage: `The assignment is updating...`,
+          nextPage: () => navigate("/assignments"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onCancel = () => {
     setFormData({
-      assNo: "",
-      empNo: "",
-      projNo: "",
-      dateWorked: "",
-      hoursWorked: "",
+      assno: "",
+      empno: "",
+      projno: "",
+      dateworked: "",
+      hoursworked: "",
     });
     navigate("/assignments");
   };
@@ -92,22 +70,38 @@ const AssignmentsForm = () => {
   const [errors, setErrors] = useState({});
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.empNo) {
-      newErrors.empNo = "Employee is required.";
+    if (!formData.empno) {
+      newErrors.empno = "Employee is required.";
     }
-    if (!formData.projNo) {
-      newErrors.projNo = "Project is required.";
+    if (!formData.projno) {
+      newErrors.projno = "Project is required.";
     }
 
     const today = new Date();
-    const dateWorked = new Date(formData.dateWorked);
-    if (!formData.dateWorked || dateWorked > today) {
-      newErrors.dateWorked = "Date of work cant be exceed todays date.";
+    const dateworked = new Date(formData.dateworked);
+    if (!formData.dateworked || dateworked > today) {
+      newErrors.dateworked = "Date of work cant be exceed todays date.";
     }
 
-    if (!formData.hoursWorked || formData.hoursWorked < 0) {
-      newErrors.hoursWorked = "Hours Worked must be a positive number.";
+    if (!formData.hoursworked || formData.hoursworked < 0) {
+      newErrors.hoursworked = "Hours Worked must be a positive number.";
     }
+
+    const duplicateAssignment = assignments.data.some((assignment) => {
+      return (
+        assignment.empno === formData.empno &&
+        assignment.projno === formData.projno &&
+        !(
+          assignment.empno === params.empId &&
+          assignment.projno === params.projId
+        )
+      );
+    });
+    if (duplicateAssignment) {
+      newErrors.duplicate =
+        "An assignment for this employee and project already exists.";
+    }
+
     return newErrors;
   };
 
@@ -123,16 +117,16 @@ const AssignmentsForm = () => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length === 0) {
-      if (params.id) {
+      if (params.empId && params.projId) {
         onUpdateAssignment();
       } else {
         onAddAssignment();
       }
       setFormData({
-        empNo: "",
-        projNo: "",
-        dateWorked: "",
-        hoursWorked: "",
+        empno: "",
+        projno: "",
+        dateworked: "",
+        hoursworked: "",
       });
       setErrors({});
     } else {
@@ -141,133 +135,140 @@ const AssignmentsForm = () => {
   };
 
   const assignmentId =
-    assignments.length > 0 ? assignments[assignments.length - 1].assNo + 1 : 1;
+    assignments.length > 0 ? assignments[assignments.length - 1].assno + 1 : 1;
 
   return (
     <div className="mb-5">
       <h2 className="ms-5">
-        {params.id ? `Edit Assignment with ID ${params.id}` : "Add Assignment"}
+        {params.projId && params.empId ? `Edit Assignment` : "Add Assignment"}
       </h2>
       <div className="container border">
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
-            
             <input
               type="hidden"
-              className={`form-control ${errors.assNo ? "is-invalid" : ""}`}
-              id="assNo"
-              name="assNo"
+              className={`form-control ${errors.assno ? "is-invalid" : ""}`}
+              id="assno"
+              name="assno"
               value={params.id ? params.id : assignmentId}
               onChange={handleChange}
               required
               disabled
             />
-            {errors.empNo && (
-              <div className="invalid-feedback">{errors.assNo}</div>
+            {errors.empno && (
+              <div className="invalid-feedback">{errors.assno}</div>
             )}
           </div>
           <div className="mb-3">
-            <label htmlFor="empNo" className="form-label">
+            <label htmlFor="empno" className="form-label">
               Employee
             </label>
             <select
-              id="empNo"
-              name="empNo"
+              id="empno"
+              name="empno"
               className={`form-control ${
                 errors.department ? "is-invalid" : ""
               }`}
-              value={formData.empNo}
+              value={formData.empno}
               onChange={handleChange}
               required
             >
               <option value="" disabled>
                 Select Employee
               </option>
-              {employees.map((employees) => (
-                <option key={employees.empNo} value={employees.empNo}>
-                  {employees.fName} {employees.lName}
+              {employees.data.map((employees) => (
+                <option key={employees.empno} value={employees.empno}>
+                  {employees.fname} {employees.lname}
                 </option>
               ))}
             </select>
-            {errors.empNo && (
-              <div className="invalid-feedback">{errors.empNo}</div>
+            {errors.empno && (
+              <div className="invalid-feedback">{errors.empno}</div>
             )}
           </div>
           <div className="mb-3">
-            <label htmlFor="projNo" className="form-label">
+            <label htmlFor="projno" className="form-label">
               Project
             </label>
             <select
-              id="projNo"
-              name="projNo"
+              id="projno"
+              name="projno"
               className={`form-control ${
                 errors.department ? "is-invalid" : ""
               }`}
-              value={formData.projNo}
+              value={formData.projno}
               onChange={handleChange}
               required
             >
               <option value="" disabled>
                 Select Project
               </option>
-              {projects.map((projects) => (
-                <option key={projects.projNo} value={projects.projNo}>
-                  {projects.projName}
+              {projects.data.map((projects) => (
+                <option key={projects.projno} value={projects.projno}>
+                  {projects.projname}
                 </option>
               ))}
             </select>
-            {errors.empNo && (
-              <div className="invalid-feedback">{errors.empNo}</div>
+            {errors.empno && (
+              <div className="invalid-feedback">{errors.empno}</div>
             )}
           </div>
           <div className="mb-3">
-            <label htmlFor="dateWorked" className="form-label">
+            <label htmlFor="dateworked" className="form-label">
               Date Worked
             </label>
             <input
               type="date"
               className={`form-control ${
-                errors.dateWorked ? "is-invalid" : ""
+                errors.dateworked ? "is-invalid" : ""
               }`}
-              id="dateWorked"
-              name="dateWorked"
-              value={formData.dateWorked}
+              id="dateworked"
+              name="dateworked"
+              value={formData.dateworked}
               onChange={handleChange}
               required
             />
-            {errors.dateWorked && (
-              <div className="invalid-feedback">{errors.dateWorked}</div>
+            {errors.dateworked && (
+              <div className="invalid-feedback">{errors.dateworked}</div>
             )}
           </div>
           <div className="mb-3">
-            <label htmlFor="hoursWorked" className="form-label">
+            <label htmlFor="hoursworked" className="form-label">
               Hours Worked
             </label>
             <input
               type="number"
               className={`form-control ${
-                errors.hoursWorked ? "is-invalid" : ""
+                errors.hoursworked ? "is-invalid" : ""
               }`}
-              id="hoursWorked"
-              name="hoursWorked"
-              value={formData.hoursWorked}
+              id="hoursworked"
+              name="hoursworked"
+              value={formData.hoursworked}
               onChange={handleChange}
               required
               min="1"
             />
-            {errors.hoursWorked && (
-              <div className="invalid-feedback">{errors.hoursWorked}</div>
+            {errors.hoursworked && (
+              <div className="invalid-feedback">{errors.hoursworked}</div>
+            )}
+
+            {errors.duplicate && (
+              <div className="alert alert-danger mt-2" role="alert">
+                {errors.duplicate}
+              </div>
             )}
           </div>
           <button type="submit" className="btn btn-primary m-1">
-            {params.id ? "Update Assignment" : "Add Assignment"}
+            {params.empId && params.projId
+              ? "Update Assignment"
+              : "Add Assignment"}
           </button>
           <button
             type="button"
             onClick={onCancel}
             className="btn btn-danger m-1"
           >
-            {params.id ? "Cancel Edit" : "Cancel Add"}
+            {params.empId && params.projId ? "Cancel Edit" : "Cancel Add"}
           </button>
         </form>
       </div>

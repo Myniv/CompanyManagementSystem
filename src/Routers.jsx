@@ -54,7 +54,10 @@ export const router = createBrowserRouter([
         children: [
           { path: "", element: <AssignmentsTable /> },
           { path: "/assignments/new", element: <AssignmentsForm /> },
-          { path: "/assignments/:id", element: <AssignmentsForm /> },
+          {
+            path: "/assignments/edit/:projId/:empId",
+            element: <AssignmentsForm />,
+          },
           {
             path: "/assignments/:empId/:projId",
             element: <AssignmentsDetail />,

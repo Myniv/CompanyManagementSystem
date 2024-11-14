@@ -6,12 +6,14 @@ import { useSelector } from "react-redux";
 import baseApi from "../../baseApi";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const DepartmentsForm = () => {
   const navigate = useNavigate();
   const params = useParams();
 
   const [submit, setSubmit] = useState(false);
+  const [errorAPI, setErrorAPI] = useState("");
 
   const [formData, setFormData] = useState({
     deptno: "",
@@ -58,7 +60,10 @@ const DepartmentsForm = () => {
           nextPage: () => navigate("/departments"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to update department, please train again later...`);
+      });
   };
 
   const onUpdateDepartment = () => {
@@ -70,7 +75,10 @@ const DepartmentsForm = () => {
           nextPage: () => navigate("/departments"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to update department, please train again later...`);
+      });
   };
 
   const onCancel = () => {
@@ -142,6 +150,7 @@ const DepartmentsForm = () => {
         {params.id ? "Edit Department" : "Add Department"}
       </h2>
       <div className="container border">
+        {errorAPI && <ErrorMessage errorMessage={errorAPI} />}
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
             <label htmlFor="deptno" className="form-label">

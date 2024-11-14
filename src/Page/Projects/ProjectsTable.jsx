@@ -10,6 +10,7 @@ import LoadingState from "../../Component/Elements/LoadingState";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import Pagination from "../../Component/Widgets/Pagination";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const ProjectsTable = () => {
   const navigate = useNavigate();
@@ -69,6 +70,8 @@ const ProjectsTable = () => {
     <>
       {projects.isLoading ? (
         <LoadingState />
+      ) : projects.error ? (
+        <ErrorMessage errorMessage={projects.error} />
       ) : (
         <div className="m-4">
           <div className="d-flex justify-content-between align-items-center mb-1">

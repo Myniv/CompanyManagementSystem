@@ -13,6 +13,7 @@ import DangerButton from "../../Component/Elements/DangerButton";
 import SecondaryButton from "../../Component/Elements/SecondaryButton";
 import LoadingState from "../../Component/Elements/LoadingState";
 import Pagination from "../../Component/Widgets/Pagination";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const AssignmentsTable = () => {
   const navigate = useNavigate();
@@ -92,6 +93,8 @@ const AssignmentsTable = () => {
     <>
       {assignment.isLoading ? (
         <LoadingState />
+      ) : assignment.error ? (
+        <ErrorMessage errorMessage={assignment.error} />
       ) : (
         <div className="m-4">
           <div className="d-flex justify-content-between align-items-center mb-1">

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import baseApi from "../../baseApi";
 import DangerButton from "../../Component/Elements/DangerButton";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const ProjectsForm = () => {
   const navigate = useNavigate();
@@ -13,6 +14,8 @@ const ProjectsForm = () => {
 
   const departments = useSelector((state) => state.department);
   const projects = useSelector((state) => state.project);
+
+  const [errorAPI, setErrorAPI] = useState("");
 
   const [formData, setFormData] = useState({
     projno: "",
@@ -46,7 +49,10 @@ const ProjectsForm = () => {
           nextPage: () => navigate("/projects"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to add project, please train again later...`);
+      });
   };
 
   const onUpdateProject = () => {
@@ -58,7 +64,10 @@ const ProjectsForm = () => {
           nextPage: () => navigate("/projects"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to update project, please train again later...`);
+      });
   };
 
   const onCancel = () => {
@@ -118,6 +127,7 @@ const ProjectsForm = () => {
     <div className="mb-5">
       <h2 className="ms-5">{params.id ? "Edit Project" : "Add Project"}</h2>
       <div className="container border">
+        {errorAPI && <ErrorMessage errorMessage={errorAPI} />}
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
             <label htmlFor="projno" className="form-label">
@@ -177,9 +187,6 @@ const ProjectsForm = () => {
               <div className="invalid-feedback">{errors.deptno}</div>
             )}
           </div>
-          <button type="submit" className="btn btn-primary m-1">
-            {params.id ? "Edit Project" : "Add Project"}
-          </button>
           <PrimaryButton
             type={"submit"}
             buttonName={params.id ? "Edit Project" : "Add Project"}

@@ -6,11 +6,14 @@ import { useSelector } from "react-redux";
 import baseApi from "../../baseApi";
 import DangerButton from "../../Component/Elements/DangerButton";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const AssignmentsForm = () => {
   const navigate = useNavigate();
   const params = useParams();
 
+  const [errorAPI, setErrorAPI] = useState("");
+  
   const [formData, setFormData] = useState({
     assno: "",
     empno: "",
@@ -43,7 +46,10 @@ const AssignmentsForm = () => {
           nextPage: () => navigate("/assignments"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to add assignment, please train again later...`);
+      });
   };
 
   const onUpdateAssignment = () => {
@@ -55,7 +61,10 @@ const AssignmentsForm = () => {
           nextPage: () => navigate("/assignments"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to update assignment, please train again later...`);
+      });
   };
 
   const onCancel = () => {
@@ -145,6 +154,7 @@ const AssignmentsForm = () => {
         {params.projId && params.empId ? `Edit Assignment` : "Add Assignment"}
       </h2>
       <div className="container border">
+        {errorAPI && <ErrorMessage errorMessage={errorAPI} />}
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
             <input

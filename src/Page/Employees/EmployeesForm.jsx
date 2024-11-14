@@ -6,12 +6,14 @@ import { useSelector } from "react-redux";
 import baseApi from "../../baseApi";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const EmployeesForm = () => {
   const navigate = useNavigate();
   const params = useParams();
 
   const [submit, setSubmit] = useState(false);
+  const [errorAPI, setErrorAPI] = useState("");
 
   const department = useSelector((state) => state.department);
   const employee = useSelector((state) => state.employee);
@@ -60,7 +62,10 @@ const EmployeesForm = () => {
           nextPage: () => navigate("/employees"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to add employees, please train again later...`);
+      });
   };
 
   const onUpdateEmployees = () => {
@@ -72,7 +77,10 @@ const EmployeesForm = () => {
           nextPage: () => navigate("/employees"),
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorAPI(`Failed to update employees, please train again later...`);
+      });
   };
 
   const onCancel = () => {
@@ -176,6 +184,7 @@ const EmployeesForm = () => {
             : "Form Add Employees"}
         </h2>
         <div className="container border">
+          {errorAPI && <ErrorMessage errorMessage={errorAPI} />}
           <form onSubmit={handleSubmit} className="mb-4">
             <div className="row">
               <div className="col-md-6">

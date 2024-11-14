@@ -15,6 +15,7 @@ import DangerButton from "../../Component/Elements/DangerButton";
 import SecondaryButton from "../../Component/Elements/SecondaryButton";
 import LoadingState from "../../Component/Elements/LoadingState";
 import Pagination from "../../Component/Widgets/Pagination";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const DepartmentsTable = () => {
   const [detailDepartment, setDetailDepartment] = useState([]);
@@ -94,6 +95,8 @@ const DepartmentsTable = () => {
     <>
       {department.isLoading ? (
         <LoadingState />
+      ) : department.error ? (
+        <ErrorMessage errorMessage={department.error} />
       ) : (
         <div className="m-4">
           <div className="d-flex justify-content-between align-items-center mb-1">

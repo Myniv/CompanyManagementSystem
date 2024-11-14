@@ -11,6 +11,7 @@ import Pagination from "../../Component/Widgets/Pagination";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import LoadingState from "../../Component/Elements/LoadingState";
+import ErrorMessage from "../../Component/Elements/ErrorMessage";
 
 const EmployeesTable = () => {
   const navigate = useNavigate();
@@ -73,6 +74,8 @@ const EmployeesTable = () => {
     <>
       {employee.isLoading ? (
         <LoadingState />
+      ) : employee.error ? (
+        <ErrorMessage errorMessage={employee.error} />
       ) : (
         <div className="m-4">
           {/* Top Header with Title and Add Button */}

@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import ShowLoading from "../../Component/Elements/ShowLoading";
 import { useSelector } from "react-redux";
 import baseApi from "../../baseApi";
+import PrimaryButton from "../../Component/Elements/PrimaryButton";
+import DangerButton from "../../Component/Elements/DangerButton";
 
 const DepartmentsForm = () => {
   const navigate = useNavigate();
@@ -200,16 +202,11 @@ const DepartmentsForm = () => {
               <div className="invalid-feedback">{errors.mgrempno}</div>
             )}
           </div>
-          <button type="submit" className="btn btn-primary m-1">
-            {params.id ? "Edit Department" : "Add Department"}
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="btn btn-danger m-1"
-          >
-            Cancel
-          </button>
+          <PrimaryButton
+            type={"submit"}
+            buttonName={params.id ? "Edit Department" : "Add Department"}
+          />
+          <DangerButton onClick={onCancel} buttonName={"Cancel"} />
         </form>
       </div>
     </div>

@@ -8,6 +8,9 @@ import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
 import baseApi from "../../baseApi";
 import Pagination from "../../Component/Widgets/Pagination";
+import PrimaryButton from "../../Component/Elements/PrimaryButton";
+import DangerButton from "../../Component/Elements/DangerButton";
+import LoadingState from "../../Component/Elements/LoadingState";
 
 const EmployeesTable = () => {
   const navigate = useNavigate();
@@ -21,7 +24,7 @@ const EmployeesTable = () => {
   }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPge, SetPostsPerPage] = useState(5 );
+  const [postsPerPge, SetPostsPerPage] = useState(5);
 
   const onDeleteEmployees = (empNo) => {
     const deletedEmployees = () => {
@@ -69,13 +72,16 @@ const EmployeesTable = () => {
   return (
     <>
       {employee.isLoading ? (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-          <img src="/img/LoadingSpinner.svg" alt="Loading..." />
-        </div>
+        <LoadingState />
       ) : (
         <div className="m-4">
-          <div className="d-flex justify-content-between align-items-center">
-            <h2>Employees Table</h2>
+          {/* Top Header with Title and Add Button */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h2 className="m-0">Employees Table</h2>
+            <PrimaryButton
+              onClick={onAddEmployees}
+              buttonName="Add Employees"
+            />
           </div>
           <table className="table table-hover table-bordered">
             <thead>
@@ -127,50 +133,25 @@ const EmployeesTable = () => {
                     {getDepartmentName(employee.deptno)}
                   </td>
                   <td className="table-light text-center">
-                    <div className="d-grid gap-2 d-md-flex justify-content-md-center">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => onEditingEmployees(employee.empno)}
-                        value={"edit"}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
-                        onClick={() => onDeleteEmployees(employee.empno)}
-                        value={"delete"}
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    <PrimaryButton
+                      onClick={() => onEditingEmployees(employee.empno)}
+                      buttonName="Edit"
+                    />
+                    <DangerButton
+                      onClick={() => onDeleteEmployees(employee.empno)}
+                      buttonName="Delete"
+                    />
                   </td>
                 </tr>
               ))}
-              <td colSpan="9">
-                <div className="d-flex justify-content-end">
-                  <div className="d-grid gap-2 col-2">
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-block"
-                      onClick={onAddEmployees}
-                    >
-                      Add Employees
-                    </button>
-                    <div className="pagination">
-                      <Pagination
-                        length={employee.data.length}
-                        postsPerPage={postsPerPge}
-                        handlePagination={handlePagination}
-                        currentPage={currentPage}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </td>
             </tbody>
           </table>
+          <Pagination
+            length={employee.data.length}
+            postsPerPage={postsPerPge}
+            handlePagination={handlePagination}
+            currentPage={currentPage}
+          />
         </div>
       )}
     </>

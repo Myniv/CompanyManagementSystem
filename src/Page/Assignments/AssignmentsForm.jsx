@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import ShowLoading from "../../Component/Elements/ShowLoading";
 import { useSelector } from "react-redux";
 import baseApi from "../../baseApi";
+import DangerButton from "../../Component/Elements/DangerButton";
+import PrimaryButton from "../../Component/Elements/PrimaryButton";
 
 const AssignmentsForm = () => {
   const navigate = useNavigate();
@@ -258,18 +260,20 @@ const AssignmentsForm = () => {
               </div>
             )}
           </div>
-          <button type="submit" className="btn btn-primary m-1">
-            {params.empId && params.projId
-              ? "Update Assignment"
-              : "Add Assignment"}
-          </button>
-          <button
-            type="button"
+          <PrimaryButton
+            type={"submit"}
+            buttonName={
+              params.empId && params.projId
+                ? "Update Assignment"
+                : "Add Assignment"
+            }
+          />
+          <DangerButton
             onClick={onCancel}
-            className="btn btn-danger m-1"
-          >
-            {params.empId && params.projId ? "Cancel Edit" : "Cancel Add"}
-          </button>
+            buttonName={
+              params.empId && params.projId ? "Cancel Edit" : "Cancel Add"
+            }
+          />
         </form>
       </div>
     </div>

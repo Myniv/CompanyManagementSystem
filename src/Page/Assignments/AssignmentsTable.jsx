@@ -7,6 +7,10 @@ import { fetchAssignment } from "../../redux/Slicer/assignmentSlicer";
 import { fetchProject } from "../../redux/Slicer/projectSlicer";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 import baseApi from "../../baseApi";
+import PrimaryButton from "../../Component/Elements/PrimaryButton";
+import DangerButton from "../../Component/Elements/DangerButton";
+import SecondaryButton from "../../Component/Elements/SecondaryButton";
+import LoadingState from "../../Component/Elements/LoadingState";
 
 const AssignmentsTable = () => {
   const navigate = useNavigate();
@@ -74,9 +78,7 @@ const AssignmentsTable = () => {
   return (
     <>
       {assignment.isLoading ? (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-          <img src="/img/LoadingSpinner.svg" alt="Loading..." />
-        </div>
+        <LoadingState />
       ) : (
         <div className="m-4">
           <div className="d-flex justify-content-between align-items-center">
@@ -119,37 +121,30 @@ const AssignmentsTable = () => {
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => onEditAssignment(assignment.projno, assignment.empno)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
+                      <PrimaryButton
+                        onClick={() =>
+                          onEditAssignment(assignment.projno, assignment.empno)
+                        }
+                        buttonName="Edit"
+                      />
+                      <DangerButton
                         onClick={() =>
                           onDeleteAssignment(
                             assignment.projno,
                             assignment.empno
                           )
                         }
-                      >
-                        Delete
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-info"
+                        buttonName="Delete"
+                      />
+                      <SecondaryButton
                         onClick={() =>
                           onDetailAssignment(
                             assignment.empno,
                             assignment.projno
                           )
                         }
-                      >
-                        Detail
-                      </button>
+                        buttonName="Detail"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -157,13 +152,10 @@ const AssignmentsTable = () => {
               <td colSpan="5" className="text-center">
                 <div className="d-flex justify-content-end">
                   <div className="d-grid col-3">
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-block"
+                    <PrimaryButton
                       onClick={onAddAssignment}
-                    >
-                      Add Assignments
-                    </button>
+                      buttonName={"Add Assignments"}
+                    />
                   </div>
                 </div>
               </td>

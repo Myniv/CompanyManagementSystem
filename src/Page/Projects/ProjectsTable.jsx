@@ -5,6 +5,9 @@ import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProject } from "../../redux/Slicer/projectSlicer";
 import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
+import LoadingState from "../../Component/Elements/LoadingState";
+import PrimaryButton from "../../Component/Elements/PrimaryButton";
+import DangerButton from "../../Component/Elements/DangerButton";
 
 const ProjectsTable = () => {
   const navigate = useNavigate();
@@ -52,9 +55,7 @@ const ProjectsTable = () => {
   return (
     <>
       {projects.isLoading ? (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-          <img src="/img/LoadingSpinner.svg" alt="Loading..." />
-        </div>
+        <LoadingState />
       ) : (
         <div className="m-4">
           <div className="d-flex justify-content-between align-items-center">
@@ -89,20 +90,14 @@ const ProjectsTable = () => {
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
+                      <PrimaryButton
                         onClick={() => onEditProject(project.projno)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
+                        buttonName="Edit"
+                      />
+                      <DangerButton
                         onClick={() => onDeleteProject(project.projno)}
-                      >
-                        Delete
-                      </button>
+                        buttonName="Delete"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -110,13 +105,10 @@ const ProjectsTable = () => {
               <td colSpan="4" className="text-center">
                 <div className="d-flex justify-content-end">
                   <div className="d-grid col-3">
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-block"
+                    <PrimaryButton
                       onClick={onAddProject}
-                    >
-                      Add Projects
-                    </button>
+                      buttonName={"Add Projects"}
+                    />
                   </div>
                 </div>
               </td>

@@ -9,6 +9,10 @@ import {
 } from "../../redux/Slicer/departmentSlicer";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 import baseApi from "../../baseApi";
+import PrimaryButton from "../../Component/Elements/PrimaryButton";
+import DangerButton from "../../Component/Elements/DangerButton";
+import SecondaryButton from "../../Component/Elements/SecondaryButton";
+import LoadingState from "../../Component/Elements/LoadingState";
 
 const DepartmentsTable = () => {
   const [detailDepartment, setDetailDepartment] = useState([]);
@@ -76,9 +80,7 @@ const DepartmentsTable = () => {
   return (
     <>
       {department.isLoading ? (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-          <img src="/img/LoadingSpinner.svg" alt="Loading..." />
-        </div>
+        <LoadingState />
       ) : (
         <div className="m-4">
           <div className="d-flex justify-content-between align-items-center">
@@ -117,29 +119,18 @@ const DepartmentsTable = () => {
                   </td>
                   <td className="table-light text-center">
                     <div>
-                      <button
-                        type="button"
-                        className="btn btn-primary"
+                      <PrimaryButton
                         onClick={() => onEditDepartments(departments.deptno)}
-                        value={"edit"}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
+                        buttonName="Edit"
+                      />
+                      <DangerButton
                         onClick={() => onDeleteDepartments(departments.deptno)}
-                        value={"delete"}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-info"
+                        buttonName="Delete"
+                      />
+                      <SecondaryButton
                         onClick={() => onDetailEmployee(departments.deptno)}
-                      >
-                        Detail
-                      </button>
+                        buttonName="Detail"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -148,13 +139,10 @@ const DepartmentsTable = () => {
             <td colSpan="4" className="text-center">
               <div className="d-flex justify-content-end">
                 <div className="d-grid col-3">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-block"
+                  <PrimaryButton
                     onClick={onAddDepartments}
-                  >
-                    Add Departments
-                  </button>
+                    buttonName={"Add Departments"}
+                  />
                 </div>
               </div>
             </td>

@@ -16,7 +16,7 @@ const Pagination = ({
           <li className="page-item" key={data}>
             <button
               className={
-                currentPage === data ? "btn btn-dark" : "btn btn-secondary"
+                currentPage === data ? "btn btn-dark" : "btn btn-outline-dark"
               }
               onClick={() => handlePagination(data)}
             >

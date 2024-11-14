@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
+import { fetchDepartment, setLoading } from "../../redux/Slicer/departmentSlicer";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
+import baseApi from "../../baseApi";
 
 const DepartmentsTable = () => {
-  const [employeesDepartment, setEmployeesDepartment] = useState([]);
+  const [detailDepartment, setDetailDepartment] = useState([]);
   const [show, setShow] = useState(false);
   const [departmentId, setDepartmentId] = useState([]);
+  const [deleteDepartment, setDeleteDepartment] = useState(false);
 
   const navigate = useNavigate();
 
@@ -20,22 +22,32 @@ const DepartmentsTable = () => {
     dispatch(fetchDepartment());
     dispatch(fetchEmployee());
   }, []);
-  // console.log(department);
-  // console.log("employee data structure:", employee.data);
 
-  // const onDeleteDepartments = (deptno) => {
-  //   const deleteDepartments = () => {
-  //     const storedDepartments =
-  //       JSON.parse(localStorage.getItem("departments")) || [];
-  //     const deleteDepartments = storedDepartments.filter(
-  //       (b) => b.deptno !== deptno
-  //     );
+  useEffect(() => {
+    if (deleteDepartment) {
+      onDeleteDepartments();
+    }
+  }, [deleteDepartment]);
 
-  //     localStorage.setItem("departments", JSON.stringify(deleteDepartments));
-  //     setDepartments(deleteDepartments);
-  //   };
-  //   DeleteConfirmation({ deleteData: () => deleteDepartments() });
-  // };
+  const onDeleteDepartments = (deptno) => {
+    const deleteDepartments = () => {
+      dispatch(setLoading(true));
+      baseApi
+        .delete(`v1/Departements/${deptno}`)
+        .then((res) => {
+          setDeleteDepartment(false);
+          dispatch(fetchDepartment());  
+          dispatch(setLoading(false));
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+          dispatch(setLoading(false));
+          setDeleteDepartment(false);
+        });
+    };
+    DeleteConfirmation({ deleteData: () => deleteDepartments() });
+  };
 
   const onEditDepartments = (deptno) => {
     navigate(`/departments/${deptno}`);
@@ -46,12 +58,12 @@ const DepartmentsTable = () => {
   };
 
   const onDetailEmployee = (deptno) => {
-    const employeeDepartment = employee?.filter(
+    const employeeDepartment = employee.data.filter(
       (emp) => Number(emp.deptno) === Number(deptno)
     );
-    setEmployeesDepartment(employeeDepartment);
+    setDetailDepartment(employeeDepartment);
 
-    const departmentId = department?.find(
+    const departmentId = department.data.find(
       (departments) => Number(departments.deptno) === Number(deptno)
     );
     setDepartmentId(departmentId);
@@ -65,9 +77,6 @@ const DepartmentsTable = () => {
 
     if (foundEmployees) {
       return <>{`${foundEmployees.fname} ${foundEmployees.lname}`}</>;
-    } else {
-      console.log(`No match found for mgrempno: ${mgrempno}`);
-      return mgrempno;
     }
   };
 
@@ -162,7 +171,7 @@ const DepartmentsTable = () => {
               <div className="card">
                 <div className="card-header d-flex justify-content-between bg-dark">
                   <h5 className="text-white">
-                    Employee Details on {departmentId.deptName}
+                    Employee Details on {departmentId.deptname}
                   </h5>
                   <button
                     type="button"
@@ -179,11 +188,11 @@ const DepartmentsTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {employeesDepartment.map((emp) => (
-                        <tr key={emp.empNo}>
-                          <td>{emp.empNo}</td>
+                      {detailDepartment.map((emp) => (
+                        <tr key={emp.empno}>
+                          <td>{emp.empno}</td>
                           <td>
-                            {emp.fName} {emp.lName}
+                            {emp.fname} {emp.lname}
                           </td>
                         </tr>
                       ))}

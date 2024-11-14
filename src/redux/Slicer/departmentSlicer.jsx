@@ -13,6 +13,11 @@ const departmentSlice = createSlice({
     data: [],
     error: false,
   },
+  reducers: {
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchDepartment.pending, (state) => {
       state.isLoading = true;
@@ -28,4 +33,5 @@ const departmentSlice = createSlice({
   },
 });
 
+export const { setLoading } = departmentSlice.actions;
 export default departmentSlice.reducer;

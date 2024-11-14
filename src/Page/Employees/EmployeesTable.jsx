@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
 import baseApi from "../../baseApi";
+import Pagination from "../../Component/Widgets/Pagination";
 
 const EmployeesTable = () => {
   const navigate = useNavigate();
@@ -17,6 +19,9 @@ const EmployeesTable = () => {
     dispatch(fetchDepartment());
     dispatch(fetchEmployee());
   }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPge, SetPostsPerPage] = useState(5 );
 
   const onDeleteEmployees = (empNo) => {
     const deletedEmployees = () => {
@@ -51,6 +56,14 @@ const EmployeesTable = () => {
     } else {
       return "";
     }
+  };
+
+  const indexOfLastPost = currentPage * postsPerPge;
+  const indexOfFirstPost = indexOfLastPost - postsPerPge;
+  const currentPosts = employee.data.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handlePagination = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -97,7 +110,7 @@ const EmployeesTable = () => {
               </tr>
             </thead>
             <tbody>
-              {employee.data.map((employee) => (
+              {currentPosts.map((employee) => (
                 <tr scope="row" key={employee.empNo}>
                   <td className="table-light text-center">{employee.empno}</td>
                   <td className="table-light text-center">{employee.fname}</td>
@@ -145,6 +158,14 @@ const EmployeesTable = () => {
                     >
                       Add Employees
                     </button>
+                    <div className="pagination">
+                      <Pagination
+                        length={employee.data.length}
+                        postsPerPage={postsPerPge}
+                        handlePagination={handlePagination}
+                        currentPage={currentPage}
+                      />
+                    </div>
                   </div>
                 </div>
               </td>

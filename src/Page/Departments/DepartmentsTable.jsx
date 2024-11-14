@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDepartment, setLoading } from "../../redux/Slicer/departmentSlicer";
+import {
+  fetchDepartment,
+  setLoading,
+} from "../../redux/Slicer/departmentSlicer";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 import baseApi from "../../baseApi";
 
@@ -11,7 +14,6 @@ const DepartmentsTable = () => {
   const [detailDepartment, setDetailDepartment] = useState([]);
   const [show, setShow] = useState(false);
   const [departmentId, setDepartmentId] = useState([]);
-  const [deleteDepartment, setDeleteDepartment] = useState(false);
 
   const navigate = useNavigate();
 
@@ -23,27 +25,18 @@ const DepartmentsTable = () => {
     dispatch(fetchEmployee());
   }, []);
 
-  useEffect(() => {
-    if (deleteDepartment) {
-      onDeleteDepartments();
-    }
-  }, [deleteDepartment]);
-
   const onDeleteDepartments = (deptno) => {
     const deleteDepartments = () => {
       dispatch(setLoading(true));
       baseApi
         .delete(`v1/Departements/${deptno}`)
         .then((res) => {
-          setDeleteDepartment(false);
-          dispatch(fetchDepartment());  
-          dispatch(setLoading(false));
+          dispatch(fetchDepartment());
           console.log(res);
         })
         .catch((err) => {
           console.log(err);
           dispatch(setLoading(false));
-          setDeleteDepartment(false);
         });
     };
     DeleteConfirmation({ deleteData: () => deleteDepartments() });

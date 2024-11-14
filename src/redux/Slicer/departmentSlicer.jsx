@@ -11,7 +11,7 @@ const departmentSlice = createSlice({
   initialState: {
     isLoading: false,
     data: [],
-    error: false,
+    error: null,
   },
   reducers: {
     setLoading: (state, action) => {
@@ -21,14 +21,18 @@ const departmentSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchDepartment.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
     });
     builder.addCase(fetchDepartment.fulfilled, (state, action) => {
       state.isLoading = false;
       state.data = action.payload;
+      state.error = null;
     });
-    builder.addCase(fetchDepartment.rejected, (state) => {
+    builder.addCase(fetchDepartment.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = true;
+      state.error = action.error.message
+        ? `Department ${action.error.message}`
+        : "Failed to fetch department.";
     });
   },
 });

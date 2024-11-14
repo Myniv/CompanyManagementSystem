@@ -11,19 +11,23 @@ const assignmentSlice = createSlice({
   initialState: {
     isLoading: false,
     data: [],
-    error: false,
+    error: null,
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAssignment.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
     });
     builder.addCase(fetchAssignment.fulfilled, (state, action) => {
       state.isLoading = false;
       state.data = action.payload;
+      state.error = null;
     });
-    builder.addCase(fetchAssignment.rejected, (state) => {
+    builder.addCase(fetchAssignment.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = true;
+      state.error = action.error.message
+        ? `Assignment ${action.error.message}`
+        : "Failed to fetch assignment.";
     });
   },
 });

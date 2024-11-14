@@ -11,19 +11,23 @@ const employeeSlice = createSlice({
   initialState: {
     isLoading: false,
     data: [],
-    error: false,
+    error: null,
   },
   extraReducers: (builder) => {
     builder.addCase(fetchEmployee.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
     });
     builder.addCase(fetchEmployee.fulfilled, (state, action) => {
       state.isLoading = false;
       state.data = action.payload;
+      state.error = null;
     });
-    builder.addCase(fetchEmployee.rejected, (state) => {
+    builder.addCase(fetchEmployee.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = true;
+      state.error = action.error.message
+        ? `Employee ${action.error.message}`
+        : "Failed to fetch employee.";
     });
   },
 });

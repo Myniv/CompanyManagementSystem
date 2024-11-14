@@ -11,21 +11,26 @@ const projectSlice = createSlice({
   initialState: {
     isLoading: false,
     data: [],
-    error: false,
+    error: null,
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProject.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
     });
     builder.addCase(fetchProject.fulfilled, (state, action) => {
       state.isLoading = false;
       state.data = action.payload;
+      state.error = null;
     });
-    builder.addCase(fetchProject.rejected, (state) => {
+    builder.addCase(fetchProject.rejected, (state, action) => {
       state.isLoading = false;
       state.error = true;
+      state.error = action.error.message
+        ? `Project ${action.error.message}`
+        : "Failed to fetch project.";
     });
   },
 });
 
-export default projectSlice.reducer
+export default projectSlice.reducer;

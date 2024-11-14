@@ -25,7 +25,6 @@ const ProjectsTable = () => {
       );
 
       localStorage.setItem("projects", JSON.stringify(updatedProjects));
-      setProjects(updatedProjects);
     };
     DeleteConfirmation({ deleteData: () => deleteProject() });
   };

@@ -1,78 +1,69 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ShowLoading from "../../Component/Elements/ShowLoading";
+import { useSelector } from "react-redux";
+import baseApi from "../../baseApi";
 
 const ProjectsForm = () => {
-  const { projects, setProjects } = useOutletContext();
   const navigate = useNavigate();
   const params = useParams();
 
-  const [departments, setDepartments] = useState([]);
+  const departments = useSelector((state) => state.department);
+  const projects = useSelector((state) => state.project);
 
   const [formData, setFormData] = useState({
-    projNo: "",
-    projName: "",
-    deptNo: "",
+    projno: "",
+    projname: "",
+    deptno: "",
   });
 
   useEffect(() => {
-    if (!projects) {
-      const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-      setProjects(storedProjects);
-    }
-
     if (params.id) {
-      const findProject = projects.find(
-        (project) => project.projNo === Number(params.id)
+      const findProject = projects.data.find(
+        (project) => Number(project.projno) === Number(params.id)
       );
       setFormData(findProject);
     }
-    const storedDepartment =
-      JSON.parse(localStorage.getItem("departments")) || [];
-    setDepartments(storedDepartment);
-  }, [projects, params.id]);
+  }, [params.id]);
 
   const onAddProject = () => {
     const newProject = {
       ...formData,
-      projNo:
-        projects.length > 0 ? projects[projects.length - 1].projNo + 1 : 1,
+      projno:
+        projects.data.length > 0
+          ? projects.data[projects.data.length - 1].projno + 1
+          : 1,
     };
 
-    const newProjects = [...projects, newProject];
-    localStorage.setItem("projects", JSON.stringify(newProjects));
-    setProjects(newProjects);
-
-    ShowLoading({
-      loadingMessage: "The new project is being added...",
-      nextPage: () => navigate("/projects"),
-    });
+    baseApi
+      .post("v1/Projects", newProject)
+      .then(() => {
+        ShowLoading({
+          loadingMessage: "The new project is being added...",
+          nextPage: () => navigate("/projects"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onUpdateProject = () => {
-    const updatedProjects = projects.map((project) => {
-      if (project.projNo === formData.projNo) {
-        return { ...project, ...formData };
-      } else {
-        return project;
-      }
-    });
-
-    setProjects(updatedProjects);
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
-
-    ShowLoading({
-      loadingMessage: `The project with id ${params.id} is updating...`,
-      nextPage: () => navigate("/projects"),
-    });
+    baseApi
+      .put(`v1/Projects/${params.id}`, formData)
+      .then(() => {
+        ShowLoading({
+          loadingMessage: `The project with id ${params.id} is updating...`,
+          nextPage: () => navigate("/projects"),
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onCancel = () => {
     setFormData({
-      projNo: "",
-      projName: "",
-      deptNo: "",
+      projno: "",
+      projname: "",
+      deptno: "",
     });
     navigate("/projects");
   };
@@ -81,14 +72,14 @@ const ProjectsForm = () => {
   const validateForm = () => {
     const newErrors = {};
     if (
-      !formData.projName ||
-      formData.projName.length < 2 ||
-      formData.projName.length > 100
+      !formData.projname ||
+      formData.projname.length < 2 ||
+      formData.projname.length > 100
     ) {
-      newErrors.projName = "Project name must be between 2 and 100 characters.";
+      newErrors.projname = "Project name must be between 2 and 100 characters.";
     }
-    if (!formData.deptNo) {
-      newErrors.deptNo = "Department ID is required.";
+    if (!formData.deptno) {
+      newErrors.deptno = "Department ID is required.";
     }
     return newErrors;
   };
@@ -110,11 +101,6 @@ const ProjectsForm = () => {
       } else {
         onAddProject();
       }
-      setFormData({
-        projNo: "",
-        projName: "",
-        deptNo: "",
-      });
       setErrors({});
     } else {
       setErrors(validationErrors);
@@ -122,7 +108,9 @@ const ProjectsForm = () => {
   };
 
   const projectId =
-    projects.length > 0 ? projects[projects.length - 1].projNo + 1 : 1;
+    projects.data.length > 0
+      ? projects.data[projects.data.length - 1].projno + 1
+      : 1;
 
   return (
     <div className="mb-5">
@@ -130,61 +118,61 @@ const ProjectsForm = () => {
       <div className="container border">
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="mb-3">
-            <label htmlFor="projNo" className="form-label">
+            <label htmlFor="projno" className="form-label">
               Project ID
             </label>
             <input
               type="number"
               className="form-control"
-              id="projNo"
-              name="projNo"
+              id="projno"
+              name="projno"
               value={params.id ? params.id : projectId}
               disabled
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="projName" className="form-label">
+            <label htmlFor="projname" className="form-label">
               Project Name
             </label>
             <input
               type="text"
-              id="projName"
-              name="projName"
-              className={`form-control ${errors.projName ? "is-invalid" : ""}`}
+              id="projname"
+              name="projname"
+              className={`form-control ${errors.projname ? "is-invalid" : ""}`}
               onChange={handleChange}
-              value={formData.projName}
+              value={formData.projname}
               required
               placeholder="Project Name"
             />
-            {errors.projName && (
-              <div className="invalid-feedback">{errors.projName}</div>
+            {errors.projname && (
+              <div className="invalid-feedback">{errors.projname}</div>
             )}
           </div>
           <div className="mb-3">
-            <label htmlFor="deptNo" className="form-label">
+            <label htmlFor="deptno" className="form-label">
               Department
             </label>
             <select
-              id="deptNo"
-              name="deptNo"
+              id="deptno"
+              name="deptno"
               className={`form-control ${
                 errors.department ? "is-invalid" : ""
               }`}
-              value={formData.deptNo}
+              value={formData.deptno}
               onChange={handleChange}
               required
             >
               <option value="" disabled>
                 Select Department
               </option>
-              {departments.map((departments) => (
-                <option key={departments.deptNo} value={departments.deptNo}>
-                  {departments.deptName}
+              {departments.data.map((departments) => (
+                <option key={departments.deptno} value={departments.deptno}>
+                  {departments.deptname}
                 </option>
               ))}
             </select>
-            {errors.deptNo && (
-              <div className="invalid-feedback">{errors.deptNo}</div>
+            {errors.deptno && (
+              <div className="invalid-feedback">{errors.deptno}</div>
             )}
           </div>
           <button type="submit" className="btn btn-primary m-1">

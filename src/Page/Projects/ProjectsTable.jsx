@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +9,7 @@ import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
 import LoadingState from "../../Component/Elements/LoadingState";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
+import Pagination from "../../Component/Widgets/Pagination";
 
 const ProjectsTable = () => {
   const navigate = useNavigate();
@@ -19,6 +21,9 @@ const ProjectsTable = () => {
     dispatch(fetchDepartment());
     dispatch(fetchProject());
   }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPge, SetPostsPerPage] = useState(5);
 
   const onDeleteProject = (projNo) => {
     const deleteProject = () => {
@@ -52,14 +57,23 @@ const ProjectsTable = () => {
     }
   };
 
+  const indexOfLastPost = currentPage * postsPerPge;
+  const indexOfFirstPost = indexOfLastPost - postsPerPge;
+  const currentPosts = projects.data.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handlePagination = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <>
       {projects.isLoading ? (
         <LoadingState />
       ) : (
         <div className="m-4">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-1">
             <h2>Projects Table</h2>
+            <PrimaryButton onClick={onAddProject} buttonName={"Add Projects"} />
           </div>
           <table className="table table-hover table-bordered">
             <thead>
@@ -79,7 +93,7 @@ const ProjectsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {projects.data.map((project) => (
+              {currentPosts.map((project) => (
                 <tr scope="row" key={project.projno}>
                   <td className="table-light text-center">{project.projno}</td>
                   <td className="table-light text-center">
@@ -102,18 +116,14 @@ const ProjectsTable = () => {
                   </td>
                 </tr>
               ))}
-              <td colSpan="4" className="text-center">
-                <div className="d-flex justify-content-end">
-                  <div className="d-grid col-3">
-                    <PrimaryButton
-                      onClick={onAddProject}
-                      buttonName={"Add Projects"}
-                    />
-                  </div>
-                </div>
-              </td>
             </tbody>
           </table>
+          <Pagination
+            length={projects.data.length}
+            postsPerPage={postsPerPge}
+            handlePagination={handlePagination}
+            currentPage={currentPage}
+          />
         </div>
       )}
     </>

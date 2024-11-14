@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import SecondaryButton from "../../Component/Elements/SecondaryButton";
 import LoadingState from "../../Component/Elements/LoadingState";
+import Pagination from "../../Component/Widgets/Pagination";
 
 const DepartmentsTable = () => {
   const [detailDepartment, setDetailDepartment] = useState([]);
@@ -28,6 +30,9 @@ const DepartmentsTable = () => {
     dispatch(fetchDepartment());
     dispatch(fetchEmployee());
   }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPge, SetPostsPerPage] = useState(5);
 
   const onDeleteDepartments = (deptno) => {
     const deleteDepartments = () => {
@@ -77,14 +82,26 @@ const DepartmentsTable = () => {
     }
   };
 
+  const indexOfLastPost = currentPage * postsPerPge;
+  const indexOfFirstPost = indexOfLastPost - postsPerPge;
+  const currentPosts = department.data.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handlePagination = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <>
       {department.isLoading ? (
         <LoadingState />
       ) : (
         <div className="m-4">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-1">
             <h2>Departments Table</h2>
+            <PrimaryButton
+              onClick={onAddDepartments}
+              buttonName={"Add Departments"}
+            />
           </div>
           <table className="table table-hover table-bordered ">
             <thead>
@@ -104,7 +121,7 @@ const DepartmentsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {department.data.map((departments) => (
+              {currentPosts.map((departments) => (
                 <tr scope="row" key={departments.deptno}>
                   <td className="table-light text-center">
                     {departments.deptno}
@@ -136,17 +153,13 @@ const DepartmentsTable = () => {
                 </tr>
               ))}
             </tbody>
-            <td colSpan="4" className="text-center">
-              <div className="d-flex justify-content-end">
-                <div className="d-grid col-3">
-                  <PrimaryButton
-                    onClick={onAddDepartments}
-                    buttonName={"Add Departments"}
-                  />
-                </div>
-              </div>
-            </td>
           </table>
+          <Pagination
+            length={department.data.length}
+            postsPerPage={postsPerPge}
+            handlePagination={handlePagination}
+            currentPage={currentPage}
+          />
           {show && (
             <div className="mt-4">
               <div className="card">

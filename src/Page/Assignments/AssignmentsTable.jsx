@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +12,7 @@ import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import SecondaryButton from "../../Component/Elements/SecondaryButton";
 import LoadingState from "../../Component/Elements/LoadingState";
+import Pagination from "../../Component/Widgets/Pagination";
 
 const AssignmentsTable = () => {
   const navigate = useNavigate();
@@ -24,6 +26,9 @@ const AssignmentsTable = () => {
     dispatch(fetchProject());
     dispatch(fetchEmployee());
   }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPge, SetPostsPerPage] = useState(5);
 
   const onDeleteAssignment = (projno, empno) => {
     const deleteAssignment = () => {
@@ -75,14 +80,26 @@ const AssignmentsTable = () => {
     }
   };
 
+  const indexOfLastPost = currentPage * postsPerPge;
+  const indexOfFirstPost = indexOfLastPost - postsPerPge;
+  const currentPosts = assignment.data.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handlePagination = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <>
       {assignment.isLoading ? (
         <LoadingState />
       ) : (
         <div className="m-4">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-1">
             <h2>Assignments Table</h2>
+            <PrimaryButton
+              onClick={onAddAssignment}
+              buttonName={"Add Assignments"}
+            />
           </div>
           <table className="table table-hover table-bordered">
             <thead>
@@ -105,7 +122,7 @@ const AssignmentsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {assignment.data.map((assignment) => (
+              {currentPosts.map((assignment) => (
                 <tr scope="row" key={(assignment.empno, assignment.projno)}>
                   <td className="table-light text-center">
                     {getEmployeesName(assignment.empno)}
@@ -149,18 +166,14 @@ const AssignmentsTable = () => {
                   </td>
                 </tr>
               ))}
-              <td colSpan="5" className="text-center">
-                <div className="d-flex justify-content-end">
-                  <div className="d-grid col-3">
-                    <PrimaryButton
-                      onClick={onAddAssignment}
-                      buttonName={"Add Assignments"}
-                    />
-                  </div>
-                </div>
-              </td>
             </tbody>
           </table>
+          <Pagination
+            length={employee.data.length}
+            postsPerPage={postsPerPge}
+            handlePagination={handlePagination}
+            currentPage={currentPage}
+          />
         </div>
       )}
     </>

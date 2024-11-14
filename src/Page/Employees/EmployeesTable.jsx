@@ -76,7 +76,7 @@ const EmployeesTable = () => {
       ) : (
         <div className="m-4">
           {/* Top Header with Title and Add Button */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-1">
             <h2 className="m-0">Employees Table</h2>
             <PrimaryButton
               onClick={onAddEmployees}

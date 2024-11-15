@@ -11,6 +11,9 @@ import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import Pagination from "../../Component/Widgets/Pagination";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
+import baseApi from "../../baseApi";
+import SuccessMessage2 from "../../Component/Elements/SuccessMessage2";
+import ErrorMessage2 from "../../Component/Elements/ErrorMessage2";
 
 const ProjectsTable = () => {
   const navigate = useNavigate();
@@ -28,14 +31,21 @@ const ProjectsTable = () => {
 
   const onDeleteProject = (projNo) => {
     const deleteProject = () => {
-      const storedProjects = JSON.parse(localStorage.getItem("projects")) || [];
-      const updatedProjects = storedProjects.filter(
-        (proj) => proj.projNo !== projNo
-      );
-
-      localStorage.setItem("projects", JSON.stringify(updatedProjects));
+      baseApi
+        .delete(`v1/Projects/${projNo}`)
+        .then((res) => {
+          console.log(res);
+          dispatch(fetchProject());
+          SuccessMessage2("Project data has been deleted!");
+        })
+        .catch((err) => {
+          console.log(err);
+          ErrorMessage2(
+            "Project data failed to delete, please try again later..."
+          );
+        });
     };
-    DeleteConfirmation({ deleteData: () => deleteProject() });
+    DeleteConfirmation(deleteProject);
   };
 
   const onEditProject = (projNo) => {

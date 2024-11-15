@@ -14,7 +14,7 @@ const ShowLoading = ({ loadingMessage, nextPage }) => {
     if (result.dismiss === Swal.DismissReason.timer) {
       Swal.fire({
         title: "Finished!",
-        icon: "uccess",
+        icon: "success",
         timer: 2000,
         showConfirmButton: false,
       }).then((result) => {

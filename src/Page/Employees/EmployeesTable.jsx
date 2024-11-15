@@ -12,6 +12,8 @@ import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import LoadingState from "../../Component/Elements/LoadingState";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
+import ErrorMessage2 from "../../Component/Elements/ErrorMessage2";
+import SuccessMessage2 from "../../Component/Elements/SuccessMessage2";
 
 const EmployeesTable = () => {
   const navigate = useNavigate();
@@ -34,12 +36,16 @@ const EmployeesTable = () => {
         .then((res) => {
           console.log(res);
           dispatch(fetchEmployee());
+          SuccessMessage2("Employee data has been deleted!");
         })
         .catch((err) => {
           console.log(err);
+          ErrorMessage2(
+            "Employee data failed to delete, please try again later..."
+          );
         });
     };
-    DeleteConfirmation({ deleteData: () => deletedEmployees() });
+    DeleteConfirmation(deletedEmployees);
   };
 
   const onEditingEmployees = (empNo) => {

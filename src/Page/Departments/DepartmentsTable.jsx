@@ -16,6 +16,8 @@ import SecondaryButton from "../../Component/Elements/SecondaryButton";
 import LoadingState from "../../Component/Elements/LoadingState";
 import Pagination from "../../Component/Widgets/Pagination";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
+import ErrorMessage2 from "../../Component/Elements/ErrorMessage2";
+import SuccessMessage2 from "../../Component/Elements/SuccessMessage2";
 
 const DepartmentsTable = () => {
   const [detailDepartment, setDetailDepartment] = useState([]);
@@ -42,14 +44,18 @@ const DepartmentsTable = () => {
         .delete(`v1/Departements/${deptno}`)
         .then((res) => {
           dispatch(fetchDepartment());
+          SuccessMessage2("Department data has been deleted!");
           console.log(res);
         })
         .catch((err) => {
           console.log(err);
           dispatch(setLoading(false));
+          ErrorMessage2(
+            "Department data failed to delete, please try again later..."
+          );
         });
     };
-    DeleteConfirmation({ deleteData: () => deleteDepartments() });
+    DeleteConfirmation(deleteDepartments);
   };
 
   const onEditDepartments = (deptno) => {

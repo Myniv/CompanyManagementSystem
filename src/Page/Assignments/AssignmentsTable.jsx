@@ -14,6 +14,8 @@ import SecondaryButton from "../../Component/Elements/SecondaryButton";
 import LoadingState from "../../Component/Elements/LoadingState";
 import Pagination from "../../Component/Widgets/Pagination";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
+import SuccessMessage2 from "../../Component/Elements/SuccessMessage2";
+import ErrorMessage2 from "../../Component/Elements/ErrorMessage2";
 
 const AssignmentsTable = () => {
   const navigate = useNavigate();
@@ -38,12 +40,16 @@ const AssignmentsTable = () => {
         .then((res) => {
           console.log(res);
           dispatch(fetchAssignment());
+          SuccessMessage2("Assignment data has been deleted!");
         })
         .catch((err) => {
           console.log(err);
+          ErrorMessage2(
+            "Employee data failed to delete, please try again later..."
+          );
         });
     };
-    DeleteConfirmation({ deleteData: () => deleteAssignment() });
+    DeleteConfirmation(deleteAssignment);
   };
 
   const onEditAssignment = (projId, empId) => {

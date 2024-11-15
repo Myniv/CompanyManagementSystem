@@ -1,7 +1,8 @@
+// DeleteConfirmation.js
 import Swal from "sweetalert2";
 
-const DeleteConfirmation = ({deleteData}) => {
-  const deleteSweetAlert = Swal.fire({
+const DeleteConfirmation = (deleteData) => {
+  Swal.fire({
     title: "Are you sure?",
     text: "You won't be able to revert this!",
     icon: "warning",
@@ -12,21 +13,19 @@ const DeleteConfirmation = ({deleteData}) => {
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.fire({
-        title: "Deleted!",
-        text: "Your data has been deleted.",
-        icon: "success",
-        timer: 1000,
-        showConfirmButton: false,
-      }).then((result) => {
-        if(result.dismiss === Swal.DismissReason.timer){
-            deleteData();
-        }
-      })
-
+        title: "Deleting data...",
+        html: "Please wait...",
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        timer: 1500,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      }).then(() => {
+        deleteData();
+      });
     }
   });
-
-  return deleteSweetAlert
 };
 
-export default DeleteConfirmation
+export default DeleteConfirmation;

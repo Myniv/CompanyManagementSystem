@@ -21,12 +21,12 @@ const fetchEmployeesService = async ({
   perPage,
   // fName,
   // lName,
-  // position,
-  // empLevel,
-  // empType,
+  position,
+  empLevel,
+  empType,
   keyWord,
-  // updateDate,
-  // isActive,
+  updateDate,
+  isActive,
   sortBy,
   sortOrder,
   // name,
@@ -36,12 +36,12 @@ const fetchEmployeesService = async ({
     perPage,
     "",
     "",
-    "",
-    "",
-    "",
+    position,
+    empLevel,
+    empType,
     keyWord,
     "",
-    "",
+    isActive,
     sortBy,
     sortOrder
   );
@@ -54,21 +54,37 @@ const EmployeesTable = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [perPage, setPerPage] = useState(3);
-  // const [position, setPosition] = useState("");
-  // const [empLevel, setEmpLevel] = useState("");
-  // const [empType, setEmpType] = useState("");
+  const [position, setPosition] = useState("");
+  const [empLevel, setEmpLevel] = useState("");
+  const [empType, setEmpType] = useState("");
   const [keyWord, setKeyword] = useState("");
-  // const [isActive, setIsActive] = useState(null);
+  const [isActive, setIsActive] = useState(null);
   const [sortBy, setSortBy] = useState("title");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [filter, setFilter] = useState("");
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["employees", pageNumber, perPage, keyWord, sortBy, sortOrder],
+    queryKey: [
+      "employees",
+      pageNumber,
+      perPage,
+      position,
+      empLevel,
+      empType,
+      keyWord,
+      isActive,
+      sortBy,
+      sortOrder,
+    ],
     queryFn: () =>
       fetchEmployeesService({
         pageNumber: pageNumber,
         perPage: perPage,
+        position: position,
+        empLevel: empLevel,
+        empType: empType,
         keyWord: keyWord,
+        isActive: isActive,
         sortBy: sortBy,
         sortOrder: sortOrder,
       }),
@@ -131,48 +147,17 @@ const EmployeesTable = () => {
   const getSortIcon = (field) => {
     if (sortBy !== field) {
       return (
-        // <img
-        //   className="img-fluid"
-        //   src="/img/sortNoSort.png"
-        //   alt="sorting"
-        //   style={{ width: "20px", height: "20px" }}
-        // />
-        "↕️"
+        "⇅"
       );
     }
     if (sortOrder === "asc") {
       return (
-        // <img
-        //   className="img-fluid"
-        //   src="/img/sortAscSort.png"
-        //   alt="sorting"
-        //   style={{ width: "20px", height: "20px" }}
-        // />
-        "↑"
+        "⇈"
       );
     } else {
       return (
-        // <img
-        //   className="img-fluid"
-        //   src="/img/sortDescSort.png"
-        //   alt="sorting"
-        //   style={{ width: "20px", height: "20px" }}
-        // />
-        "↓"
+        "⇊"
       );
-    }
-    // return sortOrder === "asc" ? "↑" : "↓";
-  };
-
-  const getDepartmentName = (deptNo) => {
-    const foundDepartment = department.data.find(
-      (department) => Number(department.deptno) === Number(deptNo)
-    );
-
-    if (foundDepartment) {
-      return foundDepartment.deptname;
-    } else {
-      return "";
     }
   };
 
@@ -184,6 +169,25 @@ const EmployeesTable = () => {
   const handleSearch = (e) => {
     setKeyword(e.target.value);
     setPageNumber(1);
+  };
+
+  const handleFilterInput = (e) => {
+    const value = e.target.value;
+
+    if (filter === "position") {
+      setPosition(value);
+    } else if (filter === "level") {
+      setEmpLevel(value);
+    } else if (filter === "type") {
+      setEmpType(value);
+    }
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value); // Update the selected filter
+    setPosition(""); // Reset other filter states
+    setEmpLevel("");
+    setEmpType("");
   };
 
   function getDate() {
@@ -203,46 +207,158 @@ const EmployeesTable = () => {
       ) : (
         <div className="m-4">
           {/* Top Header with Title and Add Button */}
-          <div className="d-flex justify-content-between align-items-center mb-1">
-            <h2 className="m-0">Employees Table</h2>
+          <h2 className="mb-3">Employees Table</h2>
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <div className="input-group w-auto me-2">
+                <span className="input-group-text">Search</span>
+                <input
+                  placeholder="Search all"
+                  type="text"
+                  className="form-control"
+                  onChange={handleSearch}
+                  value={keyWord}
+                />
+              </div>
+              <div className="input-group w-auto">
+                <select
+                  id="projno"
+                  name="projno"
+                  className="form-select"
+                  value={filter}
+                  onChange={handleFilterChange}
+                >
+                  <option value="">Select Filter </option>
+                  <option value="position">Employee Position</option>
+                  <option value="level">Employee Level</option>
+                  <option value="type">Employee Type</option>
+                </select>
+
+                <input
+                  placeholder="Filter"
+                  type="text"
+                  className="form-control"
+                  onChange={handleFilterInput}
+                  value={
+                    filter === "position"
+                      ? position
+                      : filter === "level"
+                      ? empLevel
+                      : filter === "type"
+                      ? empType
+                      : ""
+                  }
+                  disabled={!filter}
+                />
+              </div>
+            </div>
             <PrimaryButton
               onClick={onAddEmployees}
               buttonName="Add Employees"
             />
-            <div className="input-group w-auto">
-              <span className="input-group-text">Search</span>
-              <input
-                placeholder="Cari pengguna..."
-                type="text"
-                className="form-control-sm"
-                onChange={handleSearch}
-                value={keyWord}
-              />
-            </div>
           </div>
           <table className="table table-hover table-bordered">
             <thead>
               <tr className="table-dark">
                 <th scope="col" className="text-center">
-                  Employee Name
+                  Employee Name{" "}
+                  <span
+                    onClick={() => handleSorting("name")}
+                    style={{
+                      backgroundColor: "dark",
+                      color: "white",
+                      padding: "2px 4px",
+                      display: "inline-block",
+                      cursor: "pointer",
+                      width: "20px", // Ensures consistent width
+                      height: "25px",
+                      borderRadius: "4px",
+                      border: "1px solid white", // Adds a white border
+                    }}
+                    className="text-decoration-none text-white p-0"
+                  >
+                    {getSortIcon("name")}
+                  </span>
                 </th>
                 <th scope="col" className="text-center">
-                  Department
+                  Department{" "}
+                  <span
+                    onClick={() => handleSorting("department")}
+                    className="text-decoration-none text-white p-0"
+                    style={{
+                      backgroundColor: "dark",
+                      color: "white",
+                      padding: "2px 4px",
+                      display: "inline-block",
+                      cursor: "pointer",
+                      width: "20px", // Ensures consistent width
+                      height: "25px",
+                      borderRadius: "4px",
+                      border: "1px solid white", // Adds a white border
+                    }}
+                  >
+                    {getSortIcon("department")}
+                  </span>
                 </th>
                 <th scope="col" className="text-center">
                   Position
                   <span
                     onClick={() => handleSorting("position")}
-                    className="text-decoration-none text-dark p-0"
+                    className="text-decoration-none text-white p-0"
+                    style={{
+                      backgroundColor: "dark",
+                      color: "white",
+                      padding: "2px 4px",
+                      display: "inline-block",
+                      cursor: "pointer",
+                      width: "20px", // Ensures consistent width
+                      height: "25px",
+                      borderRadius: "4px",
+                      border: "1px solid white", // Adds a white border
+                    }}
                   >
                     {getSortIcon("position")}
                   </span>
                 </th>
                 <th scope="col" className="text-center">
-                  Level
+                  Level{" "}
+                  <span
+                    onClick={() => handleSorting("level")}
+                    className="text-decoration-none text-white p-0"
+                    style={{
+                      backgroundColor: "dark",
+                      color: "white",
+                      padding: "2px 4px",
+                      display: "inline-block",
+                      cursor: "pointer",
+                      width: "20px", // Ensures consistent width
+                      height: "25px",
+                      borderRadius: "4px",
+                      border: "1px solid white", // Adds a white border
+                    }}
+                  >
+                    {getSortIcon("level")}
+                  </span>
                 </th>
                 <th scope="col" className="text-center">
-                  Employment Type
+                  Employment Type{" "}
+                  <span
+                    onClick={() => handleSorting("type")}
+                    className="text-decoration-none text-white p-0"
+                    style={{
+                      backgroundColor: "dark",
+                      color: "white",
+                      padding: "2px 4px",
+                      display: "inline-block",
+                      cursor: "pointer",
+                      width: "20px", // Ensures consistent width
+                      height: "25px",
+                      borderRadius: "4px",
+                      border: "1px solid white", // Adds a white border
+                    }}
+                  >
+                    {getSortIcon("type")}
+                  </span>
                 </th>
                 <th scope="col" className="text-center">
                   Last Updated
@@ -290,21 +406,25 @@ const EmployeesTable = () => {
               previousLabel={
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-outline-dark"
+                  aria-label="Previous"
                   disabled={pageNumber === 1}
                 >
-                  Previous
+                  <span aria-hidden="true">&laquo;</span>
                 </button>
               }
               nextLabel={
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-outline-dark"
+                  aria-label="Next"
                   disabled={pageNumber === pageCount}
                 >
-                  Next
+                  <span aria-hidden="true">&raquo;</span>
                 </button>
               }
+              pageClassName="btn-dark"
+              pageLinkClassName="btn btn-outline-dark"
               breakLabel={"..."}
               breakClassName={"break-me"}
               pageCount={pageCount}

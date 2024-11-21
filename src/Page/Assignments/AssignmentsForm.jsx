@@ -13,7 +13,7 @@ const AssignmentsForm = () => {
   const params = useParams();
 
   const [errorAPI, setErrorAPI] = useState("");
-  
+
   const [formData, setFormData] = useState({
     assno: "",
     empno: "",
@@ -39,7 +39,7 @@ const AssignmentsForm = () => {
 
   const onAddAssignment = () => {
     baseApi
-      .post("v1/Worksons", formData)
+      .post("/WorksOn", formData)
       .then(() => {
         ShowLoading({
           loadingMessage: "The new Assignment is being added...",
@@ -54,7 +54,7 @@ const AssignmentsForm = () => {
 
   const onUpdateAssignment = () => {
     baseApi
-      .put(`v1/Worksons/${params.projId}/${params.empId}`, formData) // Use projId and empId
+      .put(`/WorksOn/${params.projId}/${params.empId}`, formData) // Use projId and empId
       .then(() => {
         ShowLoading({
           loadingMessage: `The assignment is updating...`,
@@ -100,12 +100,10 @@ const AssignmentsForm = () => {
 
     const duplicateAssignment = assignments.data.some((assignment) => {
       return (
+        !params.Id &&
+        !params.empId &&
         assignment.empno === formData.empno &&
-        assignment.projno === formData.projno &&
-        !(
-          assignment.empno === params.empId &&
-          assignment.projno === params.projId
-        )
+        assignment.projno === formData.projno
       );
     });
     if (duplicateAssignment) {
@@ -183,6 +181,7 @@ const AssignmentsForm = () => {
               }`}
               value={formData.empno}
               onChange={handleChange}
+              disabled={params.empId && params.projId ? true : false}
               required
             >
               <option value="" disabled>
@@ -210,6 +209,7 @@ const AssignmentsForm = () => {
               }`}
               value={formData.projno}
               onChange={handleChange}
+              disabled={params.empId && params.projId ? true : false}
               required
             >
               <option value="" disabled>

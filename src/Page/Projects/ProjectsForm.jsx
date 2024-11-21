@@ -42,7 +42,7 @@ const ProjectsForm = () => {
     };
 
     baseApi
-      .post("v1/Projects", newProject)
+      .post("/Projects", newProject)
       .then(() => {
         ShowLoading({
           loadingMessage: "The new project is being added...",
@@ -57,7 +57,7 @@ const ProjectsForm = () => {
 
   const onUpdateProject = () => {
     baseApi
-      .put(`v1/Projects/${params.id}`, formData)
+      .put(`/Projects/${params.id}`, formData)
       .then(() => {
         ShowLoading({
           loadingMessage: `The project with id ${params.id} is updating...`,

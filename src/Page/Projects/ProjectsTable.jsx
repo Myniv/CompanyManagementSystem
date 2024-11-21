@@ -32,7 +32,7 @@ const ProjectsTable = () => {
   const onDeleteProject = (projNo) => {
     const deleteProject = () => {
       baseApi
-        .delete(`v1/Projects/${projNo}`)
+        .delete(`/Projects/${projNo}`)
         .then((res) => {
           console.log(res);
           dispatch(fetchProject());

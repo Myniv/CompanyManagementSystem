@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +8,7 @@ import baseApi from "../../baseApi";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
+import DepartmentService from "../../Service/DepartmentService";
 
 const DepartmentsForm = () => {
   const navigate = useNavigate();
@@ -19,6 +21,8 @@ const DepartmentsForm = () => {
     deptno: "",
     deptname: "",
     mgrempno: null,
+    locationId: [0],
+    location: [0],
   });
 
   const department = useSelector((state) => state.department);
@@ -44,8 +48,10 @@ const DepartmentsForm = () => {
   });
 
   const onAddDepartment = () => {
+    const { locationId, ...dataToSend } = formData;
+
     const newDepartmentId = {
-      ...formData,
+      ...dataToSend,
       deptno:
         department.data.length > 0
           ? department.data[department.data.length - 1].deptno + 1
@@ -53,7 +59,7 @@ const DepartmentsForm = () => {
     };
 
     baseApi
-      .post("v1/Departements", newDepartmentId)
+      .post("/Departements", newDepartmentId)
       .then(() => {
         ShowLoading({
           loadingMessage: "The new Department is being added...",
@@ -67,8 +73,11 @@ const DepartmentsForm = () => {
   };
 
   const onUpdateDepartment = () => {
-    baseApi
-      .put(`v1/Departements/${params.id}`, formData)
+    const { locationId, ...dataToSend } = formData;
+
+    DepartmentService.updateDepartmentsiId(params.id, dataToSend)
+      // baseApi
+      //   .put(`/Departements/${params.id}`, formData)
       .then(() => {
         ShowLoading({
           loadingMessage: "The Department is being edited...",
@@ -100,6 +109,13 @@ const DepartmentsForm = () => {
     ) {
       newErrors.deptname =
         "Department name must be between 2 and 100 characters.";
+    }
+    if (
+      !formData.locationId ||
+      formData.locationId < 0 ||
+      formData.locationId > 6
+    ) {
+      newErrors.location = "Location id must have been 1 - 6";
     }
     if (
       (formData.mgrempno !== null &&
@@ -143,6 +159,15 @@ const DepartmentsForm = () => {
     department.data.length > 0
       ? department.data[department.data.length - 1].deptno + 1
       : 1;
+
+  const locationData = [
+    "Jakarta Utara",
+    "Jakarta Barat",
+    "Jakarta Selatan",
+    "Tangerang",
+    "Bogor",
+    "Depok",
+  ];
 
   return (
     <div className="mb-5">
@@ -206,6 +231,40 @@ const DepartmentsForm = () => {
                     {employee.fname} {employee.lname}
                   </option>
                 ))}
+            </select>
+            {errors.mgrempno && (
+              <div className="invalid-feedback">{errors.mgrempno}</div>
+            )}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="locationId" className="form-label">
+              Location
+            </label>
+            <select
+              id="locationId"
+              name="locationId"
+              className={`form-control ${
+                errors.locationId ? "is-invalid" : ""
+              }`}
+              value={formData.locationId}
+              onChange={(e) => {
+                const selectedId = parseInt(e.target.value); // Get the location ID
+                setFormData({
+                  ...formData,
+                  locationId: selectedId,
+                  location: [selectedId], // Update location with the selected locationId
+                });
+              }}
+            >
+              <option value="" disabled selected>
+                Select location
+              </option>
+
+              {locationData.map((location, index) => (
+                <option key={index + 1} value={index + 1}>
+                  {location}
+                </option>
+              ))}
             </select>
             {errors.mgrempno && (
               <div className="invalid-feedback">{errors.mgrempno}</div>

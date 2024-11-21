@@ -18,6 +18,7 @@ import Pagination from "../../Component/Widgets/Pagination";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
 import ErrorMessage2 from "../../Component/Elements/ErrorMessage2";
 import SuccessMessage2 from "../../Component/Elements/SuccessMessage2";
+import DepartmentService from "../../Service/DepartmentService";
 
 const DepartmentsTable = () => {
   const [detailDepartment, setDetailDepartment] = useState([]);
@@ -40,8 +41,7 @@ const DepartmentsTable = () => {
   const onDeleteDepartments = (deptno) => {
     const deleteDepartments = () => {
       dispatch(setLoading(true));
-      baseApi
-        .delete(`v1/Departements/${deptno}`)
+      DepartmentService.deleteDepartmentsiId(deptno)
         .then((res) => {
           dispatch(fetchDepartment());
           SuccessMessage2("Department data has been deleted!");
@@ -97,6 +97,15 @@ const DepartmentsTable = () => {
     setCurrentPage(pageNumber);
   };
 
+  const locationData = [
+    "Jakarta Utara",
+    "Jakarta Barat",
+    "Jakarta Selatan",
+    "Tangerang",
+    "Bogor",
+    "Depok",
+  ];
+
   return (
     <>
       {department.isLoading ? (
@@ -125,6 +134,9 @@ const DepartmentsTable = () => {
                   Department Manager
                 </th>
                 <th scope="col" className="text-center">
+                  Department Location ID
+                </th>
+                <th scope="col" className="text-center">
                   Action
                 </th>
               </tr>
@@ -139,9 +151,13 @@ const DepartmentsTable = () => {
                     {departments.deptname}
                   </td>
                   <td className="table-light text-center">
-                    {departments.mgrempno
+                    {/* {departments.mgrempno
                       ? getEmployeesName(departments.mgrempno)
-                      : "N/A"}
+                      : "N/A"} */}
+                    {departments.mgrempno ? departments.mgrempno : "N/A"}
+                  </td>
+                  <td className="table-light text-center">
+                    {locationData[departments.locationId[0]-1]}
                   </td>
                   <td className="table-light text-center">
                     <div>

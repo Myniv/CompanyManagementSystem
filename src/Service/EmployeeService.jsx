@@ -40,31 +40,36 @@ const searchEmployee = async (
   updateDate,
   isActive,
   sortBy,
-  sortOrder,
-  name
+  sortOrder
+  //   name
 ) => {
-  return await baseApi.post(
-    "/Employees/search2",
-    {
-      pageNumber,
-      perPage,
-    },
-    {
-      params: {
-        Fname: fName,
-        Lname: lName,
-        Position: position,
-        EmpLevel: empLevel,
-        EmpType: empType,
-        KeyWord: keyWord,
-        UpdateDate: updateDate,
-        isActive: isActive,
-        SortBy: sortBy,
-        SortOrder: sortOrder,
-        Name: name,
+  try {
+    const response = await baseApi.post(
+      "/Employees/search2",
+      {
+        pageNumber,
+        perPage,
       },
-    }
-  );
+      {
+        params: {
+          Fname: fName || null,
+          Lname: lName || null,
+          Position: position || null,
+          EmpLevel: empLevel || null,
+          EmpType: empType || null,
+          KeyWord: keyWord || null,
+          UpdateDate: updateDate || null,
+          isActive,
+          SortBy: sortBy,
+          SortOrder: sortOrder,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error fetching books : ", error);
+    throw error;
+  }
 };
 
 const EmployeeService = {

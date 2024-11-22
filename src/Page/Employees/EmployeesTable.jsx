@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -15,6 +16,7 @@ import SuccessMessage2 from "../../Component/Elements/SuccessMessage2";
 import EmployeeService from "../../Service/EmployeeService";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
+import SecondaryButton from "../../Component/Elements/SecondaryButton";
 
 const fetchEmployeesService = async ({
   pageNumber,
@@ -110,7 +112,7 @@ const EmployeesTable = () => {
   const onDeleteEmployees = (empNo) => {
     const deletedEmployees = () => {
       baseApi
-        .delete(`v1/Employees/${empNo}`)
+        .delete(`/Employees/${empNo}`)
         .then((res) => {
           console.log(res);
           dispatch(fetchEmployee());
@@ -128,7 +130,11 @@ const EmployeesTable = () => {
   };
 
   const onEditingEmployees = (empNo) => {
-        navigate(`/employees/${empNo}`);
+    navigate(`/employees/${empNo}`);
+  };
+
+  const onDetailEmployees = (empNo) => {
+    navigate(`/employees/detail/${empNo}`);
   };
 
   const onAddEmployees = () => {
@@ -180,8 +186,8 @@ const EmployeesTable = () => {
   };
 
   const handleFilterChange = (e) => {
-    setFilter(e.target.value); // Update the selected filter
-    setPosition(""); // Reset other filter states
+    setFilter(e.target.value); 
+    setPosition("");
     setEmpLevel("");
     setEmpType("");
   };
@@ -266,10 +272,10 @@ const EmployeesTable = () => {
                       padding: "2px 4px",
                       display: "inline-block",
                       cursor: "pointer",
-                      width: "20px", // Ensures consistent width
+                      width: "20px",
                       height: "25px",
                       borderRadius: "4px",
-                      border: "1px solid white", // Adds a white border
+                      border: "1px solid white",
                     }}
                     className="text-decoration-none text-white p-0"
                   >
@@ -287,10 +293,10 @@ const EmployeesTable = () => {
                       padding: "2px 4px",
                       display: "inline-block",
                       cursor: "pointer",
-                      width: "20px", // Ensures consistent width
+                      width: "20px",
                       height: "25px",
                       borderRadius: "4px",
-                      border: "1px solid white", // Adds a white border
+                      border: "1px solid white",
                     }}
                   >
                     {getSortIcon("department")}
@@ -307,10 +313,10 @@ const EmployeesTable = () => {
                       padding: "2px 4px",
                       display: "inline-block",
                       cursor: "pointer",
-                      width: "20px", // Ensures consistent width
+                      width: "20px",
                       height: "25px",
                       borderRadius: "4px",
-                      border: "1px solid white", // Adds a white border
+                      border: "1px solid white",
                     }}
                   >
                     {getSortIcon("position")}
@@ -327,10 +333,10 @@ const EmployeesTable = () => {
                       padding: "2px 4px",
                       display: "inline-block",
                       cursor: "pointer",
-                      width: "20px", // Ensures consistent width
+                      width: "20px",
                       height: "25px",
                       borderRadius: "4px",
-                      border: "1px solid white", // Adds a white border
+                      border: "1px solid white",
                     }}
                   >
                     {getSortIcon("level")}
@@ -347,10 +353,10 @@ const EmployeesTable = () => {
                       padding: "2px 4px",
                       display: "inline-block",
                       cursor: "pointer",
-                      width: "20px", // Ensures consistent width
+                      width: "20px",
                       height: "25px",
                       borderRadius: "4px",
-                      border: "1px solid white", // Adds a white border
+                      border: "1px solid white",
                     }}
                   >
                     {getSortIcon("type")}
@@ -367,7 +373,21 @@ const EmployeesTable = () => {
             <tbody>
               {data.data.result.map((employee) => (
                 <tr scope="row" key={employee.empno}>
-                  <td className="table-light text-center">{employee.name}</td>
+                  <td className="table-light text-left">
+                    {" "}
+                    <img
+                      src={
+                        employee.sex === "Male"
+                          ? "/img/boyIcon.png"
+                          : "/img/girlIcon.png"
+                      }
+                      alt="Profile"
+                      className="rounded-circle me-3"
+                      width="50px"
+                      height="50px"
+                    />
+                    {employee.name}
+                  </td>
                   <td className="table-light text-center">
                     {employee.departement}
                   </td>
@@ -391,6 +411,10 @@ const EmployeesTable = () => {
                     <DangerButton
                       onClick={() => onDeleteEmployees(employee.empno)}
                       buttonName="Delete"
+                    />
+                    <SecondaryButton
+                      onClick={() => onDetailEmployees(employee.empno)}
+                      buttonName={"Detail"}
                     />
                   </td>
                 </tr>

@@ -59,7 +59,7 @@ const DepartmentsForm = () => {
     };
 
     baseApi
-      .post("/Departements", newDepartmentId)
+      .post("/Departements", formData)
       .then(() => {
         ShowLoading({
           loadingMessage: "The new Department is being added...",
@@ -75,9 +75,9 @@ const DepartmentsForm = () => {
   const onUpdateDepartment = () => {
     const { locationId, ...dataToSend } = formData;
 
-    DepartmentService.updateDepartmentsiId(params.id, dataToSend)
-      // baseApi
-      //   .put(`/Departements/${params.id}`, formData)
+    // DepartmentService.updateDepartmentsiId(params.id, dataToSend)
+      baseApi
+        .put(`/Departements/${params.id}`, formData)
       .then(() => {
         ShowLoading({
           loadingMessage: "The Department is being edited...",
@@ -248,15 +248,15 @@ const DepartmentsForm = () => {
               }`}
               value={formData.locationId}
               onChange={(e) => {
-                const selectedId = parseInt(e.target.value); // Get the location ID
+                const selectedId = parseInt(e.target.value);
                 setFormData({
                   ...formData,
                   locationId: selectedId,
-                  location: [selectedId], // Update location with the selected locationId
+                  location: [selectedId], 
                 });
               }}
             >
-              <option value="" disabled selected>
+              <option value="0" disabled selected>
                 Select location
               </option>
 

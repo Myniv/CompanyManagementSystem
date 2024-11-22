@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 const EmployeesLayout = () => {
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState(null);
 
   return (
     <>

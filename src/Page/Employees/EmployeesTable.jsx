@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
@@ -50,6 +50,8 @@ const fetchEmployeesService = async ({
 
 const EmployeesTable = () => {
   const navigate = useNavigate();
+
+  const { setEmployee } = useOutletContext();
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageCount, setPageCount] = useState(0);
@@ -126,7 +128,7 @@ const EmployeesTable = () => {
   };
 
   const onEditingEmployees = (empNo) => {
-    navigate(`/employees/${empNo}`);
+        navigate(`/employees/${empNo}`);
   };
 
   const onAddEmployees = () => {
@@ -146,18 +148,12 @@ const EmployeesTable = () => {
 
   const getSortIcon = (field) => {
     if (sortBy !== field) {
-      return (
-        "⇅"
-      );
+      return "⇅";
     }
     if (sortOrder === "asc") {
-      return (
-        "⇈"
-      );
+      return "⇈";
     } else {
-      return (
-        "⇊"
-      );
+      return "⇊";
     }
   };
 
@@ -370,7 +366,7 @@ const EmployeesTable = () => {
             </thead>
             <tbody>
               {data.data.result.map((employee) => (
-                <tr scope="row" key={employee.empNo}>
+                <tr scope="row" key={employee.empno}>
                   <td className="table-light text-center">{employee.name}</td>
                   <td className="table-light text-center">
                     {employee.departement}

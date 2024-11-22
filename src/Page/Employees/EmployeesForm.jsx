@@ -35,7 +35,7 @@ const EmployeesForm = () => {
       {
         fname: "",
         lname: "",
-        sex: "Male",
+        sex: "",
         relation: "",
         birthDate: "",
       },
@@ -50,30 +50,14 @@ const EmployeesForm = () => {
   useEffect(() => {
     if (params.id) {
       EmployeeService.getEmployeeId(params.id)
-        .then((employeeData) => {
-          const { empDependents, ...employeeDetails } = employeeData; // Extract empDependents and rest of the employee data
-          setFormData({
-            ...employeeDetails, // Set other employee fields
-            empDependents:
-              empDependents.length > 0
-                ? empDependents
-                : [
-                    {
-                      fname: "",
-                      lname: "",
-                      sex: "",
-                      relation: "",
-                      birthDate: "",
-                    },
-                  ], // Set dependents if any
-          });
+        .then((response) => {
+          setFormData(response.data);
         })
         .catch((error) => {
           setErrorAPI("Failed to load employee data.");
           console.error(error);
         });
     }
-    // dispatch(fetchDepartment());
   }, [params.id]);
 
   useEffect(() => {
@@ -107,8 +91,9 @@ const EmployeesForm = () => {
   };
 
   const onUpdateEmployees = () => {
+    console.log("Failed");
     baseApi
-      .put(`v1/Employees/${params.id}`, formData)
+      .put(`/Employees/${params.id}`, formData)
       .then(() => {
         ShowLoading({
           loadingMessage: `The employees with id ${params.id} is updating...`,
@@ -172,8 +157,16 @@ const EmployeesForm = () => {
     if (!formData.sex) {
       newErrors.sex = "Gender is required.";
     }
-    if (!formData.position) {
-      newErrors.sex = "Position is required.";
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (
+      !formData.phoneNumber ||
+      (formData.phoneNumber && !phoneRegex.test(formData.phoneNumber))
+    ) {
+      newErrors.phoneNumber = "Phone number must be between 10 and 15 digits";
+    }
+
+    if (!formData.empLevel || (formData < 0 && formData > 6)) {
+      newErrors.empLevel = "Employee level just between 1-6.";
     }
 
     return newErrors;
@@ -182,9 +175,8 @@ const EmployeesForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Check if the input is part of the dependents array
     if (e.target.id.startsWith("dependent-")) {
-      const index = 0; // Assuming you are handling the first dependent
+      const index = 0;
       const updatedDependents = [...formData.empDependents];
       updatedDependents[index] = {
         ...updatedDependents[index],
@@ -196,7 +188,6 @@ const EmployeesForm = () => {
         empDependents: updatedDependents,
       }));
     } else {
-      // Regular form field updates
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -206,7 +197,6 @@ const EmployeesForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length === 0) {
       setSubmit(true);
@@ -231,6 +221,36 @@ const EmployeesForm = () => {
     "Finance Analyst",
     "Accounting",
   ];
+
+  const handleAddDependent = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      empDependents: [
+        ...prevData.empDependents,
+        { fname: "", lname: "", sex: "Male", relation: "", birthDate: "" },
+      ],
+    }));
+  };
+
+  const handleUpdateDependent = (index, field, value) => {
+    const updatedDependents = [...formData.empDependents];
+    updatedDependents[index][field] = value;
+    setFormData((prevData) => ({
+      ...prevData,
+      empDependents: updatedDependents,
+    }));
+  };
+
+  const handleRemoveDependent = (index) => {
+    const updatedDependents = formData.empDependents.filter(
+      (_, i) => i !== index
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      empDependents: updatedDependents,
+    }));
+  };
+
   return (
     <>
       <div className="mb-5">
@@ -318,23 +338,25 @@ const EmployeesForm = () => {
                   )}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
+                  <label htmlFor="emailAddress" className="form-label">
                     Email
                   </label>
                   <input
                     type="email"
-                    id="email"
-                    name="email"
+                    id="emailAddress"
+                    name="emailAddress"
                     className={`form-control ${
                       errors.email ? "is-invalid" : ""
                     }`}
-                    value={formData.email}
+                    value={formData.emailAddress}
                     onChange={handleChange}
                     required
                     placeholder="Email"
                   />
-                  {errors.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
+                  {errors.emailAddress && (
+                    <div className="invalid-feedback">
+                      {errors.emailAddress}
+                    </div>
                   )}
                 </div>
                 <div className="mb-3">
@@ -365,7 +387,7 @@ const EmployeesForm = () => {
                     id="phoneNumber"
                     name="phoneNumber"
                     value={formData.phoneNumber}
-                    placeholder="+62xxxxxxxxx"
+                    placeholder="Phone Number"
                     onChange={handleChange}
                     required
                   />
@@ -550,105 +572,130 @@ const EmployeesForm = () => {
             </div>
             <div className="mb-3">
               <h5>Dependents</h5>
-              <div className="border p-3 mb-3">
-                <div className="mb-3">
-                  <label htmlFor={`dependent-fname`} className="form-label">
-                    Dependent First Name
-                  </label>
-                  <input
-                    type="text"
-                    id={`dependent-fname`}
-                    name="fname"
-                    className="form-control"
-                    value={formData.empDependents[0].fname}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor={`dependent-lname`} className="form-label">
-                    Dependent Last Name
-                  </label>
-                  <input
-                    type="text"
-                    id={`dependent-lname`}
-                    name="lname"
-                    className="form-control"
-                    value={formData.empDependents[0].lname}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3 formcheck">
-                  <label className="form-label">Select Gender</label>
-                  <div className="mt">
-                    <input
-                      type="radio"
-                      id="sexDependent1"
-                      name="sex"
-                      className={`form-check-input`}
-                      value="Male"
-                      onChange={handleChange}
-                      checked={formData.empDependents[0].sex === "Male"}
-                    />
+              {formData.empDependents?.map((dependent, index) => (
+                <div className="border p-3 mb-3" key={index}>
+                  <div className="mb-3">
                     <label
-                      htmlFor="sexDependent1"
-                      className="form-check-label ms-2"
+                      htmlFor={`dependent-fname-${index}`}
+                      className="form-label"
                     >
-                      Male
+                      Dependent First Name
                     </label>
-
                     <input
-                      type="radio"
-                      id="sexDependent2"
-                      name="sex"
-                      className={`form-check-input ms-2`}
-                      value="Female"
-                      onChange={handleChange}
-                      checked={formData.empDependents[0].sex === "Female"}
+                      type="text"
+                      id={`dependent-fname-${index}`}
+                      name="fname"
+                      className="form-control"
+                      value={dependent.fname}
+                      onChange={(e) =>
+                        handleUpdateDependent(index, "fname", e.target.value)
+                      }
+                      required
                     />
-                    <label
-                      htmlFor="sexDependent2"
-                      className="form-check-label ms-2"
-                    >
-                      Female
-                    </label>
-                    {errors.dependentsex && (
-                      <div className="invalid-feedback">
-                        {errors.dependentsex}
-                      </div>
-                    )}
                   </div>
+                  <div className="mb-3">
+                    <label
+                      htmlFor={`dependent-lname-${index}`}
+                      className="form-label"
+                    >
+                      Dependent Last Name
+                    </label>
+                    <input
+                      type="text"
+                      id={`dependent-lname-${index}`}
+                      name="lname"
+                      className="form-control"
+                      value={dependent.lname}
+                      onChange={(e) =>
+                        handleUpdateDependent(index, "lname", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label
+                      htmlFor={`dependent-sex-${index}`}
+                      className="form-label"
+                    >
+                      Dependent Gender
+                    </label>
+                    <select
+                      id={`dependent-sex-${index}`}
+                      name={`dependent-fname-${index}`}
+                      className={`form-select ${
+                        errors.department ? "is-invalid" : ""
+                      }`}
+                      value={dependent.sex || ""}
+                      onChange={(e) =>
+                        handleUpdateDependent(index, "sex", e.target.value)
+                      }
+                      required
+                    >
+                      <option value="" selected disabled>
+                        Select Gender
+                      </option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label
+                      htmlFor={`dependent-relation-${index}`}
+                      className="form-label"
+                    >
+                      Relation
+                    </label>
+                    <input
+                      type="text"
+                      id={`dependent-relation-${index}`}
+                      name="relation"
+                      className="form-control"
+                      value={dependent.relation}
+                      onChange={(e) =>
+                        handleUpdateDependent(index, "relation", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label
+                      htmlFor={`dependent-birthdate-${index}`}
+                      className="form-label"
+                    >
+                      Birth Date
+                    </label>
+                    <input
+                      type="date"
+                      id={`dependent-birthdate-${index}`}
+                      name="birthDate"
+                      className="form-control"
+                      value={dependent.birthDate}
+                      onChange={(e) =>
+                        handleUpdateDependent(
+                          index,
+                          "birthDate",
+                          e.target.value
+                        )
+                      }
+                      required
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => handleRemoveDependent(index)}
+                  >
+                    Remove Dependent
+                  </button>
                 </div>
-                <div className="mb-3">
-                  <label htmlFor={`dependent-relation`} className="form-label">
-                    Relation
-                  </label>
-                  <input
-                    type="text"
-                    id={`dependent-relation`}
-                    name="relation"
-                    className="form-control"
-                    value={formData.empDependents[0].relation}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor={`dependent-birthdate`} className="form-label">
-                    Birth Date
-                  </label>
-                  <input
-                    type="date"
-                    id={`dependent-birthdate`}
-                    name="birthDate"
-                    className="form-control"
-                    value={formData.empDependents[0].birthDate}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleAddDependent}
+              >
+                Add Dependent
+              </button>
             </div>
             <PrimaryButton
               type={"submit"}

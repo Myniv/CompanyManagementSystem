@@ -16,12 +16,12 @@ const addEmployee = async (data) => {
   return await baseApi.post("/Employees", data);
 };
 
-const updateEmployeeId = async (id) => {
-  return await baseApi.put(`/Employees/${id}`);
+const updateEmployeeId = async (id, data) => {
+  return await baseApi.put(`/Employees/${id}`, data);
 };
 
-const updateEmployeeDeactivate = async (id) => {
-  return await baseApi.put(`/Employees/${id}/deactivate`);
+const updateEmployeeDeactivate = async (id, data) => {
+  return await baseApi.put(`/Employees/${id}/deactivate`, data);
 };
 
 const deleteEmployee = async (id) => {

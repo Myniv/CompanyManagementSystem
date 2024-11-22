@@ -21,6 +21,9 @@ const EmployeesForm = () => {
   const department = useSelector((state) => state.department);
   const employee = useSelector((state) => state.employee);
 
+  const [isActive, setIsActive] = useState("");
+  const [deactivateReason, setDeactivateReason] = useState("");
+
   const [formData, setFormData] = useState({
     fname: "",
     lname: "",
@@ -51,7 +54,10 @@ const EmployeesForm = () => {
     if (params.id) {
       EmployeeService.getEmployeeId(params.id)
         .then((response) => {
+          console.log(response.data);
           setFormData(response.data);
+          setIsActive(response.data.isActive);
+          setDeactivateReason(response.data.deactivateReason);
         })
         .catch((error) => {
           setErrorAPI("Failed to load employee data.");
@@ -59,6 +65,9 @@ const EmployeesForm = () => {
         });
     }
   }, [params.id]);
+
+  console.log("test" + isActive);
+  console.log("test222" + deactivateReason);
 
   useEffect(() => {
     dispatch(fetchDepartment());
@@ -91,9 +100,9 @@ const EmployeesForm = () => {
   };
 
   const onUpdateEmployees = () => {
-    console.log("Failed");
-    baseApi
-      .put(`/Employees/${params.id}`, formData)
+    // baseApi
+    //   .put(`/Employees/${params.id}`, formData)
+    EmployeeService.updateEmployeeId(params.id, formData)
       .then(() => {
         ShowLoading({
           loadingMessage: `The employees with id ${params.id} is updating...`,
@@ -103,6 +112,14 @@ const EmployeesForm = () => {
       .catch((err) => {
         console.log(err);
         setErrorAPI(`Failed to update employees, please train again later...`);
+      });
+
+    EmployeeService.updateEmployeeDeactivate(params.id, {deactivateReason})
+      .then(() => {
+        console.log("Get");
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -249,6 +266,20 @@ const EmployeesForm = () => {
       ...prevData,
       empDependents: updatedDependents,
     }));
+  };
+
+  const handleIsActivateChange = (e) => {
+    setIsActive(e.target.value);
+    console.log(isActive);
+    setDeactivateReason("");
+  };
+
+  const handleIsActivateInput = (e) => {
+    const value = e.target.value;
+
+    if (isActive === "false") {
+      setDeactivateReason(value);
+    }
   };
 
   return (
@@ -567,6 +598,37 @@ const EmployeesForm = () => {
                       <div className="invalid-feedback">{errors.ssn}</div>
                     )}
                   </div>
+                  {params.id ? (
+                    <>
+                      <label htmlFor="isActive" className="form-label">
+                        Is Employe Active
+                      </label>
+                      <div className="input-group w-auto">
+                        <select
+                          id="isActive"
+                          name="isActive"
+                          className="form-select"
+                          value={isActive}
+                          onChange={handleIsActivateChange}
+                        >
+                          <option value="true">Employee Active </option>
+                          <option value="false">Employee Inactive</option>
+                        </select>
+
+                        <input
+                          placeholder="Deactivate Reason"
+                          type="text"
+                          className="form-control"
+                          onChange={handleIsActivateInput}
+                          value={deactivateReason}
+                          required={isActive === "false"}
+                          disabled={isActive === "true"}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>

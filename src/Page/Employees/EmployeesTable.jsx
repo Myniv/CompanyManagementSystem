@@ -62,7 +62,7 @@ const EmployeesTable = () => {
   const [empLevel, setEmpLevel] = useState("");
   const [empType, setEmpType] = useState("");
   const [keyWord, setKeyword] = useState("");
-  const [isActive, setIsActive] = useState(null);
+  const [isActive, setIsActive] = useState(true);
   const [sortBy, setSortBy] = useState("title");
   const [sortOrder, setSortOrder] = useState("asc");
   const [filter, setFilter] = useState("");
@@ -186,10 +186,14 @@ const EmployeesTable = () => {
   };
 
   const handleFilterChange = (e) => {
-    setFilter(e.target.value); 
+    setFilter(e.target.value);
     setPosition("");
     setEmpLevel("");
     setEmpType("");
+  };
+
+  const handleIsActiveChange = (e) => {
+    setIsActive(e.target.value);
   };
 
   function getDate() {
@@ -254,10 +258,24 @@ const EmployeesTable = () => {
                 />
               </div>
             </div>
-            <PrimaryButton
-              onClick={onAddEmployees}
-              buttonName="Add Employees"
-            />
+            <div>
+              <div className="input-group w-auto">
+                <PrimaryButton
+                  onClick={onAddEmployees}
+                  buttonName="Add Employees"
+                />
+              </div>
+              <div className="input-group w-auto">
+                <select
+                  className="form-select"
+                  value={isActive}
+                  onChange={handleIsActiveChange}
+                >
+                  <option value="true">Active Employee</option>
+                  <option value="false">In Active Employee</option>
+                </select>
+              </div>
+            </div>
           </div>
           <table className="table table-hover table-bordered">
             <thead>
@@ -363,6 +381,9 @@ const EmployeesTable = () => {
                   </span>
                 </th>
                 <th scope="col" className="text-center">
+                  Is Active
+                </th>
+                <th scope="col" className="text-center">
                   Last Updated
                 </th>
                 <th scope="col" className="text-center">
@@ -399,6 +420,9 @@ const EmployeesTable = () => {
                   </td>
                   <td className="table-light text-center">
                     {employee.empType}
+                  </td>
+                  <td className="table-light text-center">
+                    {employee.isActive ? "Active" : "In Active"}
                   </td>
                   <td className="table-light text-center">
                     {employee.updatedAt ? employee.updatedAt : getDate()}

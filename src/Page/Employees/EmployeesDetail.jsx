@@ -140,22 +140,23 @@ const EmployeeDetail = () => {
                     </Card>
                   </Tab.Pane>
 
-                  {/* Employment Tab */}
                   <Tab.Pane eventKey="employment">
                     <Card>
                       <Card.Body>
-                        <h5>Dependent Information</h5>
-                        <div className="mb-3">
-                          <strong>
-                            {formData.empDependents[0].fname}{" "}
-                            {formData.empDependents[0].lname}
-                          </strong>
-                          <p>Gender: {formData.empDependents[0].sex}</p>
-                          <p>
-                            Date of Birth: {formData.empDependents[0].birthDate}
-                          </p>
-                          <p>Relation: {formData.empDependents[0].birthDate}</p>
-                        </div>
+                        {formData.empDependents?.map((dependent, index) => (
+                          <>
+                            <h5>Dependent1 Information {index+1}</h5>
+                            <div className="mb-3">
+                              <strong>
+                                {dependent.fname}{" "}
+                                {dependent.lname}
+                              </strong>
+                              <p>Gender: {dependent.sex}</p>
+                              <p>Date of Birth: {dependent.birthDate}</p>
+                              <p>Relation: {dependent.birthDate}</p>
+                            </div>
+                          </>
+                        ))}
                       </Card.Body>
                     </Card>
                   </Tab.Pane>

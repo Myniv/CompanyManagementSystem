@@ -397,21 +397,7 @@ const EmployeesTable = () => {
             <tbody>
               {data.data.result.map((employee) => (
                 <tr scope="row" key={employee.empno}>
-                  <td className="table-light text-left">
-                    {" "}
-                    <img
-                      src={
-                        employee.sex === "Male"
-                          ? "/img/boyIcon.png"
-                          : "/img/girlIcon.png"
-                      }
-                      alt="Profile"
-                      className="rounded-circle me-3"
-                      width="50px"
-                      height="50px"
-                    />
-                    {employee.name}
-                  </td>
+                  <td className="table-light text-left">{employee.name}</td>
                   <td className="table-light text-center">
                     {employee.departement}
                   </td>

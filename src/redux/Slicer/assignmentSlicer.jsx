@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import baseApi from "../../baseApi";
 
 export const fetchAssignment = createAsyncThunk("fetchAssignment", async () => {
-  const response = await baseApi.get("v1/Worksons");
+  const response = await baseApi.get("/WorksOn/all");
   return response.data;
 });
 

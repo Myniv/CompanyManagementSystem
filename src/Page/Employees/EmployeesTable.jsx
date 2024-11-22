@@ -195,6 +195,9 @@ const EmployeesTable = () => {
   const handleIsActiveChange = (e) => {
     setIsActive(e.target.value);
   };
+  const handlePerPageChange = (e) => {
+    setPerPage(e.target.value);
+  };
 
   function getDate() {
     const today = new Date();
@@ -445,7 +448,17 @@ const EmployeesTable = () => {
               ))}
             </tbody>
           </table>
-          <div className="d-grid gap-2 d-md-flex justify-content-center">
+          <div className="d-grid gap-2 d-md-flex justify-content-between">
+            <div className="input-group w-auto">
+              <select
+                className="form-select-sm"
+                value={perPage}
+                onChange={handlePerPageChange}
+              >
+                <option value="3">3</option>
+                <option value="6">6</option>
+              </select>
+            </div>
             <ReactPaginate
               previousLabel={
                 <button

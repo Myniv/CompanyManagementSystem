@@ -14,6 +14,7 @@ import AssignmentLayout from "./Component/Layout/AssignmentsLayout";
 import AssignmentsTable from "./Page/Assignments/AssignmentsTable";
 import AssignmentsDetail from "./Page/Assignments/AssignmentsDetail";
 import AssignmentsForm from "./Page/Assignments/AssignmentsForm";
+import EmployeeDetail from "./Page/Employees/EmployeesDetail";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
           { path: "", element: <EmployeesTable /> },
           { path: "/employees/new", element: <EmployeesForm /> },
           { path: "/employees/:id", element: <EmployeesForm /> },
+          { path: "/employees/detail/:id", element: <EmployeeDetail /> },
         ],
       },
       {

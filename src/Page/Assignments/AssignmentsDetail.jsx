@@ -2,26 +2,31 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import AssignmentService from "../../Service/AssignmentService";
 
 const AssignmentsDetail = () => {
   const params = useParams();
   const [employees, setEmployee] = useState([]);
   const [projects, setProject] = useState([]);
-  const [assignments, setAssignment] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+
+  // const [assignment, setAssignment] = useState([]);
 
   const department = useSelector((state) => state.department);
   const employee = useSelector((state) => state.employee);
   const project = useSelector((state) => state.project);
-  const assignment = useSelector((state) => state.assignment);
+  // const assignment = useSelector((state) => state.assignment);
 
   useEffect(() => {
     if (params.empId && params.projId) {
-      const foundAssignment = assignment.data.find(
-        (assignment) =>
-          Number(assignment.projno) === Number(params.projId) &&
-          Number(assignment.empno) === Number(params.empId)
-      );
-      setAssignment(foundAssignment);
+      AssignmentService.getAssignmentsId(params.projId, params.empId)
+        .then((response) => {
+          console.log(response);
+          setAssignments(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       const foundProject = project.data.find(
         (proj) => Number(proj.projno) === Number(params.projId)

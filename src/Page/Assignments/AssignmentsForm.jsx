@@ -7,6 +7,7 @@ import baseApi from "../../baseApi";
 import DangerButton from "../../Component/Elements/DangerButton";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
+import AssignmentService from "../../Service/AssignmentService";
 
 const AssignmentsForm = () => {
   const navigate = useNavigate();
@@ -22,18 +23,23 @@ const AssignmentsForm = () => {
     hoursworked: "",
   });
 
-  const assignments = useSelector((state) => state.assignment);
+  const [assignments, setAssignments] = useState([]);
+
+  // const assignments = useSelector((state) => state.assignment);
   const projects = useSelector((state) => state.project);
   const employees = useSelector((state) => state.employee);
 
   useEffect(() => {
     if (params.projId && params.empId) {
-      const foundAssignment = assignments.data.find(
-        (assignment) =>
-          Number(assignment.projno) === Number(params.projId) &&
-          Number(assignment.empno) === Number(params.empId)
-      );
-      setFormData(foundAssignment);
+      AssignmentService.getAssignmentsId(params.projId, params.empId)
+        .then((response) => {
+          console.log(response);
+          setAssignments(response);
+          setFormData(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }, [params.projId, params.empId]);
 
@@ -98,18 +104,18 @@ const AssignmentsForm = () => {
       newErrors.hoursworked = "Hours Worked must be a positive number.";
     }
 
-    const duplicateAssignment = assignments.data.some((assignment) => {
-      return (
-        !params.Id &&
-        !params.empId &&
-        assignment.empno === formData.empno &&
-        assignment.projno === formData.projno
-      );
-    });
-    if (duplicateAssignment) {
-      newErrors.duplicate =
-        "An assignment for this employee and project already exists.";
-    }
+    // const duplicateAssignment = assignments.data.some((assignment) => {
+    //   return (
+    //     !params.Id &&
+    //     !params.empId &&
+    //     assignment.empno === formData.empno &&
+    //     assignment.projno === formData.projno
+    //   );
+    // });
+    // if (duplicateAssignment) {
+    //   newErrors.duplicate =
+    //     "An assignment for this employee and project already exists.";
+    // }
 
     return newErrors;
   };

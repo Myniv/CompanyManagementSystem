@@ -17,6 +17,8 @@ const DepartmentsForm = () => {
   const [submit, setSubmit] = useState(false);
   const [errorAPI, setErrorAPI] = useState("");
 
+  const [department, setDepartment] = useState([]);
+
   const [formData, setFormData] = useState({
     deptno: "",
     deptname: "",
@@ -25,17 +27,32 @@ const DepartmentsForm = () => {
     location: [0],
   });
 
-  const department = useSelector((state) => state.department);
+  // const department = useSelector((state) => state.department);
   const employee = useSelector((state) => state.employee);
+
+  // console.log(department);
 
   useEffect(() => {
     if (params.id) {
-      const findDepartment = department.data.find(
-        (department) => Number(department.deptno) === Number(params.id)
-      );
-      setFormData(findDepartment);
+      DepartmentService.getDepartmentsiId(params.id)
+        .then((response) => {
+          console.log(response);
+          setDepartment(response);
+          setFormData(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // setDepartment(getDepartment);
+      // const findDepartment = department.data.find(
+      //   (department) => Number(department.deptno) === Number(params.id)
+      // );
+      // setFormData(getDepartment);
     }
   }, [params.id]);
+
+  console.log(formData);
+  console.log(department);
 
   useEffect(() => {
     if (submit) {
@@ -155,10 +172,10 @@ const DepartmentsForm = () => {
     }
   };
 
-  const departmentId =
-    department.data.length > 0
-      ? department.data[department.data.length - 1].deptno + 1
-      : 1;
+  // const departmentId =
+  //   department.data.length > 0
+  //     ? department.data[department.data.length - 1].deptno + 1
+  //     : 1;
 
   const locationData = [
     "Jakarta Utara",
@@ -186,7 +203,7 @@ const DepartmentsForm = () => {
               className="form-control"
               id="deptno"
               name="deptno"
-              placeholder={departmentId}
+              // placeholder={departmentId}
               value={params.id}
               disabled
             />

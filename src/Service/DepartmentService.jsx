@@ -4,8 +4,16 @@ const getAllDepartments = async () => {
   return await baseApi.get("/Departements/all");
 };
 
-const getAllDepartmentsPagination = async () => {
-  return await baseApi.get("/Departements");
+const getAllDepartmentsPagination = async (pageNumber, perPage) => {
+  try {
+    const response = await baseApi.get("/Departements", {
+      params: { pageNumber, perPage },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error fetching Departments : ", error);
+    throw error;
+  }
 };
 
 const getDepartmentsiId = async (id) => {

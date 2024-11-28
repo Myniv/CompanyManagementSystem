@@ -7,13 +7,16 @@ import baseApi from "../../baseApi";
 import DangerButton from "../../Component/Elements/DangerButton";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
+import Projectservice from "../../Service/ProjectService";
 
 const ProjectsForm = () => {
   const navigate = useNavigate();
   const params = useParams();
 
   const departments = useSelector((state) => state.department);
-  const projects = useSelector((state) => state.project);
+  // const projects = useSelector((state) => state.project);
+
+  const [projects, setProjects] = useState([]);
 
   const [errorAPI, setErrorAPI] = useState("");
 
@@ -25,10 +28,19 @@ const ProjectsForm = () => {
 
   useEffect(() => {
     if (params.id) {
-      const findProject = projects.data.find(
-        (project) => Number(project.projno) === Number(params.id)
-      );
-      setFormData(findProject);
+      Projectservice.getProjectsiId(params.id)
+        .then((response) => {
+          console.log(response);
+          setProjects(response);
+          setFormData(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // const findProject = projects.data.find(
+      //   (project) => Number(project.projno) === Number(params.id)
+      // );
+      // setFormData(findProject);
     }
   }, [params.id]);
 
@@ -118,11 +130,6 @@ const ProjectsForm = () => {
     }
   };
 
-  const projectId =
-    projects.data.length > 0
-      ? projects.data[projects.data.length - 1].projno + 1
-      : 1;
-
   return (
     <div className="mb-5">
       <h2 className="ms-5">{params.id ? "Edit Project" : "Add Project"}</h2>
@@ -138,7 +145,7 @@ const ProjectsForm = () => {
               className="form-control"
               id="projno"
               name="projno"
-              value={params.id ? params.id : projectId}
+              value={params.id ? params.id : ""}
               disabled
             />
           </div>

@@ -20,6 +20,10 @@ import ErrorMessage2 from "../../Component/Elements/ErrorMessage2";
 const AssignmentsTable = () => {
   const navigate = useNavigate();
 
+  const { user: currentUser } = useSelector((state) => state.auth);
+
+  console.log(currentUser.role);
+
   const dispatch = useDispatch();
   const assignment = useSelector((state) => state.assignment);
   const project = useSelector((state) => state.project);
@@ -95,6 +99,10 @@ const AssignmentsTable = () => {
     setCurrentPage(pageNumber);
   };
 
+  const handlePerPageChange = (e) => {
+    SetPostsPerPage(e.target.value);
+  };
+
   return (
     <>
       {assignment.isLoading ? (
@@ -110,7 +118,7 @@ const AssignmentsTable = () => {
               buttonName={"Add Assignments"}
             />
           </div>
-          <table className="table table-hover table-bordered">
+          <table className="table table-hover table-bordered table-sm">
             <thead>
               <tr className="table-dark">
                 <th scope="col" className="text-center">
@@ -147,7 +155,48 @@ const AssignmentsTable = () => {
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
-                      <PrimaryButton
+                      {currentUser.role.includes("HR Manager") ? (
+                        <SecondaryButton
+                          onClick={() =>
+                            onDetailAssignment(
+                              assignment.empno,
+                              assignment.projno
+                            )
+                          }
+                          buttonName="Detail"
+                        />
+                      ) : (
+                        <>
+                          <PrimaryButton
+                            onClick={() =>
+                              onEditAssignment(
+                                assignment.projno,
+                                assignment.empno
+                              )
+                            }
+                            buttonName="Edit"
+                          />
+                          <DangerButton
+                            onClick={() =>
+                              onDeleteAssignment(
+                                assignment.projno,
+                                assignment.empno
+                              )
+                            }
+                            buttonName="Delete"
+                          />
+                          <SecondaryButton
+                            onClick={() =>
+                              onDetailAssignment(
+                                assignment.empno,
+                                assignment.projno
+                              )
+                            }
+                            buttonName="Detail"
+                          />
+                        </>
+                      )}
+                      {/* <PrimaryButton
                         onClick={() =>
                           onEditAssignment(assignment.projno, assignment.empno)
                         }
@@ -170,19 +219,31 @@ const AssignmentsTable = () => {
                           )
                         }
                         buttonName="Detail"
-                      />
+                      /> */}
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <Pagination
-            length={project.data.length}
-            postsPerPage={postsPerPge}
-            handlePagination={handlePagination}
-            currentPage={currentPage}
-          />
+          <div className="d-grid gap-2 d-md-flex justify-content-between">
+            <div className="input-group w-auto">
+              <select
+                className="form-select-sm"
+                value={postsPerPge}
+                onChange={handlePerPageChange}
+              >
+                <option value="3">3</option>
+                <option value="6">6</option>
+              </select>
+            </div>
+            <Pagination
+              length={project.data.length}
+              postsPerPage={postsPerPge}
+              handlePagination={handlePagination}
+              currentPage={currentPage}
+            />
+          </div>
         </div>
       )}
     </>

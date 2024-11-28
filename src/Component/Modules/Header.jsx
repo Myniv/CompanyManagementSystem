@@ -1,6 +1,36 @@
-import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const { user: currentuser } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const menuItems = [
+    {
+      label: "Main",
+      path: "/",
+      visibleForRoles: [
+        "Administrator",
+        "HR Manager",
+        "Department Manager",
+        "Employee Supervisor",
+        "Employee",
+      ],
+    },
+    {
+      label: "Profile",
+      path: "/profile",
+      visibleForRoles: [
+        "Administrator",
+        "HR Manager",
+        "Department Manager",
+        "Employee Supervisor",
+        "Employee",
+      ],
+    },
+  ];
+
   const linkStyle = {
     color: "#D3D3D3",
     textDecoration: "none",

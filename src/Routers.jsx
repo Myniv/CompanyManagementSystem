@@ -20,6 +20,7 @@ import PrivateRoute from "./PrivateRoutes";
 import Profile from "./Page/Profile";
 import DepartmentsTable2 from "./Page/Departments/DepartmentTablePaginationServer";
 import ProjectsTablePaginationServer from "./Page/Projects/ProjectsTablePaginationServer";
+import AssignmentsTablePaginationServer from "./Page/Assignments/AssignmentsTablePaginationServer";
 
 export const router = createBrowserRouter([
   {
@@ -119,7 +120,7 @@ export const router = createBrowserRouter([
           {
             element: <AssignmentLayout />,
             children: [
-              { path: "", element: <AssignmentsTable /> },
+              { path: "", element: <AssignmentsTablePaginationServer /> },
               { path: "/assignments/new", element: <AssignmentsForm /> },
               {
                 path: "/assignments/edit/:projId/:empId",

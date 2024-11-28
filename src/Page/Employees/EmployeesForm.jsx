@@ -9,6 +9,7 @@ import DangerButton from "../../Component/Elements/DangerButton";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
 import EmployeeService from "../../Service/EmployeeService";
 import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
+import LoadingWithErrorMessage from "../../Component/Elements/LoadingWithErrorMessage";
 
 const EmployeesForm = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const EmployeesForm = () => {
   const department = useSelector((state) => state.department);
   const employee = useSelector((state) => state.employee);
 
-  const [isActive, setIsActive] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const [deactivateReason, setDeactivateReason] = useState("");
 
   const [formData, setFormData] = useState({
@@ -111,16 +112,21 @@ const EmployeesForm = () => {
       })
       .catch((err) => {
         console.log(err);
-        setErrorAPI(`Failed to update employees, please train again later...`);
+        LoadingWithErrorMessage({
+          loadingMessage: `The employees with id ${params.id} is updating...`,
+          errorMessage: "Oops, there is an error, please try again later",
+        });
       });
 
-    EmployeeService.updateEmployeeDeactivate(params.id, {deactivateReason})
-      .then(() => {
-        console.log("Get");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (!isActive) {
+      EmployeeService.updateEmployeeDeactivate(params.id, { deactivateReason })
+        .then(() => {
+          console.log("Get");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const onCancel = () => {
@@ -370,19 +376,20 @@ const EmployeesForm = () => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="emailAddress" className="form-label">
-                    Email
+                    Email Address
                   </label>
                   <input
-                    type="email"
+                    type="emailAddress"
                     id="emailAddress"
                     name="emailAddress"
                     className={`form-control ${
-                      errors.email ? "is-invalid" : ""
+                      errors.emailAddress ? "is-invalid" : ""
                     }`}
                     value={formData.emailAddress}
                     onChange={handleChange}
                     required
-                    placeholder="Email"
+                    placeholder="Email Address"
+                    disabled={params.id}
                   />
                   {errors.emailAddress && (
                     <div className="invalid-feedback">

@@ -17,6 +17,7 @@ import EmployeeService from "../../Service/EmployeeService";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import SecondaryButton from "../../Component/Elements/SecondaryButton";
+import ReactPagination from "../../Component/Widgets/ReactPagination";
 
 const fetchEmployeesService = async ({
   pageNumber,
@@ -94,6 +95,8 @@ const EmployeesTable = () => {
       }),
     placeholderData: keepPreviousData,
   });
+
+  console.log(data);
 
   const dispatch = useDispatch();
   const department = useSelector((state) => state.department);
@@ -280,9 +283,29 @@ const EmployeesTable = () => {
               </div>
             </div>
           </div>
-          <table className="table table-hover table-bordered">
+          <table className="table table-hover table-bordered table-sm">
             <thead>
               <tr className="table-dark">
+                <th scope="col" className="text-center">
+                  Id
+                  <span
+                    onClick={() => handleSorting("name")}
+                    style={{
+                      backgroundColor: "dark",
+                      color: "white",
+                      padding: "2px 4px",
+                      display: "inline-block",
+                      cursor: "pointer",
+                      width: "20px",
+                      height: "25px",
+                      borderRadius: "4px",
+                      border: "1px solid white",
+                    }}
+                    className="text-decoration-none text-white p-0"
+                  >
+                    {getSortIcon("empno")}
+                  </span>
+                </th>
                 <th scope="col" className="text-center">
                   Employee Name{" "}
                   <span
@@ -397,6 +420,7 @@ const EmployeesTable = () => {
             <tbody>
               {data.data.result.map((employee) => (
                 <tr scope="row" key={employee.empno}>
+                  <td className="table-light text-left">{employee.empno}</td>
                   <td className="table-light text-left">{employee.name}</td>
                   <td className="table-light text-center">
                     {employee.departement}
@@ -477,6 +501,11 @@ const EmployeesTable = () => {
               containerClassName="pagination"
               activeClassName="active"
             />
+            {/* <ReactPagination
+              pageNumber={pageNumber}
+              pageCount={pageCount}
+              handlePageSizeChange={handlePageSizeChange}
+            /> */}
           </div>
         </div>
       )}

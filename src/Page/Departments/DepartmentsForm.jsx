@@ -58,8 +58,7 @@ const DepartmentsForm = () => {
           : 1,
     };
 
-    baseApi
-      .post("/Departements", formData)
+    DepartmentService.addDepartments(formData)
       .then(() => {
         ShowLoading({
           loadingMessage: "The new Department is being added...",
@@ -76,9 +75,10 @@ const DepartmentsForm = () => {
     const { locationId, ...dataToSend } = formData;
 
     // DepartmentService.updateDepartmentsiId(params.id, dataToSend)
-      baseApi
-        .put(`/Departements/${params.id}`, formData)
+    // baseApi.put(`/Departements/${params.id}`, formData);
+    DepartmentService.updateDepartmentsiId(params.id, formData)
       .then(() => {
+        console.log(formData);
         ShowLoading({
           loadingMessage: "The Department is being edited...",
           nextPage: () => navigate("/departments"),
@@ -252,7 +252,7 @@ const DepartmentsForm = () => {
                 setFormData({
                   ...formData,
                   locationId: selectedId,
-                  location: [selectedId], 
+                  location: [selectedId],
                 });
               }}
             >

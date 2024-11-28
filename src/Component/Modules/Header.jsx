@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
+import LogoutConfirmation from "../Elements/LogoutConfirmation";
+import { logout } from "../../redux/Slicer/authSlicer";
 
 const Header = () => {
-  const { user: currentuser } = useSelector((state) => state.auth);
+  const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,7 +31,78 @@ const Header = () => {
         "Employee",
       ],
     },
+    {
+      label: "Employee",
+      path: "/employees",
+      visibleForRoles: ["Administrator", "HR Manager", "Employee Supervisor"],
+    },
+    {
+      label: "Department",
+      path: "/departments",
+      visibleForRoles: [
+        "Administrator",
+        "Department Manager",
+        "Employee Supervisor",
+      ],
+    },
+    {
+      label: "Projects",
+      path: "/projects",
+      visibleForRoles: ["Administrator", "Department Manager"],
+    },
+    {
+      label: "Assignments",
+      path: "/assignments",
+      visibleForRoles: ["Administrator", "HR Manager", "Employee Supervisor"],
+    },
+    {
+      label: "Register",
+      path: "/register",
+      visibleForRoles: ["Administrator"],
+    },
+    {
+      label: "Login",
+      path: "/login",
+      isAuthenticated: false,
+    },
+    {
+      label: "Logout",
+      isAuthenticated: true,
+    },
   ];
+
+  const isMenuVisible = (item) => {
+    //for showing all menu to user
+    if (item.visibleForAll) {
+      return true;
+    }
+
+    //for showing pages if are not login yer
+    if (item.isAuthenticated === false && !currentUser) {
+      return true;
+    }
+
+    //for showing logout if already login
+    if (item.label === "Logout" && currentUser) {
+      return true;
+    }
+
+    //for role for spesifict menu
+    if (item.visibleForRoles && currentUser?.role) {
+      return item.visibleForRoles.some((role) =>
+        currentUser.role.includes(role)
+      );
+    }
+
+    return false;
+  };
+
+  const handleLogout = () => {
+    LogoutConfirmation({
+      logout: () => dispatch(logout(currentUser.refreshToken)),
+      nextPage: () => navigate("/"),
+    });
+  };
 
   const linkStyle = {
     color: "#D3D3D3",
@@ -84,64 +157,36 @@ const Header = () => {
             </button>
             <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                  <NavLink
-                    to="/"
-                    className="nav-link"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : linkStyle
-                    }
-                  >
-                    Main
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    to="/employees"
-                    className="nav-link"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : linkStyle
-                    }
-                  >
-                    Employees
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    to="/departments"
-                    className="nav-link"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : linkStyle
-                    }
-                  >
-                    Department
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    to="/projects"
-                    className="nav-link"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : linkStyle
-                    }
-                  >
-                    Project
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    to="/assignments"
-                    className="nav-link"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : linkStyle
-                    }
-                  >
-                    Assignment
-                  </NavLink>
-                </li>
+                {menuItems.filter(isMenuVisible).map((item, index) => (
+                  <li className="nav-item" key={index}>
+                    <NavLink
+                      key={index}
+                      to={item.path}
+                      onClick={item.label === "Logout" ? handleLogout : null}
+                      className="nav-link"
+                      style={({ isActive }) => {
+                        isActive && !item.label === "Logout"
+                          ? activeLinkStyle
+                          : linkStyle;
+                      }}
+                    >
+                      {item.label}
+                    </NavLink>
+                  </li>
+                ))}
               </ul>
             </div>
           </nav>
+          {currentUser && (
+            <hd>
+              Welcome,{" "}
+              <strong>
+                {currentUser.user?.userName
+                  ? currentUser.user.userName
+                  : currentUser.role}
+              </strong>
+            </hd>
+          )}
         </div>
       </div>
     </header>

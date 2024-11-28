@@ -178,7 +178,7 @@ const AssignmentsTable = () => {
             </tbody>
           </table>
           <Pagination
-            length={employee.data.length}
+            length={project.data.length}
             postsPerPage={postsPerPge}
             handlePagination={handlePagination}
             currentPage={currentPage}

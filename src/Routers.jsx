@@ -19,6 +19,7 @@ import Login from "./Page/Authentication/Login";
 import PrivateRoute from "./PrivateRoutes";
 import Profile from "./Page/Profile";
 import DepartmentsTable2 from "./Page/Departments/DepartmentTablePaginationServer";
+import ProjectsTablePaginationServer from "./Page/Projects/ProjectsTablePaginationServer";
 
 export const router = createBrowserRouter([
   {
@@ -95,7 +96,7 @@ export const router = createBrowserRouter([
           {
             element: <ProjectsLayout />,
             children: [
-              { path: "", element: <ProjectsTable /> },
+              { path: "", element: <ProjectsTablePaginationServer /> },
               { path: "/projects/new", element: <ProjectsForm /> },
               { path: "/projects/:id", element: <ProjectsForm /> },
             ],

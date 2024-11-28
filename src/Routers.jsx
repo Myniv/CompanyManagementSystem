@@ -15,6 +15,8 @@ import AssignmentsTable from "./Page/Assignments/AssignmentsTable";
 import AssignmentsDetail from "./Page/Assignments/AssignmentsDetail";
 import AssignmentsForm from "./Page/Assignments/AssignmentsForm";
 import EmployeeDetail from "./Page/Employees/EmployeesDetail";
+import Login from "./Page/Authentication/Login";
+import PrivateRoute from "./PrivateRoutes";
 
 export const router = createBrowserRouter([
   {
@@ -22,50 +24,99 @@ export const router = createBrowserRouter([
     element: <LandingLayout />,
     children: [
       { path: "", element: <MainPage /> },
+      { path: "/Login", element: <Login /> },
       {
         path: "/employees",
-        element: <EmployeesLayout />,
+        element: (
+          <PrivateRoute
+            allowedRoles={[
+              "Administrator",
+              "HR Manager",
+              "Department Manager",
+              "Employee Supervisor",
+              "Employee",
+            ]}
+          />
+        ),
         children: [
-          { path: "", element: <EmployeesTable /> },
-          { path: "/employees/new", element: <EmployeesForm /> },
-          { path: "/employees/:id", element: <EmployeesForm /> },
-          { path: "/employees/detail/:id", element: <EmployeeDetail /> },
+          {
+            element: <EmployeesLayout />,
+            children: [
+              { path: "", element: <EmployeesTable /> },
+              { path: "/employees/new", element: <EmployeesForm /> },
+              { path: "/employees/:id", element: <EmployeesForm /> },
+              { path: "/employees/detail/:id", element: <EmployeeDetail /> },
+            ],
+          },
         ],
       },
       {
         path: "/departments",
-        element: <DepartmentsLayout />,
+        element: (
+          <PrivateRoute
+            allowedRoles={["Administrator", "Department Manager"]}
+          />
+        ),
         children: [
-          { path: "", element: <DepartmentsTable /> },
-          { path: "/departments/new", element: <DepartmentsForm /> },
-          { path: "/departments/:id", element: <DepartmentsForm /> },
+          {
+            element: <DepartmentsLayout />,
+            children: [
+              { path: "", element: <DepartmentsTable /> },
+              { path: "/departments/new", element: <DepartmentsForm /> },
+              { path: "/departments/:id", element: <DepartmentsForm /> },
+            ],
+          },
         ],
       },
       {
         path: "/projects",
-        element: <ProjectsLayout />,
+        element: (
+          <PrivateRoute
+            allowedRoles={["Administrator", "Department Manager", "HR Manager"]}
+          />
+        ),
         children: [
-          { path: "", element: <ProjectsTable /> },
-          { path: "/projects/new", element: <ProjectsForm /> },
-          { path: "/projects/:id", element: <ProjectsForm /> },
+          {
+            element: <ProjectsLayout />,
+            children: [
+              { path: "", element: <ProjectsTable /> },
+              { path: "/projects/new", element: <ProjectsForm /> },
+              { path: "/projects/:id", element: <ProjectsForm /> },
+            ],
+          },
         ],
       },
       {
         path: "/assignments",
-        element: <AssignmentLayout />,
+        element: (
+          <PrivateRoute
+            allowedRoles={[
+              "Administrator",
+              "HR Manager",
+              "Employee Supervisor",
+              "Employee",
+            ]}
+          />
+        ),
         children: [
-          { path: "", element: <AssignmentsTable /> },
-          { path: "/assignments/new", element: <AssignmentsForm /> },
           {
-            path: "/assignments/edit/:projId/:empId",
-            element: <AssignmentsForm />,
-          },
-          {
-            path: "/assignments/:empId/:projId",
-            element: <AssignmentsDetail />,
+            element: <AssignmentLayout />,
+            children: [
+              { path: "", element: <AssignmentsTable /> },
+              { path: "/assignments/new", element: <AssignmentsForm /> },
+              {
+                path: "/assignments/edit/:projId/:empId",
+                element: <AssignmentsForm />,
+              },
+              {
+                path: "/assignments/:empId/:projId",
+                element: <AssignmentsDetail />,
+              },
+            ],
           },
         ],
       },
+      { path: "/login", element: <Login /> },
     ],
   },
 ]);

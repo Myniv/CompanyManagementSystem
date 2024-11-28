@@ -56,6 +56,7 @@ const DepartmentsTable2 = () => {
   useEffect(() => {
     // dispatch(fetchDepartment());
     dispatch(fetchEmployee());
+    refetch();
   }, []);
 
   useEffect(() => {
@@ -79,6 +80,7 @@ const DepartmentsTable2 = () => {
         .then((res) => {
           dispatch(fetchDepartment());
           SuccessMessage2("Department data has been deleted!");
+          refetch();
           console.log(res);
         })
         .catch((err) => {
@@ -172,41 +174,50 @@ const DepartmentsTable2 = () => {
               </tr>
             </thead>
             <tbody>
-              {data.data.map((departments) => (
-                <tr scope="row" key={departments.deptno}>
-                  <td className="table-light text-center">
-                    {departments.deptno}
-                  </td>
-                  <td className="table-light text-center">
-                    {departments.deptname}
-                  </td>
-                  <td className="table-light text-center">
-                    {/* {departments.mgrempno
-                      ? getEmployeesName(departments.mgrempno)
-                      : "N/A"} */}
-                    {departments.mgrempno ? departments.mgrempno : "N/A"}
-                  </td>
-                  <td className="table-light text-center">
-                    {locationData[departments.locationId[0] - 1]}
-                  </td>
-                  <td className="table-light text-center">
-                    <div>
-                      <PrimaryButton
-                        onClick={() => onEditDepartments(departments.deptno)}
-                        buttonName="Edit"
-                      />
-                      <DangerButton
-                        onClick={() => onDeleteDepartments(departments.deptno)}
-                        buttonName="Delete"
-                      />
-                      <SecondaryButton
-                        onClick={() => onDetailEmployee(departments.deptno)}
-                        buttonName="Detail"
-                      />
-                    </div>
+              {data?.data && data.data.length >= 0 ? (
+                data.data.map((departments) => (
+                  <tr scope="row" key={departments.deptno}>
+                    <td className="table-light text-center">
+                      {departments.deptno}
+                    </td>
+                    <td className="table-light text-center">
+                      {departments.deptname}
+                    </td>
+                    <td className="table-light text-center">
+                      {departments.mgrempno ? departments.mgrempno : "N/A"}
+                    </td>
+                    <td className="table-light text-center">
+                      {departments.locationId
+                        ?.map((id) => locationData[id - 1])
+                        .join(", ") || "N/A"}
+                    </td>
+                    <td className="table-light text-center">
+                      <div>
+                        <PrimaryButton
+                          onClick={() => onEditDepartments(departments.deptno)}
+                          buttonName="Edit"
+                        />
+                        <DangerButton
+                          onClick={() =>
+                            onDeleteDepartments(departments.deptno)
+                          }
+                          buttonName="Delete"
+                        />
+                        <SecondaryButton
+                          onClick={() => onDetailEmployee(departments.deptno)}
+                          buttonName="Detail"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center">
+                    No data available.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
           {/* <Pagination

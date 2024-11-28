@@ -17,6 +17,8 @@ import AssignmentsForm from "./Page/Assignments/AssignmentsForm";
 import EmployeeDetail from "./Page/Employees/EmployeesDetail";
 import Login from "./Page/Authentication/Login";
 import PrivateRoute from "./PrivateRoutes";
+import Profile from "./Page/Profile";
+import DepartmentsTable2 from "./Page/Departments/DepartmentTablePaginationServer";
 
 export const router = createBrowserRouter([
   {
@@ -24,7 +26,21 @@ export const router = createBrowserRouter([
     element: <LandingLayout />,
     children: [
       { path: "", element: <MainPage /> },
-      { path: "/Login", element: <Login /> },
+      {
+        path: "/profile",
+        element: (
+          <PrivateRoute
+            allowedRoles={[
+              "Administrator",
+              "HR Manager",
+              "Department Manager",
+              "Employee Supervisor",
+              "Employee",
+            ]}
+          />
+        ),
+        children: [{ path: "", element: <Profile /> }],
+      },
       {
         path: "/employees",
         element: (
@@ -61,7 +77,7 @@ export const router = createBrowserRouter([
           {
             element: <DepartmentsLayout />,
             children: [
-              { path: "", element: <DepartmentsTable /> },
+              { path: "", element: <DepartmentsTable2 /> },
               { path: "/departments/new", element: <DepartmentsForm /> },
               { path: "/departments/:id", element: <DepartmentsForm /> },
             ],
@@ -94,7 +110,7 @@ export const router = createBrowserRouter([
               "Administrator",
               "HR Manager",
               "Employee Supervisor",
-              "Employee",
+              // "Employee",
             ]}
           />
         ),

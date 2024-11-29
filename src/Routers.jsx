@@ -21,6 +21,7 @@ import Profile from "./Page/Profile";
 import DepartmentsTable2 from "./Page/Departments/DepartmentTablePaginationServer";
 import ProjectsTablePaginationServer from "./Page/Projects/ProjectsTablePaginationServer";
 import AssignmentsTablePaginationServer from "./Page/Assignments/AssignmentsTablePaginationServer";
+import RegisterUser from "./Page/Authentication/Register";
 
 export const router = createBrowserRouter([
   {
@@ -133,6 +134,11 @@ export const router = createBrowserRouter([
             ],
           },
         ],
+      },
+      {
+        path: "/register",
+        element: <PrivateRoute allowedRoles={"Administrator"} />,
+        children: [{ path: "", element: <RegisterUser /> }],
       },
       { path: "/login", element: <Login /> },
     ],

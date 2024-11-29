@@ -3,11 +3,20 @@ import { useEffect, useState } from "react";
 import { Tab, Nav, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import EmployeeService from "../Service/EmployeeService";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
   const params = useParams();
 
   const navigate = useNavigate();
+
+  const [employees, setEmployee] = useState([]);
+  const [projects, setProject] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+
+  const department = useSelector((state) => state.department);
+  const employee = useSelector((state) => state.employee);
+  const project = useSelector((state) => state.project);
 
   const [errorAPI, setErrorAPI] = useState("");
   const [formData, setFormData] = useState({
@@ -53,7 +62,24 @@ const Profile = () => {
         setErrorAPI("Failed to load employee data.");
         console.error(error);
       });
+
+    const foundProject = project.data.find(
+      (proj) => Number(proj.projno) === Number(5)
+    );
+    setProject(foundProject);
+
+    const foundEmployee = employee.data.find(
+      (emp) => Number(emp.empno) === Number(5)
+    );
+    setEmployee(foundEmployee);
+    console.log(employees.deptno);
   }, []);
+
+  const getDepartmentName = (deptNo) => {
+    const foundDepartment = department.data.find(
+      (department) => Number(department.deptno) === Number(deptNo)
+    );
+  };
 
   return (
     <>
@@ -108,6 +134,9 @@ const Profile = () => {
                     <Nav.Link eventKey="employment">Dependent</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
+                    <Nav.Link eventKey="Job">Job</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
                     <Nav.Link onClick={() => navigate("/employees/5")}>
                       Edit Profile
                     </Nav.Link>
@@ -158,6 +187,44 @@ const Profile = () => {
                             </div>
                           </>
                         ))}
+                      </Card.Body>
+                    </Card>
+                  </Tab.Pane>
+                  <Tab.Pane eventKey="Job">
+                    <Card>
+                      <Card.Body>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="mb-3 border">
+                              <h4 className="m-2">Assignment Detail</h4>
+                              <p className="m-2">
+                                <strong>Date Started: </strong>
+                                {assignments.dateworked}
+                              </p>
+                              <p className="m-2">
+                                <strong>Hours Worked: </strong>
+                                {assignments.hoursworked}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="mb-3 border">
+                              <h4 className="m-2">Project Detail</h4>
+                              <p className="m-2">
+                                <strong>Project ID: </strong>{" "}
+                                {/* {projects.projno? projects.projno : "N/A"} */}
+                              </p>
+                              <p className="m-2">
+                                <strong>Project Department: </strong>
+                                {/* {getDepartmentName(projects.deptno)} */}
+                              </p>
+                              <p className="m-2">
+                                <strong>Project Name: </strong>{" "}
+                                {/* {projects.projname ? projects.projname : "N/A"} */}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
                       </Card.Body>
                     </Card>
                   </Tab.Pane>

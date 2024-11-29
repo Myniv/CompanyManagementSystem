@@ -42,7 +42,6 @@ const Header = () => {
       visibleForRoles: [
         "Administrator",
         "Department Manager",
-        "Employee Supervisor",
       ],
     },
     {

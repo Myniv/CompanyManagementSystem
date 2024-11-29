@@ -113,7 +113,7 @@ export const router = createBrowserRouter([
               "Administrator",
               "HR Manager",
               "Employee Supervisor",
-              // "Employee",
+              "Department Manager"
             ]}
           />
         ),

@@ -269,7 +269,7 @@ const EmployeesTable = () => {
               </div>
             </div>
             <div>
-              {currentUser.role.includes("HR Manager", "Administrator") ? (
+              {currentUser.role.includes("Administrator") || currentUser.role.includes("HR Manager") ? (
                 <div className="input-group w-auto">
                   <PrimaryButton
                     onClick={onAddEmployees}

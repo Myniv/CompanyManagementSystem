@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ShowLoading from "../../Component/Elements/ShowLoading";
 import { useDispatch, useSelector } from "react-redux";
-import baseApi from "../../baseApi";
 import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
 import EmployeeService from "../../Service/EmployeeService";
 import { fetchDepartment } from "../../redux/Slicer/departmentSlicer";
 import LoadingWithErrorMessage from "../../Component/Elements/LoadingWithErrorMessage";
+import { fetchEmployee } from "../../redux/Slicer/employeeSlicer";
 
 const EmployeesForm = () => {
   const navigate = useNavigate();
@@ -17,6 +17,8 @@ const EmployeesForm = () => {
 
   const [submit, setSubmit] = useState(false);
   const [errorAPI, setErrorAPI] = useState("");
+
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const department = useSelector((state) => state.department);
@@ -67,12 +69,11 @@ const EmployeesForm = () => {
     }
   }, [params.id]);
 
-  console.log("test" + isActive);
-  console.log("test222" + deactivateReason);
+  console.log(formData);
 
   useEffect(() => {
     dispatch(fetchDepartment());
-    // dispatch(fetchEmployee());
+    dispatch(fetchEmployee());
   }, []);
 
   useEffect(() => {
@@ -86,8 +87,7 @@ const EmployeesForm = () => {
   }, [submit]);
 
   const onAddEmployees = () => {
-    baseApi
-      .post("/Employees", formData)
+    EmployeeService.addEmployee(formData)
       .then(() => {
         ShowLoading({
           loadingMessage: "The new employees is being added...",
@@ -410,6 +410,12 @@ const EmployeesForm = () => {
                     onChange={handleChange}
                     placeholder="Salary"
                     required
+                    disabled={
+                      !(
+                        currentUser.role.includes("HR Manager") ||
+                        currentUser.role.includes("Administrator")
+                      )
+                    }
                   />
                   {errors.salary && (
                     <div className="invalid-feedback">{errors.salary}</div>
@@ -431,6 +437,30 @@ const EmployeesForm = () => {
                   />
                   {errors.phoneNumber && (
                     <div className="invalid-feedback">{errors.phoneNumber}</div>
+                  )}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="ssn" className="form-label">
+                    SSN
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="ssn"
+                    name="ssn"
+                    value={formData.ssn}
+                    placeholder="SSN"
+                    onChange={handleChange}
+                    required
+                    disabled={
+                      !(
+                        currentUser.role.includes("HR Manager") ||
+                        currentUser.role.includes("Administrator")
+                      )
+                    }
+                  />
+                  {errors.ssn && (
+                    <div className="invalid-feedback">{errors.ssn}</div>
                   )}
                 </div>
               </div>
@@ -549,6 +579,31 @@ const EmployeesForm = () => {
                     )}
                   </div>
                   <div className="mb-3">
+                    <label htmlFor="directSupervisor" className="form-label">
+                      Direct Supervisor
+                    </label>
+                    <select
+                      id="directSupervisor"
+                      name="directSupervisor"
+                      className={`form-select ${
+                        errors.directSupervisor ? "is-invalid" : ""
+                      }`}
+                      value={formData.directSupervisor}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value={null}>Select Direct Supervisor</option>
+                      {employee.data.map((employee) => (
+                        <option key={employee.empno} value={employee.empno}>
+                          {employee.fname} {employee.lname}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.deptno && (
+                      <div className="invalid-feedback">{errors.deptno}</div>
+                    )}
+                  </div>
+                  <div className="mb-3">
                     <label htmlFor="empType" className="form-label">
                       Employee Type
                     </label>
@@ -585,24 +640,6 @@ const EmployeesForm = () => {
                     />
                     {errors.empLevel && (
                       <div className="invalid-feedback">{errors.empLevel}</div>
-                    )}
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="ssn" className="form-label">
-                      SSN
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="ssn"
-                      name="ssn"
-                      value={formData.ssn}
-                      placeholder="SSN"
-                      onChange={handleChange}
-                      required
-                    />
-                    {errors.ssn && (
-                      <div className="invalid-feedback">{errors.ssn}</div>
                     )}
                   </div>
                   {params.id ? (

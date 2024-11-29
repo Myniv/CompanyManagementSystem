@@ -18,6 +18,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import SecondaryButton from "../../Component/Elements/SecondaryButton";
 import ReactPagination from "../../Component/Widgets/ReactPagination";
+import { current } from "@reduxjs/toolkit";
 
 const fetchEmployeesService = async ({
   pageNumber,
@@ -55,6 +56,8 @@ const EmployeesTable = () => {
   const navigate = useNavigate();
 
   const { setEmployee } = useOutletContext();
+
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageCount, setPageCount] = useState(0);
@@ -97,6 +100,7 @@ const EmployeesTable = () => {
   });
 
   console.log(data);
+  console.log(isError);
 
   const dispatch = useDispatch();
   const department = useSelector((state) => state.department);
@@ -265,12 +269,14 @@ const EmployeesTable = () => {
               </div>
             </div>
             <div>
-              <div className="input-group w-auto">
-                <PrimaryButton
-                  onClick={onAddEmployees}
-                  buttonName="Add Employees"
-                />
-              </div>
+              {currentUser.role.includes("HR Manager", "Administrator") ? (
+                <div className="input-group w-auto">
+                  <PrimaryButton
+                    onClick={onAddEmployees}
+                    buttonName="Add Employees"
+                  />
+                </div>
+              ) : null}
               <div className="input-group w-auto">
                 <select
                   className="form-select"
@@ -418,7 +424,7 @@ const EmployeesTable = () => {
               </tr>
             </thead>
             <tbody>
-              {data.data.result.map((employee) => (
+              {data.data?.result?.map((employee) => (
                 <tr scope="row" key={employee.empno}>
                   <td className="table-light text-left">{employee.empno}</td>
                   <td className="table-light text-left">{employee.name}</td>
@@ -441,14 +447,20 @@ const EmployeesTable = () => {
                     {employee.updatedAt ? employee.updatedAt : getDate()}
                   </td>
                   <td className="table-light text-center">
-                    <PrimaryButton
-                      onClick={() => onEditingEmployees(employee.empno)}
-                      buttonName="Edit"
-                    />
-                    <DangerButton
-                      onClick={() => onDeleteEmployees(employee.empno)}
-                      buttonName="Delete"
-                    />
+                    {currentUser.role.includes("HR Manager") ||
+                    currentUser.role.includes("Administrator") ? (
+                      <>
+                        <PrimaryButton
+                          onClick={() => onEditingEmployees(employee.empno)}
+                          buttonName="Edit"
+                        />
+                        <DangerButton
+                          onClick={() => onDeleteEmployees(employee.empno)}
+                          buttonName="Delete"
+                        />
+                      </>
+                    ) : null}
+
                     <SecondaryButton
                       onClick={() => onDetailEmployees(employee.empno)}
                       buttonName={"Detail"}

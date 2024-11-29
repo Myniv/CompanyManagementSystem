@@ -192,6 +192,27 @@ const AssignmentsTablePaginationServer = () => {
                           }
                           buttonName="Detail"
                         />
+                      ) : currentUser.role.includes("Department Manager") ? (
+                        <>
+                          <SecondaryButton
+                            onClick={() =>
+                              onDetailAssignment(
+                                assignment.empno,
+                                assignment.projno
+                              )
+                            }
+                            buttonName="Detail"
+                          />
+                          <PrimaryButton
+                            onClick={() =>
+                              onEditAssignment(
+                                assignment.projno,
+                                assignment.empno
+                              )
+                            }
+                            buttonName="Edit"
+                          />
+                        </>
                       ) : (
                         <>
                           <PrimaryButton

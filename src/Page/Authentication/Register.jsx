@@ -39,7 +39,7 @@ const RegisterUser = () => {
     }
     if (isSuccess) {
       ShowLoading({
-        loadingMessage: "Logging in...",
+        loadingMessage: "Registering...",
         nextPage: () => navigate("/"),
       });
     }

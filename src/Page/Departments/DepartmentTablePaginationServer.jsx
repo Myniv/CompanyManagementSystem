@@ -138,6 +138,10 @@ const DepartmentsTable2 = () => {
     "Depok",
   ];
 
+  const onDetailEmployeesPages = (empNo) => {
+    navigate(`/employees/detail/${empNo}`);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -289,6 +293,7 @@ const DepartmentsTable2 = () => {
                       <tr>
                         <th scope="col">Employee ID</th>
                         <th scope="col">Employee Name</th>
+                        <th scope="col">Employee Detail</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -297,6 +302,12 @@ const DepartmentsTable2 = () => {
                           <td>{emp.empno}</td>
                           <td>
                             {emp.fname} {emp.lname}
+                          </td>
+                          <td>
+                            <SecondaryButton
+                              onClick={() => onDetailEmployeesPages(emp.empno)}
+                              buttonName={"Detail"}
+                            />
                           </td>
                         </tr>
                       ))}

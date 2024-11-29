@@ -52,7 +52,7 @@ const Header = () => {
     {
       label: "Assignments",
       path: "/assignments",
-      visibleForRoles: ["Administrator", "HR Manager", "Employee Supervisor"],
+      visibleForRoles: ["Administrator", "HR Manager", "Employee Supervisor", "Department Manager"],
     },
     {
       label: "Register",

@@ -100,7 +100,7 @@ const Header = () => {
 
   const handleLogout = () => {
     LogoutConfirmation({
-      logout: () => dispatch(logout(currentUser.refreshToken)),
+      logout: () => dispatch(logout()),
       nextPage: () => navigate("/"),
     });
   };

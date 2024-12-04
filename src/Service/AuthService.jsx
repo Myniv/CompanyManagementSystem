@@ -13,10 +13,8 @@ const login = async (userData) => {
   return response.data;
 };
 
-const logout = async (refreshToken) => {
-  await baseApi.post("Auth/logout", {
-    refreshToken,
-  });
+const logout = async () => {
+  await baseApi.post("Auth/logout");
   localStorage.removeItem("user");
 };
 

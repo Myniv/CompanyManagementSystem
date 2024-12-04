@@ -39,10 +39,7 @@ const Header = () => {
     {
       label: "Department",
       path: "/departments",
-      visibleForRoles: [
-        "Administrator",
-        "Department Manager",
-      ],
+      visibleForRoles: ["Administrator", "Department Manager"],
     },
     {
       label: "Projects",
@@ -52,7 +49,12 @@ const Header = () => {
     {
       label: "Assignments",
       path: "/assignments",
-      visibleForRoles: ["Administrator", "HR Manager", "Employee Supervisor", "Department Manager"],
+      visibleForRoles: [
+        "Administrator",
+        "HR Manager",
+        "Employee Supervisor",
+        "Department Manager",
+      ],
     },
     {
       label: "Register",
@@ -87,9 +89,9 @@ const Header = () => {
     }
 
     //for role for spesifict menu
-    if (item.visibleForRoles && currentUser?.role) {
+    if (item.visibleForRoles && currentUser?.roles) {
       return item.visibleForRoles.some((role) =>
-        currentUser.role.includes(role)
+        currentUser.roles.includes(role)
       );
     }
 

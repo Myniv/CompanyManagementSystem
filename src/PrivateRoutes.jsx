@@ -11,7 +11,7 @@ const PrivateRoute = ({ allowedRoles }) => {
     }
 
     const returnUser =
-      user?.role?.some((role) => allowedRoles.includes(role)) || false;
+      user?.roles?.some((role) => allowedRoles.includes(role)) || false;
 
     return returnUser;
   };

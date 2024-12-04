@@ -34,7 +34,7 @@ const AssignmentsTablePaginationServer = () => {
 
   const { user: currentUser } = useSelector((state) => state.auth);
 
-  console.log(currentUser.role);
+  console.log(currentUser.roles);
 
   const dispatch = useDispatch();
 
@@ -166,7 +166,7 @@ const AssignmentsTablePaginationServer = () => {
               </tr>
             </thead>
             <tbody>
-              {data.data.map((assignment) => (
+              {data.map((assignment) => (
                 <tr scope="row" key={(assignment.empno, assignment.projno)}>
                   <td className="table-light text-center">
                     {getEmployeesName(assignment.empno)}
@@ -182,7 +182,7 @@ const AssignmentsTablePaginationServer = () => {
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
-                      {currentUser.role.includes("HR Manager") ? (
+                      {currentUser.roles.includes("HR Manager") ? (
                         <SecondaryButton
                           onClick={() =>
                             onDetailAssignment(
@@ -192,7 +192,7 @@ const AssignmentsTablePaginationServer = () => {
                           }
                           buttonName="Detail"
                         />
-                      ) : currentUser.role.includes("Department Manager") ? (
+                      ) : currentUser.roles.includes("Department Manager") ? (
                         <>
                           <SecondaryButton
                             onClick={() =>

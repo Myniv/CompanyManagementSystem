@@ -139,7 +139,7 @@ const AssignmentsTable = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPosts.map((assignment) => (
+              {currentPosts?.map((assignment) => (
                 <tr scope="row" key={(assignment.empno, assignment.projno)}>
                   <td className="table-light text-center">
                     {getEmployeesName(assignment.empno)}

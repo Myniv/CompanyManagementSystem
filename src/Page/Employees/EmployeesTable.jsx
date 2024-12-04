@@ -269,7 +269,7 @@ const EmployeesTable = () => {
               </div>
             </div>
             <div>
-              {currentUser.role.includes("Administrator") || currentUser.role.includes("HR Manager") ? (
+              {currentUser.roles.includes("Administrator") || currentUser.roles.includes("HR Manager") ? (
                 <div className="input-group w-auto">
                   <PrimaryButton
                     onClick={onAddEmployees}
@@ -447,8 +447,8 @@ const EmployeesTable = () => {
                     {employee.updatedAt ? employee.updatedAt : getDate()}
                   </td>
                   <td className="table-light text-center">
-                    {currentUser.role.includes("HR Manager") ||
-                    currentUser.role.includes("Administrator") ? (
+                    {currentUser.roles.includes("HR Manager") ||
+                    currentUser.roles.includes("Administrator") ? (
                       <>
                         <PrimaryButton
                           onClick={() => onEditingEmployees(employee.empno)}

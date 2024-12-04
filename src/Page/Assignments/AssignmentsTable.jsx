@@ -22,7 +22,7 @@ const AssignmentsTable = () => {
 
   const { user: currentUser } = useSelector((state) => state.auth);
 
-  console.log(currentUser.role);
+  console.log(currentUser.roles);
 
   const dispatch = useDispatch();
   const assignment = useSelector((state) => state.assignment);
@@ -155,7 +155,7 @@ const AssignmentsTable = () => {
                   </td>
                   <td className="table-light text-center">
                     <div className="d-grid gap-2 d-md-flex justify-content-md-center">
-                      {currentUser.role.includes("HR Manager") ? (
+                      {currentUser.roles.includes("HR Manager") ? (
                         <SecondaryButton
                           onClick={() =>
                             onDetailAssignment(

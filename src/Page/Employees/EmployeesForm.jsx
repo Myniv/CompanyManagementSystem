@@ -412,8 +412,8 @@ const EmployeesForm = () => {
                     required
                     disabled={
                       !(
-                        currentUser.role.includes("HR Manager") ||
-                        currentUser.role.includes("Administrator")
+                        currentUser.roles.includes("HR Manager") ||
+                        currentUser.roles.includes("Administrator")
                       )
                     }
                   />
@@ -454,8 +454,8 @@ const EmployeesForm = () => {
                     required
                     disabled={
                       !(
-                        currentUser.role.includes("HR Manager") ||
-                        currentUser.role.includes("Administrator")
+                        currentUser.roles.includes("HR Manager") ||
+                        currentUser.roles.includes("Administrator")
                       )
                     }
                   />

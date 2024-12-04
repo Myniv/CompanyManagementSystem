@@ -5,13 +5,10 @@ import EmployeesLayout from "./Component/Layout/EmployeesLayout";
 import EmployeesTable from "./Page/Employees/EmployeesTable";
 import EmployeesForm from "./Page/Employees/EmployeesForm";
 import DepartmentsLayout from "./Component/Layout/DepartmentsLayout";
-import DepartmentsTable from "./Page/Departments/DepartmentsTable";
 import DepartmentsForm from "./Page/Departments/DepartmentsForm";
 import ProjectsLayout from "./Component/Layout/ProjectsLayout";
-import ProjectsTable from "./Page/Projects/ProjectsTable";
 import ProjectsForm from "./Page/Projects/ProjectsForm";
 import AssignmentLayout from "./Component/Layout/AssignmentsLayout";
-import AssignmentsTable from "./Page/Assignments/AssignmentsTable";
 import AssignmentsDetail from "./Page/Assignments/AssignmentsDetail";
 import AssignmentsForm from "./Page/Assignments/AssignmentsForm";
 import EmployeeDetail from "./Page/Employees/EmployeesDetail";
@@ -22,6 +19,9 @@ import DepartmentsTable2 from "./Page/Departments/DepartmentTablePaginationServe
 import ProjectsTablePaginationServer from "./Page/Projects/ProjectsTablePaginationServer";
 import AssignmentsTablePaginationServer from "./Page/Assignments/AssignmentsTablePaginationServer";
 import RegisterUser from "./Page/Authentication/Register";
+import EmployeesLeaveReqForm from "./Page/Employees/EmployeesLeaveReqForm";
+import EmployeesLeaveReqLayout from "./Component/Layout/EmployeeLeaveReqLayout";
+import UploadFiles from "./Page/Employees/UploadFiles";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +43,23 @@ export const router = createBrowserRouter([
           />
         ),
         children: [{ path: "", element: <Profile /> }],
+      },
+      {
+        path: "/upload",
+        element: <PrivateRoute allowedRoles={["Employee"]} />,
+        children: [
+          {
+            path: "",
+            element: <EmployeesLeaveReqLayout />,
+            children: [
+              { path: "", element: <EmployeesLeaveReqForm /> },
+              {
+                path: "",
+                element: <UploadFiles />,
+              },
+            ],
+          },
+        ],
       },
       {
         path: "/employees",
@@ -113,7 +130,7 @@ export const router = createBrowserRouter([
               "Administrator",
               "HR Manager",
               "Employee Supervisor",
-              "Department Manager"
+              "Department Manager",
             ]}
           />
         ),

@@ -72,6 +72,10 @@ const searchEmployee = async (
   }
 };
 
+const leaveReqEmployee = async (data) => {
+  return await baseApi.post("/Employees/leave", data);
+};
+
 const EmployeeService = {
   getAllEmployees,
   getAllEmployeesPagination,
@@ -81,6 +85,7 @@ const EmployeeService = {
   updateEmployeeDeactivate,
   deleteEmployee,
   searchEmployee,
+  leaveReqEmployee,
 };
 
 export default EmployeeService;

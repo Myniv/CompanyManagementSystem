@@ -9,6 +9,7 @@ import PrimaryButton from "../../Component/Elements/PrimaryButton";
 import DangerButton from "../../Component/Elements/DangerButton";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
 import DepartmentService from "../../Service/DepartmentService";
+import LoadingWithErrorMessage from "../../Component/Elements/LoadingWithErrorMessage";
 
 const DepartmentsForm = () => {
   const navigate = useNavigate();
@@ -103,7 +104,12 @@ const DepartmentsForm = () => {
       })
       .catch((err) => {
         console.log(err);
-        setErrorAPI(`Failed to update department, please train again later...`);
+        // setErrorAPI(`Failed to update department, please train again later...`);
+        LoadingWithErrorMessage({
+          loadingMessage: "Updating... please wait",
+          errorMessage:
+            "Failed to update department, please train again later...",
+        });
       });
   };
 
@@ -134,22 +140,22 @@ const DepartmentsForm = () => {
     ) {
       newErrors.location = "Location id must have been 1 - 6";
     }
-    if (
-      (formData.mgrempno !== null &&
-        department.data.some(
-          (departments) =>
-            departments.mgrempno === formData.mgrempno && !params.id
-        )) ||
-      (formData.mgrempno !== null &&
-        department.data.some(
-          (department) =>
-            department.mgrempno === formData.mgrempno &&
-            department.deptno !== formData.deptno
-        ))
-    ) {
-      newErrors.mgrempno =
-        "Manager Employee must be unique and cant be the same like others.";
-    }
+    // if (
+    //   (formData.mgrempno !== null &&
+    //     department.data.some(
+    //       (departments) =>
+    //         departments.mgrempno === formData.mgrempno && !params.id
+    //     )) ||
+    //   (formData.mgrempno !== null &&
+    //     department.data.some(
+    //       (department) =>
+    //         department.mgrempno === formData.mgrempno &&
+    //         department.deptno !== formData.deptno
+    //     ))
+    // ) {
+    //   newErrors.mgrempno =
+    //     "Manager Employee must be unique and cant be the same like others.";
+    // }
     return newErrors;
   };
 

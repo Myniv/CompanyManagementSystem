@@ -10,6 +10,9 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
+  const { user: currentUser } = useSelector((state) => state.auth);
+
+
   const [employees, setEmployee] = useState([]);
   const [projects, setProject] = useState([]);
   const [assignments, setAssignments] = useState([]);
@@ -53,7 +56,7 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    EmployeeService.getEmployeeId(5)
+    EmployeeService.getEmployeeId(currentUser.employee.empno)
       .then((response) => {
         console.log(response.data);
         setFormData(response.data);

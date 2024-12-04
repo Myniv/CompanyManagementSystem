@@ -166,7 +166,7 @@ const AssignmentsTablePaginationServer = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((assignment) => (
+              {data?.map((assignment) => (
                 <tr scope="row" key={(assignment.empno, assignment.projno)}>
                   <td className="table-light text-center">
                     {getEmployeesName(assignment.empno)}

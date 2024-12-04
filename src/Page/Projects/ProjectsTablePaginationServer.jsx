@@ -135,7 +135,7 @@ const ProjectsTablePaginationServer = () => {
               </tr>
             </thead>
             <tbody>
-              {data.data.map((project) => (
+              {data?.map((project) => (
                 <tr scope="row" key={project.projno}>
                   <td className="table-light text-center">{project.projno}</td>
                   <td className="table-light text-center">

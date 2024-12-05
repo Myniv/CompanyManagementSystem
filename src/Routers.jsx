@@ -22,6 +22,7 @@ import RegisterUser from "./Page/Authentication/Register";
 import EmployeesLeaveReqForm from "./Page/Employees/EmployeesLeaveReqForm";
 import EmployeesLeaveReqLayout from "./Component/Layout/EmployeeLeaveReqLayout";
 import UploadFiles from "./Page/Employees/UploadFiles";
+import EmployeesLeaveReqTable from "./Page/Employees/EmployeesLeaveReqTable";
 
 export const router = createBrowserRouter([
   {
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
         children: [{ path: "", element: <Profile /> }],
       },
       {
-        path: "/upload",
+        path: "/leavereq",
         element: <PrivateRoute allowedRoles={["Employee"]} />,
         children: [
           {
@@ -57,6 +58,31 @@ export const router = createBrowserRouter([
                 path: "",
                 element: <UploadFiles />,
               },
+            ],
+          },
+        ],
+      },
+      {
+        path: "",
+        element: (
+          <PrivateRoute
+            allowedRoles={[
+              "Employee Supervisor",
+              "HR Manager",
+              "Administrator",
+            ]}
+          />
+        ),
+        children: [
+          {
+            path: "",
+            element: <EmployeesLeaveReqLayout />,
+            children: [
+              { path: "/leavereqlist", element: <EmployeesLeaveReqTable /> },
+              // {
+              //   path: "",
+              //   element: <UploadFiles />,
+              // },
             ],
           },
         ],

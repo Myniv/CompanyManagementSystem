@@ -62,6 +62,16 @@ const Header = () => {
       visibleForRoles: ["Administrator"],
     },
     {
+      label: "Leave Request",
+      path: "/leavereq",
+      visibleForRoles: ["Employee"],
+    },
+    {
+      label: "List Leave",
+      path: "/leavereqlist",
+      visibleForRoles: ["Employee Supervisor", "HR Manager", "Administrator"],
+    },
+    {
       label: "Login",
       path: "/login",
       isAuthenticated: false,

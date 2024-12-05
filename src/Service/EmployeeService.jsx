@@ -12,6 +12,10 @@ const getEmployeeId = async (id) => {
   return await baseApi.get(`/Employees/${id}`);
 };
 
+const getEmployeeLeaveReqList = async () => {
+  return await baseApi.get(`/Company/workflow-dashboard`);
+};
+
 const addEmployee = async (data) => {
   return await baseApi.post("/Employees", data);
 };
@@ -80,6 +84,7 @@ const EmployeeService = {
   getAllEmployees,
   getAllEmployeesPagination,
   getEmployeeId,
+  getEmployeeLeaveReqList,
   addEmployee,
   updateEmployeeId,
   updateEmployeeDeactivate,

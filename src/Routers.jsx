@@ -23,6 +23,7 @@ import EmployeesLeaveReqForm from "./Page/Employees/EmployeesLeaveReqForm";
 import EmployeesLeaveReqLayout from "./Component/Layout/EmployeeLeaveReqLayout";
 import UploadFiles from "./Page/Employees/UploadFiles";
 import EmployeesLeaveReqTable from "./Page/Employees/EmployeesLeaveReqTable";
+import EmployeesLeaveReqApproval from "./Page/Employees/EmployeesLeaveReqApproval";
 
 export const router = createBrowserRouter([
   {
@@ -79,10 +80,10 @@ export const router = createBrowserRouter([
             element: <EmployeesLeaveReqLayout />,
             children: [
               { path: "/leavereqlist", element: <EmployeesLeaveReqTable /> },
-              // {
-              //   path: "",
-              //   element: <UploadFiles />,
-              // },
+              {
+                path: "/leavereqapproval/:id",
+                element: <EmployeesLeaveReqApproval />,
+              },
             ],
           },
         ],

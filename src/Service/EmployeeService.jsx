@@ -15,6 +15,13 @@ const getEmployeeId = async (id) => {
 const getEmployeeLeaveReqList = async () => {
   return await baseApi.get(`/Company/workflow-dashboard`);
 };
+const getEmployeeLeaveReqId = async (id) => {
+  return await baseApi.get(`/Company/workflow-dashboard/${id}`);
+};
+
+const addLeaveReqEmployee = async (data) => {
+  return await baseApi.post("/Employees/leave", data);
+};
 
 const addEmployee = async (data) => {
   return await baseApi.post("/Employees", data);
@@ -76,21 +83,18 @@ const searchEmployee = async (
   }
 };
 
-const leaveReqEmployee = async (data) => {
-  return await baseApi.post("/Employees/leave", data);
-};
-
 const EmployeeService = {
   getAllEmployees,
   getAllEmployeesPagination,
   getEmployeeId,
   getEmployeeLeaveReqList,
+  getEmployeeLeaveReqId,
+  addLeaveReqEmployee,
   addEmployee,
   updateEmployeeId,
   updateEmployeeDeactivate,
   deleteEmployee,
   searchEmployee,
-  leaveReqEmployee,
 };
 
 export default EmployeeService;

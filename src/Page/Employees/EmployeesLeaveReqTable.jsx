@@ -217,7 +217,7 @@ const EmployeesLeaveReqTable = () => {
                     <div className="d-grid gap-2 justify-content-md">
                       <PrimaryButton
                         onClick={() =>
-                          navigate(`/bookapproval/${emp.processId}`)
+                          navigate(`/leavereqapproval/${emp.processId}`)
                         }
                         buttonName={"View"}
                       />

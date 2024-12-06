@@ -24,6 +24,7 @@ import EmployeesLeaveReqLayout from "./Component/Layout/EmployeeLeaveReqLayout";
 import UploadFiles from "./Page/Employees/UploadFiles";
 import EmployeesLeaveReqTable from "./Page/Employees/EmployeesLeaveReqTable";
 import EmployeesLeaveReqApproval from "./Page/Employees/EmployeesLeaveReqApproval";
+import EmployeesLeaveReqTablePaginationServer from "./Page/Employees/EmployeesLeaveReqTablePaginationServer";
 
 export const router = createBrowserRouter([
   {
@@ -79,7 +80,10 @@ export const router = createBrowserRouter([
             path: "",
             element: <EmployeesLeaveReqLayout />,
             children: [
-              { path: "/leavereqlist", element: <EmployeesLeaveReqTable /> },
+              {
+                path: "/leavereqlist",
+                element: <EmployeesLeaveReqTablePaginationServer />,
+              },
               {
                 path: "/leavereqapproval/:id",
                 element: <EmployeesLeaveReqApproval />,

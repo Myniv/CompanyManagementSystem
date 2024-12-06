@@ -15,6 +15,31 @@ const getEmployeeId = async (id) => {
 const getEmployeeLeaveReqList = async () => {
   return await baseApi.get(`/Company/workflow-dashboard`);
 };
+const getEmployeeLeaveReqListPagination = async (
+  pageNumber,
+  perPage,
+  keyWord
+  //   name
+) => {
+  try {
+    const response = await baseApi.post(
+      "/Company/workflow-dashboard-pagination",
+      {
+        pageNumber,
+        perPage,
+      },
+      {
+        params: {
+          KeyWord: keyWord || null,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error fetching books : ", error);
+    throw error;
+  }
+};
 const getEmployeeLeaveReqId = async (id) => {
   return await baseApi.get(`/Company/workflow-dashboard/${id}`);
 };
@@ -91,6 +116,7 @@ const EmployeeService = {
   getAllEmployeesPagination,
   getEmployeeId,
   getEmployeeLeaveReqList,
+  getEmployeeLeaveReqListPagination,
   getEmployeeLeaveReqId,
   addLeaveReqEmployee,
   addLeaveReqEmployeeApproval,

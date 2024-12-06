@@ -177,6 +177,25 @@ const EmployeesLeaveReqForm = () => {
               )}
             </div>
             <div className="mb-3">
+              <label htmlFor="totalDate" className="form-label">
+                TotalDate
+              </label>
+              <input
+                type="string"
+                id="totalDate"
+                name="totalDate"
+                className={`form-control`}
+                value={totalDate}
+                onChange={handleChange}
+                required
+                disabled
+                placeholder="totalDate"
+              />
+              {errors.endDate && (
+                <div className="invalid-feedback">{errors.endDate}</div>
+              )}
+            </div>
+            <div className="mb-3">
               <label htmlFor="leaveType" className="form-label">
                 Leave Type
               </label>

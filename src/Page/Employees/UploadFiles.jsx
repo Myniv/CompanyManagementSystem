@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-// import { ToastContainer } from "react-bootstrap";
-import { toast, ToastContainer } from "react-toastify";
+import { toast /*ToastContainer*/ } from "react-toastify";
 
 const UploadFiles = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -96,7 +95,7 @@ const UploadFiles = () => {
 
   return (
     <div className="container mt-5">
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -107,8 +106,8 @@ const UploadFiles = () => {
         draggable
         pauseOnHover
         theme="colored"
-        // style={{ width: "40px", height: "40px" }} 
-      />
+        style={{ width: "40px", height: "40px" }} 
+      /> */}
       <div className="col-md-12">
         <div className="mb-3">
           <label htmlFor="fileInput" className="form-label">
@@ -147,7 +146,7 @@ const UploadFiles = () => {
         <button
           onClick={handleUpload}
           disabled={!selectedFile || isLoading || fixUpload}
-          className={`btn ${isLoading ? "btn-secondary" : "btn-primary"}`}
+          className={`btn ${isLoading ? "btn-secondary" : "btn-primary"} btn-sm`}
         >
           {isLoading ? (
             <>
@@ -156,10 +155,10 @@ const UploadFiles = () => {
                 role="status"
                 aria-hidden="true"
               ></span>
-              Uploading...
+              Submitting...
             </>
           ) : (
-            "Upload File"
+            "Submit File"
           )}
         </button>
       </div>

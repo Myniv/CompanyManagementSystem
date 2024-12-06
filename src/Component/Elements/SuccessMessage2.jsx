@@ -1,12 +1,16 @@
 import Swal from "sweetalert2";
 
-const SuccessMessage2 = (successMessageDesc) => {
+const SuccessMessage2 = ({successMessageDesc, nextPage}) => {
   const success = Swal.fire({
     title: "Success",
     text: successMessageDesc.toString(),
     icon: "success",
-    timer: 1000,
+    timer: 3000,
     showConfirmButton: false,
+  }).then((result) => {
+    if (result.dismiss === Swal.DismissReason.timer) {
+      nextPage();
+    }
   });
   return success;
 };

@@ -9,11 +9,11 @@ const DeleteConfirmation = (deleteData) => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
+    confirmButtonText: "Yes!",
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.fire({
-        title: "Deleting data...",
+        title: "Processing data...",
         html: "Please wait...",
         allowEscapeKey: false,
         allowOutsideClick: false,

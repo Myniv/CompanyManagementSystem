@@ -161,7 +161,7 @@ const EmployeesLeaveReqTablePaginationServer = () => {
                           ? "red"
                           : emp.status === "Approved"
                           ? "green"
-                          : "transparent",
+                          : "blue",
                       color:
                         emp.status === "Pending" || emp.status === "Rejected"
                           ? "black"

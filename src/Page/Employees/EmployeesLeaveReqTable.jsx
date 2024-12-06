@@ -12,13 +12,11 @@ const EmployeesLeaveReqTable = () => {
   const [isError, setIsError] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
 
-  // Sorting state
-  const [sorting, setSorting] = useState({
-    key: "processId",
-    direction: "asc",
-  });
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const handlePerPageChange = (e) => {
+    setItemsPerPage(e.target.value);
+  };
 
   const navigate = useNavigate();
 
@@ -36,30 +34,7 @@ const EmployeesLeaveReqTable = () => {
         setIsError(err.message);
         console.log(err);
       });
-  }, []);
-
-  const handleSort = (key) => {
-    const direction =
-      sorting.key === key && sorting.direction === "asc" ? "desc" : "asc";
-    setSorting({ key, direction });
-
-    const sortedData = [...empReqList].sort((a, b) => {
-      const valA = a[key] ? a[key].toString().toLowerCase() : ""; // Normalize strings
-      const valB = b[key] ? b[key].toString().toLowerCase() : "";
-
-      if (!isNaN(valA) && !isNaN(valB)) {
-        // Numerical sort
-        return direction === "asc" ? valA - valB : valB - valA;
-      } else {
-        // String sort
-        return direction === "asc"
-          ? valA.localeCompare(valB)
-          : valB.localeCompare(valA);
-      }
-    });
-
-    setEmpReqList(sortedData);
-  };
+  }, [setIsLoading]);
 
   // Pagination Logic
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -67,12 +42,6 @@ const EmployeesLeaveReqTable = () => {
     startIndex,
     startIndex + itemsPerPage
   );
-  const totalPages = Math.ceil(empReqList.length / itemsPerPage);
-
-  const goToPreviousPage = () =>
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const goToNextPage = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -92,6 +61,25 @@ const EmployeesLeaveReqTable = () => {
     return differenceInDays + 1;
   };
 
+  const onDownloadFile = () => {
+    const pdfUrl = "Assignment 7.pdf";
+    const link = document.createElement("a");
+    link.href = pdfUrl;
+    link.download = "document.pdf"; // specify the filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const totalingDate = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffInTime = end - start;
+    const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
+
+    return diffInDays;
+  };
+
   return (
     <>
       {isLoading ? (
@@ -100,82 +88,20 @@ const EmployeesLeaveReqTable = () => {
         <ErrorMessage errorMessage="Error" />
       ) : (
         <div className="m-4">
-          <h2>Book Request List</h2>
+          <h2>Leave Request List</h2>
           <table className="table table-hover table-bordered table-sm">
             <thead className="thead-dark">
               <tr className="table-dark">
-                <th scope="col" onClick={() => handleSort("processId")}>
-                  ID
-                  {sorting.key === "processId"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("requester")}>
-                  Name
-                  {sorting.key === "requester"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("type")}>
-                  Type
-                  {sorting.key === "type"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("reason")}>
-                  Reason
-                  {sorting.key === "reason"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("startDate")}>
-                  Start Date
-                  {sorting.key === "startDate"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("endDate")}>
-                  End Date
-                  {sorting.key === "endDate"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("totalDays")}>
-                  Total Days
-                  {sorting.key === "totalDays"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("requestDate")}>
-                  Submission Date
-                  {sorting.key === "requestDate"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
-                <th scope="col" onClick={() => handleSort("status")}>
-                  Status
-                  {sorting.key === "status"
-                    ? sorting.direction === "asc"
-                      ? "⇈"
-                      : "⇊"
-                    : "⇅"}
-                </th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Total Days</th>
+                <th scope="col">Submission Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">File</th>
                 <th scope="col">ACTION</th>
               </tr>
             </thead>
@@ -200,18 +126,32 @@ const EmployeesLeaveReqTable = () => {
                       backgroundColor:
                         emp.status === "Pending"
                           ? "yellow"
-                          : emp.status === "Reject"
+                          : emp.status === "Rejected"
                           ? "red"
                           : emp.status === "Approved"
-                          ? "blue"
+                          ? "green"
                           : "transparent",
                       color:
-                        emp.status === "Pending" || emp.status === "Reject"
+                        emp.status === "Pending" || emp.status === "Rejected"
                           ? "black"
                           : "white",
                     }}
                   >
                     {emp.status}
+                  </td>
+                  <td>
+                    {" "}
+                    {totalingDate(
+                      emp.leaveRequest.startDate,
+                      emp.leaveRequest.endDate
+                    ) > 2 && emp.leaveRequest.leaveType === "Sick Leave" ? (
+                      <PrimaryButton
+                        onClick={onDownloadFile}
+                        buttonName={"Letter"}
+                      />
+                    ) : (
+                      "No Letter"
+                    )}
                   </td>
                   <td>
                     <div className="d-grid gap-2 justify-content-md">
@@ -227,12 +167,22 @@ const EmployeesLeaveReqTable = () => {
               ))}
             </tbody>
           </table>
-          <div className="d-grid gap-2 d-md-flex justify-content-center">
+          <div className="d-grid gap-2 d-md-flex justify-content-between">
+            <div className="input-group w-auto">
+              <select
+                className="form-select-sm"
+                value={itemsPerPage}
+                onChange={handlePerPageChange}
+              >
+                <option value="3">3</option>
+                <option value="6">6</option>
+              </select>
+            </div>
             <Pagination
+              postsPerPage={itemsPerPage}
+              length={empReqList.length}
+              handlePagination={(page) => setCurrentPage(page)}
               currentPage={currentPage}
-              totalPages={totalPages}
-              goToPreviousPage={goToPreviousPage}
-              goToNextPage={goToNextPage}
             />
           </div>
         </div>

@@ -7,10 +7,12 @@ const UploadFiles = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB dalam bytes
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB dalam bytes
   const ALLOWED_FILE_TYPES = [
     "application/pdf", // PDF
     "application/msword", // DOC
+    "image/jpeg",
+    "image/jpg",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
   ];
 
@@ -18,7 +20,7 @@ const UploadFiles = () => {
 
   const validateFile = (file) => {
     if (file.size > MAX_FILE_SIZE) {
-      return "File size exceeds 2MB limit";
+      return "File size exceeds 5MB limit";
     }
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
       return "Only PDF and Word documents are allowed";
@@ -111,13 +113,13 @@ const UploadFiles = () => {
       <div className="col-md-12">
         <div className="mb-3">
           <label htmlFor="fileInput" className="form-label">
-            Choose File (PDF or Word, max 2MB)
+            Choose File (PDF or Word, max 5MB)
           </label>
           <input
             type="file"
             onChange={handleFileSelect}
             className="form-control"
-            accept=".pdf,.doc,.docx"
+            accept=".pdf,.doc,.docx,.jpg,.jpeg"
             disabled={fixUpload}
           />
           {selectedFile && (
@@ -146,7 +148,9 @@ const UploadFiles = () => {
         <button
           onClick={handleUpload}
           disabled={!selectedFile || isLoading || fixUpload}
-          className={`btn ${isLoading ? "btn-secondary" : "btn-primary"} btn-sm`}
+          className={`btn ${
+            isLoading ? "btn-secondary" : "btn-primary"
+          } btn-sm`}
         >
           {isLoading ? (
             <>

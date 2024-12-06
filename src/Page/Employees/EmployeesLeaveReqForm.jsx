@@ -50,7 +50,7 @@ const EmployeesLeaveReqForm = () => {
       newErrors.endDate = "End Date cannot be earlier than Start Date.";
     }
 
-    if (totalDate > 2 && !fixUpload) {
+    if (totalDate > 2 && !fixUpload && formData.leaveType === "Sick Leave") {
       newErrors.fixUpload = "File leave must have been uploaded!";
     }
 

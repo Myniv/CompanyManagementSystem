@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ShowLoading from "../../Component/Elements/ShowLoading";
+// import ShowLoading from "../../Component/Elements/ShowLoading";
 import LoadingState from "../../Component/Elements/LoadingState";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
 import EmployeeService from "../../Service/EmployeeService";
-import LoadingWithErrorMessage from "../../Component/Elements/LoadingWithErrorMessage";
+// import LoadingWithErrorMessage from "../../Component/Elements/LoadingWithErrorMessage";
+import DeleteConfirmation from "../../Component/Elements/DeleteConfirmation";
+import SuccessMessage2 from "../../Component/Elements/SuccessMessage2";
+import ErrorMessage2 from "../../Component/Elements/ErrorMessage2";
+import ShowLoading from "../../Component/Elements/ShowLoading";
+import { useSelector } from "react-redux";
 
 const EmployeesLeaveReqApproval = () => {
   const navigate = useNavigate();
+
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     leaveRequestId: 0,
@@ -18,6 +25,8 @@ const EmployeesLeaveReqApproval = () => {
   const [empReqAppr, setEmpReqAppr] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState("");
+
+  console.log(empReqAppr);
 
   const params = useParams();
 
@@ -45,22 +54,28 @@ const EmployeesLeaveReqApproval = () => {
   console.log(empReqAppr);
 
   const onApproveLeave = () => {
-    EmployeeService.addLeaveReqEmployeeApproval(formData)
-      .then((res) => {
-        ShowLoading({
-          loadingMessage: "Processing....",
-          nextPage: () => navigate("/leavereqlist"),
+    const approveConfirmation = () => {
+      EmployeeService.addLeaveReqEmployeeApproval(formData)
+        .then((res) => {
+          SuccessMessage2({
+            successMessageDesc: "Success!",
+            nextPage: () => navigate("/leavereqlist"),
+          });
+          // ShowLoading({
+          //   loadingMessage: "Processing....",
+          //   nextPage: () => navigate("/leavereqlist"),
+          // });
+          console.log(res);
+        })
+        .catch((error) => {
+          ErrorMessage2({
+            errorMessage: "There is an error, please try again later...",
+            nextPage: () => navigate("/leavereqlist"),
+          });
+          console.log(error);
         });
-        console.log(res);
-      })
-      .catch((error) => {
-        LoadingWithErrorMessage({
-          loadingMessage: "Processing...",
-          errorMessage: error,
-          nextPage: () => navigate("/leavereqlist"),
-        });
-        console.log(error);
-      });
+    };
+    DeleteConfirmation(approveConfirmation);
   };
 
   const formatDate = (dateString) => {
@@ -170,91 +185,99 @@ const EmployeesLeaveReqApproval = () => {
                         </tbody>
                       </table>
                     </div>
-                    {empReqAppr.status === "Approved" ||
-                    empReqAppr.status === "Rejected" ? (
-                      ""
+                    {(empReqAppr.data.status === "Reviewed By HR Manager" &&
+                      currentUser.roles?.includes("Employee Supervisor")) ||
+                    (empReqAppr.data.status === "Approved" &&
+                      currentUser.roles?.includes("HR Manager")) ||
+                    empReqAppr.data.status === "Rejected" ? (
+                      <></>
                     ) : (
-                      <form onSubmit={handleSubmit} className="mb-4">
-                        <div className="mb-3">
-                          <label
-                            htmlFor="bookRequestId"
-                            className="form-label"
-                            hidden
-                          >
-                            Book Request ID
-                          </label>
-                          <input
-                            type="number"
-                            id="bookRequestId"
-                            name="bookRequestId"
-                            className={`form-control`}
-                            value={formData.leaveRequestId}
-                            onChange={handleChange}
-                            required
-                            placeholder={params.id}
-                            disabled
-                            hidden
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Status</label>
-                          <div className="mt">
-                            <input
-                              type="radio"
-                              id="Approved"
-                              name="approval"
-                              className={`form-check-input`}
-                              value="Approved"
-                              onChange={handleChange}
-                              checked={formData.approval === "Approved"}
-                            />
+                      empReqAppr.data.status && (
+                        <form onSubmit={handleSubmit} className="mb-4">
+                          <div className="mb-3">
                             <label
-                              htmlFor="Approved"
-                              className="form-check-label ms-2"
+                              htmlFor="bookRequestId"
+                              className="form-label"
+                              hidden
                             >
-                              Approve
+                              Book Request ID
                             </label>
-
                             <input
-                              type="radio"
-                              id="Reject"
-                              name="approval"
-                              className={`form-check-input ms-2`}
-                              value="Rejected"
+                              type="number"
+                              id="bookRequestId"
+                              name="bookRequestId"
+                              className={`form-control`}
+                              value={formData.leaveRequestId}
                               onChange={handleChange}
-                              checked={formData.approval === "Rejected"}
+                              required
+                              placeholder={params.id}
+                              disabled
+                              hidden
                             />
-                            <label
-                              htmlFor="Rejected"
-                              className="form-check-label ms-2"
-                            >
-                              Rejected
-                            </label>
                           </div>
-                        </div>
-                        <div className="mb-3">
-                          <label htmlFor="bookRequestId" className="form-label">
-                            Comment
-                          </label>
-                          <input
-                            type="text"
-                            id="notes"
-                            name="notes"
-                            className={`form-control`}
-                            value={formData.notes}
-                            onChange={handleChange}
-                            required
-                            placeholder="Comment"
-                          />
-                        </div>
+                          <div className="mb-3">
+                            <label className="form-label">Status</label>
+                            <div className="mt">
+                              <input
+                                type="radio"
+                                id="Approved"
+                                name="approval"
+                                className={`form-check-input`}
+                                value="Approved"
+                                onChange={handleChange}
+                                checked={formData.approval === "Approved"}
+                              />
+                              <label
+                                htmlFor="Approved"
+                                className="form-check-label ms-2"
+                              >
+                                Approve
+                              </label>
 
-                        <button
-                          type="submit"
-                          className="btn btn-primary m-3 btn-sm"
-                        >
-                          Submit
-                        </button>
-                      </form>
+                              <input
+                                type="radio"
+                                id="Reject"
+                                name="approval"
+                                className={`form-check-input ms-2`}
+                                value="Rejected"
+                                onChange={handleChange}
+                                checked={formData.approval === "Rejected"}
+                              />
+                              <label
+                                htmlFor="Rejected"
+                                className="form-check-label ms-2"
+                              >
+                                Rejected
+                              </label>
+                            </div>
+                          </div>
+                          <div className="mb-3">
+                            <label
+                              htmlFor="bookRequestId"
+                              className="form-label"
+                            >
+                              Comment
+                            </label>
+                            <input
+                              type="text"
+                              id="notes"
+                              name="notes"
+                              className={`form-control`}
+                              value={formData.notes}
+                              onChange={handleChange}
+                              required
+                              placeholder="Comment"
+                            />
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="btn btn-primary m-3 btn-sm"
+                          >
+                            Submit
+                          </button>
+                        </form>
+                      )
                     )}
                   </div>
                 </div>

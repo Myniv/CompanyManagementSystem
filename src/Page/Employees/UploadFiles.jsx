@@ -148,6 +148,7 @@ const UploadFiles = () => {
         <button
           onClick={handleUpload}
           disabled={!selectedFile || isLoading || fixUpload}
+          hidden={!selectedFile || isLoading || fixUpload}
           className={`btn ${
             isLoading ? "btn-secondary" : "btn-primary"
           } btn-sm`}

@@ -71,7 +71,7 @@ const EmployeesLeaveReqForm = () => {
 
   const onReqLeave = async () => {
     try {
-      await EmployeeService.leaveReqEmployee(formData);
+      await EmployeeService.addLeaveReqEmployee(formData);
       ShowLoading({
         loadingMessage: "Requesting leave...",
         nextPage: () => navigate("/profile"),
@@ -117,7 +117,7 @@ const EmployeesLeaveReqForm = () => {
     setFixUpload(false);
   };
 
-  const leaveType = ["Sick", "Yearly", "Monthly"];
+  const leaveType = ["Sick Leave", "Annual Leave", "Personal Leave"];
 
   return (
     <>
@@ -223,7 +223,7 @@ const EmployeesLeaveReqForm = () => {
                 <div className="invalid-feedback">{errors.leaveReason}</div>
               )}
             </div>
-            {totalDate > 2 && (
+            {totalDate > 2 && formData.leaveType === "Sick Leave" && (
               <div className="mb-3">
                 <UploadFiles />
                 {errors.fixUpload && (

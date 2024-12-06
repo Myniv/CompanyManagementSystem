@@ -22,6 +22,9 @@ const getEmployeeLeaveReqId = async (id) => {
 const addLeaveReqEmployee = async (data) => {
   return await baseApi.post("/Employees/leave", data);
 };
+const addLeaveReqEmployeeApproval = async (data) => {
+  return await baseApi.post("/Employees/leave-approval", data);
+};
 
 const addEmployee = async (data) => {
   return await baseApi.post("/Employees", data);
@@ -90,6 +93,7 @@ const EmployeeService = {
   getEmployeeLeaveReqList,
   getEmployeeLeaveReqId,
   addLeaveReqEmployee,
+  addLeaveReqEmployeeApproval,
   addEmployee,
   updateEmployeeId,
   updateEmployeeDeactivate,

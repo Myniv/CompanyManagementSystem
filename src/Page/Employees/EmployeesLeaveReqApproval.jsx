@@ -4,12 +4,13 @@ import ShowLoading from "../../Component/Elements/ShowLoading";
 import LoadingState from "../../Component/Elements/LoadingState";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
 import EmployeeService from "../../Service/EmployeeService";
+import LoadingWithErrorMessage from "../../Component/Elements/LoadingWithErrorMessage";
 
 const EmployeesLeaveReqApproval = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    bookRequestId: 0,
+    leaveRequestId: 0,
     approval: "",
     notes: "",
   });
@@ -24,7 +25,7 @@ const EmployeesLeaveReqApproval = () => {
     if (params.id) {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        bookRequestId: params.id,
+        leaveRequestId: params.id,
       }));
 
       setIsLoading(true);
@@ -43,15 +44,28 @@ const EmployeesLeaveReqApproval = () => {
 
   console.log(empReqAppr);
 
-  const onApproveBook = () => {
-    // BookService.bookApproval(formData)
-    //   .then(() => {
-    //     ShowLoading({
-    //       loadingMessage: "The book is being approved...",
-    //       nextPage: () => navigate("/bookrequesttable"),
-    //     });
-    //   })
-    //   .catch((error) => console.log(error));
+  const onApproveLeave = () => {
+    EmployeeService.addLeaveReqEmployeeApproval(formData)
+      .then((res) => {
+        ShowLoading({
+          loadingMessage: "Processing....",
+          nextPage: () => navigate("/leavereqlist"),
+        });
+        console.log(res);
+      })
+      .catch((error) => {
+        LoadingWithErrorMessage({
+          loadingMessage: "Processing...",
+          errorMessage: error,
+          nextPage: () => navigate("/leavereqlist"),
+        });
+        console.log(error);
+      });
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
   };
 
   const handleChange = (e) => {
@@ -64,7 +78,7 @@ const EmployeesLeaveReqApproval = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onApproveBook();
+    onApproveLeave();
   };
 
   return (
@@ -102,17 +116,19 @@ const EmployeesLeaveReqApproval = () => {
                     {/* Request Date */}
                     <p>
                       <strong>Request Date:</strong>{" "}
-                      {empReqAppr.data.requestDate}
+                      {formatDate(empReqAppr.data.requestDate)}
                     </p>
 
                     {/* Book Details */}
                     <h5 className="mt-4">Request Detail</h5>
                     <ul className="list-unstyled">
                       <li>
-                        <strong>Type:</strong> {empReqAppr.data.leaveRequest.leaveType}
+                        <strong>Type:</strong>{" "}
+                        {empReqAppr.data.leaveRequest.leaveType}
                       </li>
                       <li>
-                        <strong>Reason:</strong> {empReqAppr.data.leaveRequest.leaveReason}
+                        <strong>Reason:</strong>{" "}
+                        {empReqAppr.data.leaveRequest.leaveReason}
                       </li>
                       <li>
                         <strong>Start Date: </strong>
@@ -140,7 +156,7 @@ const EmployeesLeaveReqApproval = () => {
                           {empReqAppr.data.requestHistory?.map(
                             (history, index) => (
                               <tr key={index}>
-                                <td>{history.actionDate}</td>
+                                <td>{formatDate(history.actionDate)}</td>
                                 <td>{history.actorName}</td>
                                 <td>
                                   {history.action ? history.action : "N/A"}
@@ -172,7 +188,7 @@ const EmployeesLeaveReqApproval = () => {
                             id="bookRequestId"
                             name="bookRequestId"
                             className={`form-control`}
-                            value={formData.bookRequestId}
+                            value={formData.leaveRequestId}
                             onChange={handleChange}
                             required
                             placeholder={params.id}
@@ -204,15 +220,15 @@ const EmployeesLeaveReqApproval = () => {
                               id="Reject"
                               name="approval"
                               className={`form-check-input ms-2`}
-                              value="Reject"
+                              value="Rejected"
                               onChange={handleChange}
-                              checked={formData.approval === "Reject"}
+                              checked={formData.approval === "Rejected"}
                             />
                             <label
-                              htmlFor="Reject"
+                              htmlFor="Rejected"
                               className="form-check-label ms-2"
                             >
-                              Reject
+                              Rejected
                             </label>
                           </div>
                         </div>

@@ -38,7 +38,7 @@ const ReportsWithoutDate = ({ apiUrl }) => {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setPdfFile(pdfUrl);
     } catch (err) {
-      setError(`Gagal menghasilkan laporan. Silakan coba lagi.`);
+      setError(`Failed to make the report. Please try again later...`);
       console.log(err);
     } finally {
       setIsLoading(false);
@@ -74,12 +74,12 @@ const ReportsWithoutDate = ({ apiUrl }) => {
           onClick={handleGenerateReport}
           disabled={isLoading}
         >
-          {isLoading ? "Menghasilkan Laporan..." : "Lihat Laporan"}
+          {isLoading ? "Making the report..." : "See Report"}
         </button>
 
         {pdfFile && (
           <button className="btn btn-success ms-3" onClick={handleDownloadPDF}>
-            Unduh PDF
+            Download PDF
           </button>
         )}
       </div>
@@ -96,7 +96,7 @@ const ReportsWithoutDate = ({ apiUrl }) => {
             height="500"
             className="embed-responsive-item"
           >
-            Browser Anda tidak mendukung tampilan PDF.
+            Your browser didnt support PDF view.
           </iframe>
         </div>
       )}

@@ -22,9 +22,10 @@ import RegisterUser from "./Page/Authentication/Register";
 import EmployeesLeaveReqForm from "./Page/Employees/EmployeesLeaveReqForm";
 import EmployeesLeaveReqLayout from "./Component/Layout/EmployeeLeaveReqLayout";
 import UploadFiles from "./Page/Employees/UploadFiles";
-import EmployeesLeaveReqTable from "./Page/Employees/EmployeesLeaveReqTable";
+// import EmployeesLeaveReqTable from "./Page/Employees/EmployeesLeaveReqTable";
 import EmployeesLeaveReqApproval from "./Page/Employees/EmployeesLeaveReqApproval";
 import EmployeesLeaveReqTablePaginationServer from "./Page/Employees/EmployeesLeaveReqTablePaginationServer";
+import ReportsPage from "./Page/ReportsPage";
 
 export const router = createBrowserRouter([
   {
@@ -154,7 +155,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "/assignments",
+        path: "",
         element: (
           <PrivateRoute
             allowedRoles={[
@@ -166,10 +167,14 @@ export const router = createBrowserRouter([
           />
         ),
         children: [
+          { path: "/reports", element: <ReportsPage /> },
           {
             element: <AssignmentLayout />,
             children: [
-              { path: "", element: <AssignmentsTablePaginationServer /> },
+              {
+                path: "/assignments",
+                element: <AssignmentsTablePaginationServer />,
+              },
               { path: "/assignments/new", element: <AssignmentsForm /> },
               {
                 path: "/assignments/edit/:projId/:empId",

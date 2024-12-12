@@ -57,6 +57,16 @@ const Header = () => {
       ],
     },
     {
+      label: "Reports",
+      path: "/reports",
+      visibleForRoles: [
+        "Administrator",
+        "HR Manager",
+        "Employee Supervisor",
+        "Department Manager",
+      ],
+    },
+    {
       label: "Register",
       path: "/register",
       visibleForRoles: ["Administrator"],

@@ -3,6 +3,7 @@ import axios from "axios";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useState } from "react";
 import LoadingState from "../Elements/LoadingState";
+// import ErrorMessage from "../Elements/ErrorMessage";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -15,17 +16,17 @@ const ReportsWithDate = ({ apiUrl }) => {
   const [pdfFile, setPdfFile] = useState(null);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
   const [filename, setFileName] = useState("");
 
   const handleGenerateReport = async () => {
     if (!startDate || !endDate) {
-      setError("Harap pilih rentang tanggal lengkap");
+      setError("Please choose the Start Date and the End Date!");
       return;
     }
     try {
       setLoading(true);
-      setError(null);
+      setError(null); // Clear previous errors
+
       const response = await axios.post(
         apiUrl,
         {
@@ -35,23 +36,20 @@ const ReportsWithDate = ({ apiUrl }) => {
         { responseType: "blob" }
       );
 
-      //To Get FileName from backend
-      const contentDisposition = response.headers.get("content-disposition");
-      let tempfilename = "document.pdf"; // default filename
+      // Extract filename from headers
+      const contentDisposition = response.headers["content-disposition"];
+      let tempfilename = "document.pdf"; // Default filename
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(
           /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
         );
-
         if (filenameMatch && filenameMatch[1]) {
           tempfilename = filenameMatch[1].replace(/['"]/g, "");
-
-          setFileName(tempfilename);
         }
       }
-      //*** */
+      setFileName(tempfilename);
 
-      // Buat URL untuk preview PDF
+      // Create PDF preview URL
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setPdfFile(pdfUrl);
@@ -95,7 +93,7 @@ const ReportsWithDate = ({ apiUrl }) => {
       <div>
         <div className="row">
           <div className="col-md-4 mb-3">
-            <label className="form-label">Tanggal Mulai</label>
+            <label className="form-label">Start Date</label>
             <input
               type="date"
               className="form-control"
@@ -104,7 +102,7 @@ const ReportsWithDate = ({ apiUrl }) => {
             />
           </div>
           <div className="col-md-4 mb-3">
-            <label className="form-label">Tanggal Akhir</label>
+            <label className="form-label">End Date</label>
             <input
               type="date"
               className="form-control"
@@ -122,24 +120,31 @@ const ReportsWithDate = ({ apiUrl }) => {
               {loading ? (
                 <>
                   <span
-                    className="spinnder-border spinner-border-sm me-2"
+                    className="spinner-border spinner-border-sm me-2"
                     role="status"
                     aria-hidden="true"
-                  >
-                    Loading...
-                  </span>
+                  />
+                  Loading...
                 </>
               ) : (
-                "Lihat Laporan"
+                "See Report"
               )}
             </button>
             {loading && <LoadingState />}
             {pdfFile && (
               <button className="btn btn-success" onClick={handleDownloadPDF}>
-                Unduh Pdf
+                Download Pdf
               </button>
             )}
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="alert alert-danger mt-3" role="alert">
+              {error}
+            </div>
+          )}
+
           <div className="col-12">
             {/* PDF Viewer */}
             {showPDF && (
@@ -153,11 +158,6 @@ const ReportsWithDate = ({ apiUrl }) => {
                       >
                         <span className="visually-hidden">Loading...</span>
                       </div>
-                    </div>
-                  )}
-                  {error && (
-                    <div className="alert alert-danger" role="alert">
-                      {error}
                     </div>
                   )}
                   {pdfFile && (
@@ -198,8 +198,7 @@ const ReportsWithDate = ({ apiUrl }) => {
                           </button>
 
                           <p className="mb-0">
-                            {" "}
-                            Page {pageNumber} of {numPages}{" "}
+                            Page {pageNumber} of {numPages}
                           </p>
 
                           <button

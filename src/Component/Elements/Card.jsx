@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 const Card = ({ title, description }) => {
   return (
-    <div className="card text-center m-3" style={{ width: "18rem" }}>
+    <div className="card text-center" style={{ width: "18rem" }}>
       <div className="card-body">
         <h5 className="card-title bg-dark text-white p-2 rounded">{title}</h5>
         <p

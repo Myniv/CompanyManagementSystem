@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import ErrorMessage from "../../Component/Elements/ErrorMessage";
 import LoadingState from "../../Component/Elements/LoadingState";
@@ -17,7 +18,7 @@ const fetchEmployeesReqService = async ({ pageNumber, perPage, keyWord }) => {
   return data;
 };
 
-const EmployeesLeaveReqTablePaginationServer = () => {
+const EmployeesLeaveReqTablePaginationServer = ({ title }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [perPage, setPerPage] = useState(3);
@@ -114,7 +115,7 @@ const EmployeesLeaveReqTablePaginationServer = () => {
         <ErrorMessage errorMessage="Error" />
       ) : (
         <div className="m-4">
-          <h2>Leave Request List</h2>
+          <h2> {title ? "" : "Leave Request List"}</h2>
           <div className="input-group w-auto me-2">
             <span className="input-group-text">Search</span>
             <input

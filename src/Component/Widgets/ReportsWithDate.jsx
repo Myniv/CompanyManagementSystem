@@ -132,7 +132,10 @@ const ReportsWithDate = ({ apiUrl }) => {
             </button>
             {loading && <LoadingState />}
             {pdfFile && (
-              <button className="btn btn-success" onClick={handleDownloadPDF}>
+              <button
+                className="btn btn-success ms-3"
+                onClick={handleDownloadPDF}
+              >
                 Download Pdf
               </button>
             )}
@@ -145,7 +148,7 @@ const ReportsWithDate = ({ apiUrl }) => {
             </div>
           )}
 
-          <div className="col-12">
+          <div className="col-12 mb-4">
             {/* PDF Viewer */}
             {showPDF && (
               <div className="card">

@@ -19,9 +19,14 @@ const ReportsPage = () => {
 
   useEffect(() => {
     if (currentUser.roles.includes("Department Manager")) {
-      setId(currentUser.employee.empno);
+      setId(currentUser.employee.deptno);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    console.log("ID", id);
+    console.log("Current User", currentUser);
+  }, [id]);
 
   //   useEffect(() => {
   //     if (!id) {
@@ -67,6 +72,7 @@ const ReportsPage = () => {
                   className={`form-select`}
                   value={id}
                   onChange={(e) => setId(e.target.value)}
+                  disabled={currentUser.roles.includes("Department Manager")}
                   required
                 >
                   <option value="" disabled selected>

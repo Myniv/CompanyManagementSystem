@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import LoadingState from "../Elements/LoadingState";
 
-const ReportsWithoutDate = ({ apiUrl }) => {
+const ReportsWithoutDate = ({ apiUrl, docName }) => {
   const [pdfFile, setPdfFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,20 +19,22 @@ const ReportsWithoutDate = ({ apiUrl }) => {
       });
 
       //ToGetFileName from backend
-      const contentDisposition = response.headers.get("content-disposition");
-      let tempfilename = "document.pdf"; // default filename
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(
-          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
-        );
+      // const contentDisposition = response.headers.get("content-disposition");
+      // let tempfilename = "document.pdf"; // default filename
+      // if (contentDisposition) {
+      //   const filenameMatch = contentDisposition.match(
+      //     /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+      //   );
 
-        if (filenameMatch && filenameMatch[1]) {
-          tempfilename = filenameMatch[1].replace(/['"]/g, "");
+      //   if (filenameMatch && filenameMatch[1]) {
+      //     tempfilename = filenameMatch[1].replace(/['"]/g, "");
 
-          setFileName(tempfilename);
-        }
-      }
+      //     setFileName(tempfilename);
+      //   }
+      // }
       //*** */
+      setFileName(docName);
+
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);

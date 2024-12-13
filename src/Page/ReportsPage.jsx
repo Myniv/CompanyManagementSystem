@@ -46,14 +46,14 @@ const ReportsPage = () => {
         >
           <Tab eventKey="projectReport" title="Project Report">
             <h4>Project Report</h4>
-            <ReportsWithoutDate apiUrl="http://localhost:5045/api/v1/Projects/report-pdf" />
+            <ReportsWithoutDate apiUrl="http://localhost:5045/api/v1/Projects/report-pdf" docName="Project Report" />
           </Tab>
 
           {(currentUser.roles.includes("HR Manager") ||
             currentUser.roles.includes("Administrator")) && (
             <Tab eventKey="leaveReport" title="Leave Report">
               <h4>Leave Report</h4>
-              <ReportsWithDate apiUrl="http://localhost:5045/api/v1/Company/leave-report-pdf" />
+              <ReportsWithDate apiUrl="http://localhost:5045/api/v1/Company/leave-report-pdf" docName="Leave Report" />
             </Tab>
           )}
 
@@ -88,7 +88,7 @@ const ReportsPage = () => {
 
               {id && (
                 <ReportsWithoutDate
-                  apiUrl={`http://localhost:5045/api/v1/Employees/report-pdf/${id}`}
+                  apiUrl={`http://localhost:5045/api/v1/Employees/report-pdf/${id}`} docName="Employee Report"
                 />
               )}
             </Tab>

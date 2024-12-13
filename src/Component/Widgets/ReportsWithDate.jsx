@@ -7,7 +7,7 @@ import LoadingState from "../Elements/LoadingState";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const ReportsWithDate = ({ apiUrl }) => {
+const ReportsWithDate = ({ apiUrl, docName }) => {
   const [showPDF, setShowPDF] = useState(false);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -37,17 +37,18 @@ const ReportsWithDate = ({ apiUrl }) => {
       );
 
       // Extract filename from headers
-      const contentDisposition = response.headers["content-disposition"];
-      let tempfilename = "document.pdf"; // Default filename
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(
-          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
-        );
-        if (filenameMatch && filenameMatch[1]) {
-          tempfilename = filenameMatch[1].replace(/['"]/g, "");
-        }
-      }
-      setFileName(tempfilename);
+      // const contentDisposition = response.headers["content-disposition"];
+      // let tempfilename = "document.pdf"; // Default filename
+      // if (contentDisposition) {
+      //   const filenameMatch = contentDisposition.match(
+      //     /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+      //   );
+      //   if (filenameMatch && filenameMatch[1]) {
+      //     tempfilename = filenameMatch[1].replace(/['"]/g, "");
+      //   }
+      // }
+      
+      setFileName(docName);
 
       // Create PDF preview URL
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });

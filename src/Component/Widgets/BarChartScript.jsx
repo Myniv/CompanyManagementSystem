@@ -45,7 +45,11 @@ const BarChartScript = ({ data, name, value }) => {
             angle={-7} // Rotate labels
           />
 
-          <YAxis type="number" tickFormatter={formatRupiah} />
+          <YAxis
+            type="number"
+            tickFormatter={formatRupiah}
+            tick={{ fontSize: 13 }}
+          />
 
           <Tooltip formatter={(value) => formatRupiah(value)} />
 

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
+// import axios from "axios";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useState } from "react";
 import LoadingState from "../Elements/LoadingState";
@@ -27,14 +27,7 @@ const ReportsWithDate = ({ apiUrl, docName }) => {
       setLoading(true);
       setError(null); // Clear previous errors
 
-      const response = await axios.post(
-        apiUrl,
-        {
-          startDate: startDate,
-          endDate: endDate,
-        },
-        { responseType: "blob" }
-      );
+      const response = await apiUrl();
 
       // Extract filename from headers
       // const contentDisposition = response.headers["content-disposition"];
@@ -47,7 +40,7 @@ const ReportsWithDate = ({ apiUrl, docName }) => {
       //     tempfilename = filenameMatch[1].replace(/['"]/g, "");
       //   }
       // }
-      
+
       setFileName(docName);
 
       // Create PDF preview URL

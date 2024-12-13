@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
+// import axios from "axios";
 import { useState } from "react";
 import LoadingState from "../Elements/LoadingState";
 
@@ -14,9 +14,7 @@ const ReportsWithoutDate = ({ apiUrl, docName }) => {
     setError(null);
     setPdfFile(null);
     try {
-      const response = await axios.get(apiUrl, {
-        responseType: "blob",
-      });
+      const response = await apiUrl();
 
       //ToGetFileName from backend
       // const contentDisposition = response.headers.get("content-disposition");
@@ -34,7 +32,6 @@ const ReportsWithoutDate = ({ apiUrl, docName }) => {
       // }
       //*** */
       setFileName(docName);
-
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);

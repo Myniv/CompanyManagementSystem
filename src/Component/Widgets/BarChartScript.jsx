@@ -33,12 +33,12 @@ const BarChartScript = ({ data, name, value }) => {
   return (
     <div style={{ height: "400px" }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={dataActiveMembers} layout="vertical">
+        <BarChart data={dataActiveMembers} layout="horizontal">
           <CartesianGrid strokeDasharray="3 3" />
 
-          <XAxis type="number" tickFormatter={formatRupiah} />
+          <XAxis dataKey={nameData} type="category" width={100} />
 
-          <YAxis dataKey={nameData} type="category" width={100} />
+          <YAxis type="number" tickFormatter={formatRupiah} />
 
           <Tooltip formatter={(value) => formatRupiah(value)} />
 

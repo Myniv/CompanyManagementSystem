@@ -36,7 +36,14 @@ const BarChartScript = ({ data, name, value }) => {
         <BarChart data={dataActiveMembers} layout="horizontal">
           <CartesianGrid strokeDasharray="3 3" />
 
-          <XAxis dataKey={nameData} type="category" width={100} />
+          <XAxis
+            dataKey={nameData}
+            type="category"
+            width={100}
+            tick={{ fontSize: 13 }}
+            interval={0} // Show all labels
+            angle={-7} // Rotate labels
+          />
 
           <YAxis type="number" tickFormatter={formatRupiah} />
 
